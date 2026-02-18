@@ -12,14 +12,16 @@ export function BrandsRibbon({ brands }: BrandsRibbonProps) {
   return (
     <section data-testid="section-brands-ribbon">
       <h2 className="text-lg font-bold mb-4">Бренды</h2>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
         {brands.map((brand) => (
           <Link key={brand.id} href={`/catalog?brand=${brand.id}`}>
             <Card
               className="shrink-0 w-28 sm:w-32 hover-elevate cursor-pointer overflow-visible"
               data-testid={`card-brand-${brand.id}`}
             >
-              <div className="aspect-[4/3] overflow-hidden rounded-t-md bg-muted flex items-center justify-center p-2">
+              <div className="aspect-[4/3] overflow-hidden rounded-t-xl flex items-center justify-center p-3" style={{
+                background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
+              }}>
                 <img
                   src={brand.image}
                   alt={brand.name}
@@ -27,8 +29,8 @@ export function BrandsRibbon({ brands }: BrandsRibbonProps) {
                   loading="lazy"
                 />
               </div>
-              <div className="p-2 text-center">
-                <span className="text-xs font-medium truncate block" data-testid={`text-brand-name-${brand.id}`}>
+              <div className="p-2.5 text-center">
+                <span className="text-xs font-semibold truncate block" data-testid={`text-brand-name-${brand.id}`}>
                   {brand.name}
                 </span>
               </div>

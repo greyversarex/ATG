@@ -11,15 +11,15 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import type { Banner, Brand, Category, Product, Service } from "@shared/schema";
 
 function HeroSkeleton() {
-  return <Skeleton className="w-full aspect-[16/6] rounded-md" />;
+  return <Skeleton className="w-full aspect-[16/6] rounded-xl" />;
 }
 
 function ProductsSkeleton() {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="space-y-2">
-          <Skeleton className="aspect-square rounded-md" />
+          <Skeleton className="aspect-square rounded-xl" />
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-4 w-1/2" />
         </div>
@@ -70,9 +70,9 @@ export default function Home() {
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
         {loadingBrands ? (
-          <div className="flex gap-3 overflow-hidden">
+          <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="w-32 h-28 shrink-0 rounded-md" />
+              <Skeleton key={i} className="w-32 h-28 shrink-0 rounded-xl" />
             ))}
           </div>
         ) : (
@@ -93,7 +93,7 @@ export default function Home() {
           {loadingBestsellers ? (
             <ProductsSkeleton />
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {(bestsellers || []).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -103,24 +103,24 @@ export default function Home() {
 
         {promoBanner && (
           <section data-testid="section-promo-banner">
-            <div className="relative overflow-hidden rounded-md aspect-[16/5] sm:aspect-[16/4]">
+            <div className="relative overflow-hidden rounded-xl shadow-xl aspect-[16/5] sm:aspect-[16/4]">
               <img
                 src={promoBanner.image}
                 alt={promoBanner.title || ""}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
               <div className="absolute inset-0 flex items-center px-6 sm:px-10 md:px-16">
                 <div className="max-w-lg">
                   {promoBanner.title && (
-                    <h3 className="text-white text-lg sm:text-2xl font-bold mb-2">{promoBanner.title}</h3>
+                    <h3 className="text-white text-lg sm:text-2xl font-bold mb-2 drop-shadow-lg">{promoBanner.title}</h3>
                   )}
                   {promoBanner.description && (
-                    <p className="text-white/80 text-sm mb-4 line-clamp-2">{promoBanner.description}</p>
+                    <p className="text-white/80 text-sm mb-4 line-clamp-2 drop-shadow-md">{promoBanner.description}</p>
                   )}
                   {promoBanner.buttonText && promoBanner.buttonLink && (
                     <a href={promoBanner.buttonLink}>
-                      <Button size="sm">{promoBanner.buttonText}</Button>
+                      <Button size="sm" className="shadow-lg">{promoBanner.buttonText}</Button>
                     </a>
                   )}
                 </div>
@@ -132,16 +132,16 @@ export default function Home() {
         {services && services.length > 0 && (
           <section data-testid="section-services">
             <h2 className="text-lg font-bold mb-4">Наши услуги</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {services.map((service) => {
                 const IconComp = serviceIcons[service.icon] || Wrench;
                 return (
                   <div
                     key={service.id}
-                    className="flex flex-col items-center text-center p-6 rounded-md bg-card border border-card-border"
+                    className="convex-card flex flex-col items-center text-center p-6"
                     data-testid={`card-service-${service.id}`}
                   >
-                    <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mb-3 shadow-sm">
                       <IconComp className="w-6 h-6 text-primary" />
                     </div>
                     <h4 className="font-semibold text-sm mb-1">{service.title}</h4>

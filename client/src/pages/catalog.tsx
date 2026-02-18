@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useSearch } from "wouter";
+import { useSearch } from "wouter";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -86,7 +86,7 @@ export default function Catalog() {
             </Button>
           </div>
 
-          <div className="space-y-6">
+          <div className="convex-card p-4 space-y-6">
             {categories && categories.length > 0 && (
               <div>
                 <h4 className="font-semibold text-sm mb-2">Категории</h4>
@@ -159,10 +159,10 @@ export default function Catalog() {
 
         <div className="flex-1 min-w-0">
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="space-y-2">
-                  <Skeleton className="aspect-square rounded-md" />
+                  <Skeleton className="aspect-square rounded-xl" />
                   <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
                 </div>
@@ -178,7 +178,7 @@ export default function Catalog() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

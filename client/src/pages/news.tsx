@@ -16,10 +16,10 @@ export default function NewsPage() {
       <h1 className="text-2xl font-bold mb-6" data-testid="text-news-title">Новости</h1>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="space-y-2">
-              <Skeleton className="aspect-video rounded-md" />
+              <Skeleton className="aspect-video rounded-xl" />
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-full" />
             </div>
@@ -28,14 +28,14 @@ export default function NewsPage() {
       ) : !newsList?.length ? (
         <p className="text-center text-muted-foreground py-16">Новостей пока нет</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {newsList.map((item) => (
-            <Card key={item.id} className="overflow-visible" data-testid={`card-news-${item.id}`}>
-              <div className="aspect-video overflow-hidden rounded-t-md bg-muted">
+            <Card key={item.id} className="overflow-visible group" data-testid={`card-news-${item.id}`}>
+              <div className="aspect-video overflow-hidden rounded-t-xl">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   loading="lazy"
                 />
               </div>
@@ -47,7 +47,7 @@ export default function NewsPage() {
                     day: "numeric",
                   })}
                 </time>
-                <h3 className="font-semibold text-sm mt-1 mb-2" data-testid={`text-news-title-${item.id}`}>
+                <h3 className="font-semibold text-sm mt-1.5 mb-2" data-testid={`text-news-title-${item.id}`}>
                   {item.title}
                 </h3>
                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">

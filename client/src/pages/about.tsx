@@ -33,20 +33,20 @@ export default function About() {
         AMIR TECH GROUP (ATG) — ведущий поставщик комплексных решений для автомобильной отрасли в Таджикистане.
       </p>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {highlights.map((h, i) => (
-          <Card key={i} className="p-4 text-center overflow-visible" data-testid={`card-highlight-${i}`}>
-            <div className="w-10 h-10 mx-auto rounded-md bg-primary/10 flex items-center justify-center mb-2">
+          <Card key={i} className="p-5 text-center overflow-visible" data-testid={`card-highlight-${i}`}>
+            <div className="w-11 h-11 mx-auto rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mb-3 shadow-sm">
               <h.icon className="w-5 h-5 text-primary" />
             </div>
             <p className="font-bold text-lg">{h.label}</p>
-            <p className="text-xs text-muted-foreground">{h.desc}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{h.desc}</p>
           </Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-        <div>
+        <div className="convex-card p-6">
           <h2 className="font-bold text-lg mb-3">Специализация</h2>
           <div className="space-y-2 text-sm text-muted-foreground leading-relaxed">
             <p>Компания специализируется на дистрибуции автозапчастей, поставке профессионального оборудования для СТО, диагностических сканерах и компонентах пневмоподвески.</p>
@@ -54,11 +54,11 @@ export default function About() {
           </div>
         </div>
 
-        <div>
+        <div className="convex-card p-6">
           <h2 className="font-bold text-lg mb-3">Ключевые направления</h2>
-          <ul className="space-y-2">
+          <ul className="space-y-2.5">
             {directions.map((d, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+              <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                 {d}
               </li>
@@ -69,13 +69,13 @@ export default function About() {
 
       <div className="mb-10">
         <h2 className="font-bold text-lg mb-4">Преимущества</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {advantages.map((a, i) => (
-            <div key={i} className="flex items-start gap-3 p-4 rounded-md bg-card border border-card-border" data-testid={`card-advantage-${i}`}>
-              <div className="w-9 h-9 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+            <div key={i} className="convex-card flex items-start gap-3 p-5" data-testid={`card-advantage-${i}`}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0 shadow-sm">
                 <a.icon className="w-4 h-4 text-primary" />
               </div>
-              <p className="text-sm pt-1.5">{a.text}</p>
+              <p className="text-sm pt-2">{a.text}</p>
             </div>
           ))}
         </div>

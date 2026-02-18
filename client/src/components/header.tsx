@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, ShoppingBag } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -16,12 +16,12 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b">
+    <header className="sticky top-0 z-50 glass-header">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between gap-4 h-16">
           <Link href="/" data-testid="link-home">
-            <div className="flex items-center gap-2 cursor-pointer">
-              <div className="w-10 h-10 rounded-md bg-primary flex items-center justify-center">
+            <div className="flex items-center gap-2.5 cursor-pointer">
+              <div className="w-10 h-10 rounded-md bg-gradient-to-br from-primary to-red-700 flex items-center justify-center shadow-md">
                 <span className="text-primary-foreground font-bold text-lg">A</span>
               </div>
               <div className="flex flex-col">
@@ -69,7 +69,7 @@ export function Header() {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t bg-background">
+        <div className="md:hidden border-t border-border/30 bg-background/95 backdrop-blur-md">
           <nav className="flex flex-col p-4 gap-1">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>

@@ -19,7 +19,7 @@ export default function Brands() {
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {Array.from({ length: 10 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[4/3] rounded-md" />
+            <Skeleton key={i} className="aspect-[4/3] rounded-xl" />
           ))}
         </div>
       ) : !brands?.length ? (
@@ -32,7 +32,9 @@ export default function Brands() {
                 className="hover-elevate cursor-pointer overflow-visible"
                 data-testid={`card-brand-${brand.id}`}
               >
-                <div className="aspect-[4/3] overflow-hidden rounded-t-md bg-muted flex items-center justify-center p-4">
+                <div className="aspect-[4/3] overflow-hidden rounded-t-xl flex items-center justify-center p-4" style={{
+                  background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
+                }}>
                   <img
                     src={brand.image}
                     alt={brand.name}
@@ -41,7 +43,7 @@ export default function Brands() {
                   />
                 </div>
                 <div className="p-3 text-center">
-                  <span className="font-medium text-sm" data-testid={`text-brand-name-${brand.id}`}>
+                  <span className="font-semibold text-sm" data-testid={`text-brand-name-${brand.id}`}>
                     {brand.name}
                   </span>
                 </div>

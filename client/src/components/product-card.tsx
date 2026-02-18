@@ -15,7 +15,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Card className="overflow-visible group flex flex-col" data-testid={`card-product-${product.id}`}>
-      <div className="relative aspect-square overflow-hidden rounded-t-md bg-muted">
+      <div className="relative aspect-square overflow-hidden rounded-t-xl" style={{
+        background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
+      }}>
         <img
           src={product.image}
           alt={product.name}
@@ -23,16 +25,16 @@ export function ProductCard({ product }: ProductCardProps) {
           loading="lazy"
         />
         {product.discountPercent && product.discountPercent > 0 ? (
-          <div className="absolute top-2 left-2">
-            <Badge variant="destructive" className="text-xs font-bold" data-testid={`badge-discount-${product.id}`}>
+          <div className="absolute top-2.5 left-2.5">
+            <Badge variant="destructive" className="text-xs font-bold shadow-md" data-testid={`badge-discount-${product.id}`}>
               -{product.discountPercent}%
             </Badge>
           </div>
         ) : null}
       </div>
 
-      <div className="flex flex-col flex-1 p-3 gap-2">
-        <h3 className="font-medium text-sm leading-tight line-clamp-2 min-h-[2.5em]" data-testid={`text-product-name-${product.id}`}>
+      <div className="flex flex-col flex-1 p-3.5 gap-2">
+        <h3 className="font-semibold text-sm leading-tight line-clamp-2 min-h-[2.5em]" data-testid={`text-product-name-${product.id}`}>
           {product.name}
         </h3>
 
