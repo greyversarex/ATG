@@ -10,6 +10,8 @@ import multer from "multer";
 import path from "path";
 import { randomUUID } from "crypto";
 import express from "express";
+import bcrypt from "bcryptjs";
+import type { Request, Response, NextFunction } from "express";
 
 const uploadStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, "uploads"),
@@ -31,6 +33,13 @@ const upload = multer({
   },
 });
 
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Необходима авторизация" });
+  }
+  next();
+}
+
 function handleZodError(res: any, error: unknown) {
   if (error instanceof ZodError) {
     return res.status(400).json({ message: error.errors.map(e => e.message).join(", ") });
@@ -44,11 +53,45 @@ export async function registerRoutes(
 ): Promise<Server> {
   app.use("/uploads", express.static("uploads"));
 
-  app.post("/api/upload", upload.single("file"), (req, res) => {
+  app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "Файл не загружен" });
     }
     res.json({ url: `/uploads/${req.file.filename}` });
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ message: "Введите логин и пароль" });
+    }
+    const user = await storage.getUserByUsername(username);
+    if (!user) {
+      return res.status(401).json({ message: "Неверный логин или пароль" });
+    }
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      return res.status(401).json({ message: "Неверный логин или пароль" });
+    }
+    req.session.userId = user.id;
+    res.json({ id: user.id, username: user.username, role: user.role });
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy(() => {
+      res.json({ ok: true });
+    });
+  });
+
+  app.get("/api/auth/me", async (req, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
+    const user = await storage.getUser(req.session.userId);
+    if (!user) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
+    res.json({ id: user.id, username: user.username, role: user.role });
   });
 
   app.get("/api/brands", async (_req, res) => {
@@ -116,7 +159,9 @@ export async function registerRoutes(
     res.json(data);
   });
 
-  // Admin routes with validation
+  // Admin routes — protected by auth
+  app.use("/api/admin", requireAuth);
+
   app.post("/api/admin/brands", async (req, res) => {
     try {
       const validated = insertBrandSchema.parse(req.body);

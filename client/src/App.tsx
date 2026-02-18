@@ -13,6 +13,7 @@ import NewsPage from "@/pages/news";
 import About from "@/pages/about";
 import Discounts from "@/pages/discounts";
 import Admin from "@/pages/admin";
+import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/news" component={NewsPage} />
       <Route path="/about" component={About} />
       <Route path="/discounts" component={Discounts} />
+      <Route path="/login" component={Login} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>

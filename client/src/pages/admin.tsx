@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,7 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2 } from "lucide-react";
 import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
@@ -27,11 +28,47 @@ const tabs: { id: Tab; label: string; icon: typeof Package }[] = [
 export default function Admin() {
   usePageTitle("Админ-панель");
 
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>("products");
+
+  const { data: user, isLoading: authLoading } = useQuery<{ id: string; username: string; role: string }>({
+    queryKey: ["/api/auth/me"],
+    retry: false,
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/auth/logout"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      setLocation("/login");
+    },
+  });
+
+  if (authLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    setLocation("/login");
+    return null;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6" data-testid="text-admin-title">Админ-панель</h1>
+      <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <h1 className="text-2xl font-bold" data-testid="text-admin-title">Админ-панель</h1>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-muted-foreground" data-testid="text-admin-user">{user.username}</span>
+          <Button variant="outline" size="sm" onClick={() => logoutMutation.mutate()} data-testid="button-logout">
+            <LogOut className="w-4 h-4 mr-1" />
+            Выйти
+          </Button>
+        </div>
+      </div>
 
       <div className="flex gap-2 mb-6 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
         {tabs.map((tab) => (

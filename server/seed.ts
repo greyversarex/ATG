@@ -1,8 +1,23 @@
 import { db } from "./db";
-import { brands, categories, products, banners, news, services } from "@shared/schema";
+import { brands, categories, products, banners, news, services, users } from "@shared/schema";
 import { log } from "./index";
+import bcrypt from "bcryptjs";
+
+async function seedAdminUser() {
+  const existing = await db.select().from(users);
+  if (existing.length > 0) return;
+  const hash = await bcrypt.hash("admin123", 10);
+  await db.insert(users).values({
+    username: "admin",
+    password: hash,
+    role: "admin",
+  });
+  log("Default admin user created (login: admin, password: admin123)");
+}
 
 export async function seedDatabase() {
+  await seedAdminUser();
+
   const existingBrands = await db.select().from(brands);
   if (existingBrands.length > 0) {
     log("Database already seeded, skipping");
