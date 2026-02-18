@@ -5,9 +5,40 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { useState, useMemo } from "react";
-import { Filter, X } from "lucide-react";
+import { Filter, X, Check } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 import type { Product, Category, Brand } from "@shared/schema";
+
+function FilterCheckbox({
+  checked,
+  label,
+  onClick,
+  testId,
+}: {
+  checked: boolean;
+  label: string;
+  onClick: () => void;
+  testId: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2.5 w-full py-1.5 px-1 rounded text-sm hover-elevate overflow-visible cursor-pointer text-left"
+      data-testid={testId}
+    >
+      <span
+        className={`flex items-center justify-center w-4 h-4 rounded border shrink-0 transition-colors ${
+          checked
+            ? "bg-primary border-primary text-primary-foreground"
+            : "border-border"
+        }`}
+      >
+        {checked && <Check className="w-3 h-3" />}
+      </span>
+      <span className={checked ? "font-medium" : ""}>{label}</span>
+    </button>
+  );
+}
 
 export default function Catalog() {
   usePageTitle("Каталог");
@@ -67,6 +98,73 @@ export default function Catalog() {
 
   const hasFilters = selectedCategory || selectedBrand || searchText.trim().length >= 2 || priceRange[0] > 0 || priceRange[1] < maxPrice;
 
+  const filterContent = (
+    <div className="space-y-5">
+      {categories && categories.length > 0 && (
+        <div>
+          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">Категории</h4>
+          <div className="space-y-0.5">
+            {categories.map((cat) => (
+              <FilterCheckbox
+                key={cat.id}
+                checked={selectedCategory === cat.id}
+                label={cat.name}
+                onClick={() => {
+                  setSelectedCategory(selectedCategory === cat.id ? null : cat.id);
+                  setShowFilters(false);
+                }}
+                testId={`button-filter-category-${cat.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {brands && brands.length > 0 && (
+        <div>
+          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">Бренды</h4>
+          <div className="space-y-0.5">
+            {brands.map((brand) => (
+              <FilterCheckbox
+                key={brand.id}
+                checked={selectedBrand === brand.id}
+                label={brand.name}
+                onClick={() => {
+                  setSelectedBrand(selectedBrand === brand.id ? null : brand.id);
+                  setShowFilters(false);
+                }}
+                testId={`button-filter-brand-${brand.id}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div>
+        <h4 className="font-bold text-sm mb-3 uppercase tracking-wide">Цена</h4>
+        <Slider
+          min={0}
+          max={maxPrice}
+          step={100}
+          value={priceRange}
+          onValueChange={(v) => setPriceRange(v as [number, number])}
+          data-testid="slider-price"
+        />
+        <div className="flex justify-between gap-2 mt-2 text-xs text-muted-foreground">
+          <span>{priceRange[0].toLocaleString("ru-RU")} сом.</span>
+          <span>{priceRange[1].toLocaleString("ru-RU")} сом.</span>
+        </div>
+      </div>
+
+      {hasFilters && (
+        <Button variant="destructive" size="sm" className="w-full" onClick={clearFilters} data-testid="button-clear-filters">
+          <X className="w-3.5 h-3.5 mr-1.5" />
+          Сбросить фильтры
+        </Button>
+      )}
+    </div>
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
@@ -87,87 +185,31 @@ export default function Catalog() {
         <aside
           className={`${
             showFilters ? "block fixed inset-0 z-40 bg-background p-4 overflow-y-auto" : "hidden"
-          } lg:block lg:relative lg:z-auto lg:bg-transparent lg:p-0 w-full lg:w-56 shrink-0`}
+          } lg:block lg:relative lg:z-auto lg:bg-transparent lg:p-0 w-full lg:w-60 shrink-0`}
         >
           <div className="flex items-center justify-between lg:hidden mb-4">
-            <h3 className="font-bold">Фильтры</h3>
+            <h3 className="font-bold text-lg">Фильтры</h3>
             <Button size="icon" variant="ghost" onClick={() => setShowFilters(false)} data-testid="button-close-filters">
               <X />
             </Button>
           </div>
 
-          <div className="convex-card p-4 space-y-6">
-            {categories && categories.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-sm mb-2">Категории</h4>
-                <div className="space-y-1">
-                  {categories.map((cat) => (
-                    <Button
-                      key={cat.id}
-                      variant={selectedCategory === cat.id ? "secondary" : "ghost"}
-                      size="sm"
-                      className="w-full justify-start text-xs"
-                      onClick={() => {
-                        setSelectedCategory(selectedCategory === cat.id ? null : cat.id);
-                        setShowFilters(false);
-                      }}
-                      data-testid={`button-filter-category-${cat.id}`}
-                    >
-                      {cat.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {brands && brands.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-sm mb-2">Бренды</h4>
-                <div className="space-y-1">
-                  {brands.map((brand) => (
-                    <Button
-                      key={brand.id}
-                      variant={selectedBrand === brand.id ? "secondary" : "ghost"}
-                      size="sm"
-                      className="w-full justify-start text-xs"
-                      onClick={() => {
-                        setSelectedBrand(selectedBrand === brand.id ? null : brand.id);
-                        setShowFilters(false);
-                      }}
-                      data-testid={`button-filter-brand-${brand.id}`}
-                    >
-                      {brand.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div>
-              <h4 className="font-semibold text-sm mb-3">Цена</h4>
-              <Slider
-                min={0}
-                max={maxPrice}
-                step={100}
-                value={priceRange}
-                onValueChange={(v) => setPriceRange(v as [number, number])}
-                data-testid="slider-price"
-              />
-              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-                <span>{priceRange[0].toLocaleString("ru-RU")} сом.</span>
-                <span>{priceRange[1].toLocaleString("ru-RU")} сом.</span>
-              </div>
-            </div>
-
-            {hasFilters && (
-              <Button variant="outline" size="sm" className="w-full" onClick={clearFilters} data-testid="button-clear-filters">
-                Сбросить фильтры
-              </Button>
-            )}
+          <div className="bg-card border border-border rounded-md p-4">
+            {filterContent}
           </div>
         </aside>
 
         <div className="flex-1 min-w-0">
+          {searchText && (
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <span className="text-sm text-muted-foreground">Результаты по запросу:</span>
+              <span className="text-sm font-semibold">"{searchText}"</span>
+              <Button variant="ghost" size="sm" onClick={() => setSearchText("")} data-testid="button-clear-search">
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -188,11 +230,16 @@ export default function Catalog() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {filtered.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <>
+              <p className="text-sm text-muted-foreground mb-4" data-testid="text-products-count">
+                Найдено: {filtered.length} товар(ов)
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {filtered.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
