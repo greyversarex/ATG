@@ -4,15 +4,15 @@ import { Phone, MapPin, Mail } from "lucide-react";
 export function Footer() {
   return (
     <footer className="mt-auto" style={{
-      background: "linear-gradient(180deg, hsl(220 15% 12%) 0%, hsl(220 15% 8%) 100%)",
-      color: "hsl(220 10% 88%)"
+      background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 84% 45%) 30%, hsl(0 75% 40%) 60%, hsl(0 84% 32%) 100%)",
+      color: "hsl(0 0% 95%)"
     }}>
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-md bg-gradient-to-br from-primary to-red-700 flex items-center justify-center shadow-md">
-                <span className="text-primary-foreground font-bold text-base">A</span>
+              <div className="w-9 h-9 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-md border border-white/20">
+                <span className="text-white font-bold text-base">A</span>
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-sm leading-tight text-white">ATG.TJ</span>
