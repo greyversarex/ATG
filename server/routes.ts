@@ -1,16 +1,171 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import {
+  insertBrandSchema, insertCategorySchema, insertProductSchema,
+  insertBannerSchema, insertNewsSchema, insertServiceSchema
+} from "@shared/schema";
+import { ZodError } from "zod";
+
+function handleZodError(res: any, error: unknown) {
+  if (error instanceof ZodError) {
+    return res.status(400).json({ message: error.errors.map(e => e.message).join(", ") });
+  }
+  return res.status(400).json({ message: (error as Error).message });
+}
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  app.get("/api/brands", async (_req, res) => {
+    const data = await storage.getBrands();
+    res.json(data);
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.get("/api/brands/:id", async (req, res) => {
+    const brand = await storage.getBrand(req.params.id);
+    if (!brand) return res.status(404).json({ message: "Not found" });
+    res.json(brand);
+  });
+
+  app.get("/api/categories", async (_req, res) => {
+    const data = await storage.getCategories();
+    res.json(data);
+  });
+
+  app.get("/api/categories/:id", async (req, res) => {
+    const cat = await storage.getCategory(req.params.id);
+    if (!cat) return res.status(404).json({ message: "Not found" });
+    res.json(cat);
+  });
+
+  app.get("/api/products", async (_req, res) => {
+    const data = await storage.getProducts();
+    res.json(data);
+  });
+
+  app.get("/api/products/bestsellers", async (_req, res) => {
+    const data = await storage.getBestsellers();
+    res.json(data);
+  });
+
+  app.get("/api/products/discounted", async (_req, res) => {
+    const data = await storage.getDiscountedProducts();
+    res.json(data);
+  });
+
+  app.get("/api/products/:id", async (req, res) => {
+    const product = await storage.getProduct(req.params.id);
+    if (!product) return res.status(404).json({ message: "Not found" });
+    res.json(product);
+  });
+
+  app.get("/api/banners/:type", async (req, res) => {
+    const data = await storage.getBannersByType(req.params.type);
+    res.json(data);
+  });
+
+  app.get("/api/news", async (_req, res) => {
+    const data = await storage.getNews();
+    res.json(data);
+  });
+
+  app.get("/api/services", async (_req, res) => {
+    const data = await storage.getServices();
+    res.json(data);
+  });
+
+  // Admin routes with validation
+  app.post("/api/admin/brands", async (req, res) => {
+    try {
+      const validated = insertBrandSchema.parse(req.body);
+      const brand = await storage.createBrand(validated);
+      res.json(brand);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/brands/:id", async (req, res) => {
+    await storage.deleteBrand(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/categories", async (req, res) => {
+    try {
+      const validated = insertCategorySchema.parse(req.body);
+      const cat = await storage.createCategory(validated);
+      res.json(cat);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/categories/:id", async (req, res) => {
+    await storage.deleteCategory(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/products", async (req, res) => {
+    try {
+      const validated = insertProductSchema.parse(req.body);
+      const product = await storage.createProduct(validated);
+      res.json(product);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/products/:id", async (req, res) => {
+    await storage.deleteProduct(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/banners", async (req, res) => {
+    try {
+      const validated = insertBannerSchema.parse(req.body);
+      const banner = await storage.createBanner(validated);
+      res.json(banner);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/banners/:id", async (req, res) => {
+    await storage.deleteBanner(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/news", async (req, res) => {
+    try {
+      const validated = insertNewsSchema.parse(req.body);
+      const item = await storage.createNews(validated);
+      res.json(item);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/news/:id", async (req, res) => {
+    await storage.deleteNews(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/admin/services", async (req, res) => {
+    try {
+      const validated = insertServiceSchema.parse(req.body);
+      const service = await storage.createService(validated);
+      res.json(service);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.delete("/api/admin/services/:id", async (req, res) => {
+    await storage.deleteService(req.params.id);
+    res.json({ ok: true });
+  });
 
   return httpServer;
 }
