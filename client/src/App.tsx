@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { SplashScreen } from "@/components/splash-screen";
+import { useState, useCallback } from "react";
 import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
 import ProductDetail from "@/pages/product-detail";
@@ -34,9 +36,13 @@ function Router() {
 }
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
+  const handleSplashComplete = useCallback(() => setShowSplash(false), []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-1">
