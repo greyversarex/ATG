@@ -6,6 +6,30 @@ import {
   insertBannerSchema, insertNewsSchema, insertServiceSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
+import multer from "multer";
+import path from "path";
+import { randomUUID } from "crypto";
+import express from "express";
+
+const uploadStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, "uploads"),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname) || ".jpg";
+    cb(null, `${randomUUID()}${ext}`);
+  },
+});
+const upload = multer({
+  storage: uploadStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const allowed = /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i;
+    if (allowed.test(path.extname(file.originalname))) {
+      cb(null, true);
+    } else {
+      cb(new Error("Допустимы только изображения (jpg, png, gif, webp, svg)"));
+    }
+  },
+});
 
 function handleZodError(res: any, error: unknown) {
   if (error instanceof ZodError) {
@@ -18,6 +42,15 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  app.use("/uploads", express.static("uploads"));
+
+  app.post("/api/upload", upload.single("file"), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "Файл не загружен" });
+    }
+    res.json({ url: `/uploads/${req.file.filename}` });
+  });
+
   app.get("/api/brands", async (_req, res) => {
     const data = await storage.getBrands();
     res.json(data);

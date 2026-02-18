@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Image, Newspaper, Settings, Tag, Megaphone } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone } from "lucide-react";
 import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
@@ -101,7 +102,6 @@ function ProductsAdmin() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-product-name" />
           <Input placeholder="Цена" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} data-testid="input-product-price" />
-          <Input placeholder="URL изображения" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} data-testid="input-product-image" />
           <Input placeholder="Скидка %" type="number" value={form.discountPercent} onChange={(e) => setForm({ ...form, discountPercent: e.target.value })} data-testid="input-product-discount" />
           <Select value={form.brandId} onValueChange={(v) => setForm({ ...form, brandId: v })}>
             <SelectTrigger data-testid="select-product-brand"><SelectValue placeholder="Бренд" /></SelectTrigger>
@@ -116,6 +116,10 @@ function ProductsAdmin() {
             <Checkbox checked={form.isBestseller} onCheckedChange={(v) => setForm({ ...form, isBestseller: !!v })} data-testid="checkbox-bestseller" />
             <label className="text-sm">Хит продаж</label>
           </div>
+        </div>
+        <div className="mt-3">
+          <label className="text-sm font-medium mb-1 block">Изображение</label>
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" />
         </div>
         <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
         <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-product">
@@ -170,9 +174,12 @@ function BrandsAdmin() {
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
         <h3 className="font-semibold mb-3">Добавить бренд</h3>
-        <div className="flex gap-3 flex-wrap">
-          <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="flex-1 min-w-[200px]" data-testid="input-brand-name" />
-          <Input placeholder="URL изображения" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="flex-1 min-w-[200px]" data-testid="input-brand-image" />
+        <div className="space-y-3">
+          <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-brand-name" />
+          <div>
+            <label className="text-sm font-medium mb-1 block">Логотип</label>
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image" />
+          </div>
           <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-brand">
             <Plus className="w-4 h-4 mr-1" />Добавить
           </Button>
@@ -222,9 +229,12 @@ function CategoriesAdmin() {
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
         <h3 className="font-semibold mb-3">Добавить категорию</h3>
-        <div className="flex gap-3 flex-wrap">
-          <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="flex-1 min-w-[200px]" data-testid="input-category-name" />
-          <Input placeholder="URL изображения" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="flex-1 min-w-[200px]" data-testid="input-category-image" />
+        <div className="space-y-3">
+          <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-category-name" />
+          <div>
+            <label className="text-sm font-medium mb-1 block">Изображение</label>
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image" />
+          </div>
           <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-category">
             <Plus className="w-4 h-4 mr-1" />Добавить
           </Button>
@@ -285,11 +295,14 @@ function BannersAdmin() {
               <SelectItem value="promo">Промо баннер</SelectItem>
             </SelectContent>
           </Select>
-          <Input placeholder="URL изображения" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} data-testid="input-banner-image" />
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-banner-title" />
           <Input placeholder="Текст" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} data-testid="input-banner-desc" />
           <Input placeholder="Текст кнопки" value={form.buttonText} onChange={(e) => setForm({ ...form, buttonText: e.target.value })} data-testid="input-banner-btn" />
           <Input placeholder="Ссылка кнопки" value={form.buttonLink} onChange={(e) => setForm({ ...form, buttonLink: e.target.value })} data-testid="input-banner-link" />
+        </div>
+        <div className="mt-3">
+          <label className="text-sm font-medium mb-1 block">Изображение</label>
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" />
         </div>
         <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-banner">
           <Plus className="w-4 h-4 mr-1" />Добавить
@@ -342,11 +355,14 @@ function NewsAdmin() {
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
         <h3 className="font-semibold mb-3">Добавить новость</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-3">
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-news-title" />
-          <Input placeholder="URL изображения" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} data-testid="input-news-image" />
+          <div>
+            <label className="text-sm font-medium mb-1 block">Изображение</label>
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-news-image" />
+          </div>
+          <Textarea placeholder="Текст новости" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} data-testid="input-news-content" />
         </div>
-        <Textarea placeholder="Текст новости" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} className="mt-3" data-testid="input-news-content" />
         <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-news">
           <Plus className="w-4 h-4 mr-1" />Добавить
         </Button>
