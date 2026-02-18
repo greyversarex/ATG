@@ -172,7 +172,7 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background-color: hsl(220 8% 95%);
+    background-color: hsl(220 6% 82%);
   }
 
   .dark body {
@@ -182,18 +182,18 @@
   #root > div {
     min-height: 100vh;
     background:
-      radial-gradient(ellipse 140% 70% at 20% -10%, hsl(220 15% 98%) 0%, transparent 60%),
-      radial-gradient(ellipse 120% 60% at 80% 10%, hsl(210 12% 96%) 0%, transparent 50%),
-      radial-gradient(ellipse 100% 80% at 50% 110%, hsl(215 10% 94%) 0%, transparent 60%),
-      linear-gradient(175deg, hsl(220 12% 97%) 0%, hsl(218 8% 93%) 35%, hsl(215 6% 91%) 65%, hsl(220 10% 95%) 100%);
+      radial-gradient(ellipse 130% 60% at 15% -5%, hsl(220 18% 96%) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 50% at 85% 5%, hsl(215 14% 92%) 0%, transparent 45%),
+      radial-gradient(ellipse 90% 70% at 50% 105%, hsl(210 10% 88%) 0%, transparent 55%),
+      linear-gradient(170deg, hsl(220 16% 95%) 0%, hsl(218 10% 88%) 30%, hsl(215 6% 82%) 60%, hsl(220 8% 86%) 85%, hsl(220 12% 92%) 100%);
   }
 
   .dark #root > div {
     background:
-      radial-gradient(ellipse 140% 70% at 20% -10%, hsl(220 15% 14%) 0%, transparent 60%),
-      radial-gradient(ellipse 120% 60% at 80% 10%, hsl(215 12% 13%) 0%, transparent 50%),
-      radial-gradient(ellipse 100% 80% at 50% 110%, hsl(215 10% 11%) 0%, transparent 60%),
-      linear-gradient(175deg, hsl(220 12% 13%) 0%, hsl(218 10% 9%) 35%, hsl(215 8% 7%) 65%, hsl(220 10% 11%) 100%);
+      radial-gradient(ellipse 130% 60% at 15% -5%, hsl(220 18% 16%) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 50% at 85% 5%, hsl(215 14% 14%) 0%, transparent 45%),
+      radial-gradient(ellipse 90% 70% at 50% 105%, hsl(210 10% 10%) 0%, transparent 55%),
+      linear-gradient(170deg, hsl(220 14% 14%) 0%, hsl(218 12% 10%) 30%, hsl(215 8% 6%) 60%, hsl(220 10% 9%) 85%, hsl(220 12% 12%) 100%);
   }
 
   .shadcn-card {
