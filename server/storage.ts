@@ -9,7 +9,7 @@ import {
   users, brands, categories, products, banners, news, services
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gt, desc, asc } from "drizzle-orm";
+import { eq, and, gt, desc, asc, or, ilike } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -27,6 +27,7 @@ export interface IStorage {
   deleteCategory(id: string): Promise<void>;
 
   getProducts(): Promise<Product[]>;
+  searchProducts(query: string): Promise<Product[]>;
   getProduct(id: string): Promise<Product | undefined>;
   getBestsellers(): Promise<Product[]>;
   getDiscountedProducts(): Promise<Product[]>;
@@ -100,6 +101,17 @@ export class DatabaseStorage implements IStorage {
 
   async getProducts(): Promise<Product[]> {
     return db.select().from(products);
+  }
+
+  async searchProducts(query: string): Promise<Product[]> {
+    const q = `%${query.toLowerCase()}%`;
+    return db.select().from(products).where(
+      or(
+        ilike(products.name, q),
+        ilike(products.description, q),
+        ilike(products.shortSpecs, q),
+      )
+    );
   }
 
   async getProduct(id: string): Promise<Product | undefined> {

@@ -16,9 +16,11 @@ export default function Catalog() {
   const params = new URLSearchParams(search);
   const brandFilter = params.get("brand");
   const categoryFilter = params.get("category");
+  const searchFilter = params.get("search");
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryFilter);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(brandFilter);
+  const [searchText, setSearchText] = useState(searchFilter || "");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -45,17 +47,25 @@ export default function Catalog() {
       if (selectedCategory && p.categoryId !== selectedCategory) return false;
       if (selectedBrand && p.brandId !== selectedBrand) return false;
       if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
+      if (searchText.trim().length >= 2) {
+        const q = searchText.toLowerCase();
+        const nameMatch = p.name.toLowerCase().includes(q);
+        const descMatch = p.description?.toLowerCase().includes(q);
+        const specMatch = p.shortSpecs?.toLowerCase().includes(q);
+        if (!nameMatch && !descMatch && !specMatch) return false;
+      }
       return true;
     });
-  }, [products, selectedCategory, selectedBrand, priceRange]);
+  }, [products, selectedCategory, selectedBrand, priceRange, searchText]);
 
   const clearFilters = () => {
     setSelectedCategory(null);
     setSelectedBrand(null);
+    setSearchText("");
     setPriceRange([0, maxPrice]);
   };
 
-  const hasFilters = selectedCategory || selectedBrand || priceRange[0] > 0 || priceRange[1] < maxPrice;
+  const hasFilters = selectedCategory || selectedBrand || searchText.trim().length >= 2 || priceRange[0] > 0 || priceRange[1] < maxPrice;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">

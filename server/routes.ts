@@ -45,6 +45,13 @@ export async function registerRoutes(
     res.json(data);
   });
 
+  app.get("/api/products/search", async (req, res) => {
+    const q = req.query.q as string;
+    if (!q || q.trim().length < 2) return res.json([]);
+    const data = await storage.searchProducts(q.trim());
+    res.json(data);
+  });
+
   app.get("/api/products/bestsellers", async (_req, res) => {
     const data = await storage.getBestsellers();
     res.json(data);
