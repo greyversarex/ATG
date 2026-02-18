@@ -172,8 +172,8 @@ export default function Home() {
                     className="convex-card flex flex-col items-center text-center p-6"
                     data-testid={`card-service-${service.id}`}
                   >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center mb-3 shadow-sm">
-                      <IconComp className="w-6 h-6 text-primary" />
+                    <div className="mb-3">
+                      <IconComp className="w-10 h-10 text-primary" />
                     </div>
                     <h4 className="font-semibold text-sm mb-1">{service.title}</h4>
                     <p className="text-xs text-muted-foreground leading-relaxed">{service.description}</p>
