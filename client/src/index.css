@@ -172,20 +172,10 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background-color: hsl(220 6% 78%);
+    background: url('/images/bg-metal.jpg') center / cover fixed;
   }
 
   .dark body {
-    background-color: hsl(220 10% 10%);
-  }
-
-  #root > div {
-    min-height: 100vh;
-    background:
-      url('/images/bg-metal.jpg') center / cover fixed;
-  }
-
-  .dark #root > div {
     background:
       linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 100%),
       url('/images/bg-metal.jpg') center / cover fixed;
