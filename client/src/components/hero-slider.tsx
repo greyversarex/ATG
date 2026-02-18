@@ -29,7 +29,7 @@ export function HeroSlider({ banners }: HeroSliderProps) {
   const banner = banners[current];
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl shadow-xl" data-testid="hero-slider">
+    <div className="relative w-full overflow-hidden rounded-xl" data-testid="hero-slider">
       <div className="relative aspect-[16/6] sm:aspect-[16/5] md:aspect-[16/6] w-full">
         {banners.map((b, i) => (
           <div
