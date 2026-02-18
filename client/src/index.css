@@ -182,18 +182,13 @@
   #root > div {
     min-height: 100vh;
     background:
-      radial-gradient(ellipse 120% 55% at 10% -10%, hsl(220 14% 94%) 0%, transparent 50%),
-      radial-gradient(ellipse 90% 45% at 90% 0%, hsl(215 10% 90%) 0%, transparent 40%),
-      radial-gradient(ellipse 80% 60% at 50% 110%, hsl(210 8% 84%) 0%, transparent 50%),
-      linear-gradient(168deg, hsl(220 12% 93%) 0%, hsl(218 8% 84%) 25%, hsl(215 5% 78%) 50%, hsl(218 6% 82%) 75%, hsl(220 10% 90%) 100%);
+      url('/images/bg-metal.jpg') center / cover fixed;
   }
 
   .dark #root > div {
     background:
-      radial-gradient(ellipse 120% 55% at 10% -10%, hsl(220 18% 16%) 0%, transparent 50%),
-      radial-gradient(ellipse 90% 45% at 90% 0%, hsl(215 14% 14%) 0%, transparent 40%),
-      radial-gradient(ellipse 80% 60% at 50% 110%, hsl(210 10% 10%) 0%, transparent 50%),
-      linear-gradient(168deg, hsl(220 14% 14%) 0%, hsl(218 12% 10%) 25%, hsl(215 8% 6%) 50%, hsl(220 10% 9%) 75%, hsl(220 12% 12%) 100%);
+      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.4) 100%),
+      url('/images/bg-metal.jpg') center / cover fixed;
   }
 
   .shadcn-card {
