@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/hooks/use-page-title";
 import type { Brand } from "@shared/schema";
@@ -17,37 +16,28 @@ export default function Brands() {
       <h1 className="text-2xl font-bold mb-6" data-testid="text-brands-title">Бренды</h1>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <Skeleton key={i} className="aspect-[4/3] rounded-xl" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-[3/2] rounded-lg" />
           ))}
         </div>
       ) : !brands?.length ? (
         <p className="text-center text-muted-foreground py-16">Бренды не найдены</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {brands.map((brand) => (
             <Link key={brand.id} href={`/catalog?brand=${brand.id}`}>
-              <Card
-                className="hover-elevate cursor-pointer overflow-visible"
+              <div
+                className="bg-white rounded-lg flex items-center justify-center p-6 aspect-[3/2] cursor-pointer hover-elevate overflow-visible"
                 data-testid={`card-brand-${brand.id}`}
               >
-                <div className="aspect-[4/3] overflow-hidden rounded-t-xl flex items-center justify-center p-4" style={{
-                  background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
-                }}>
-                  <img
-                    src={brand.image}
-                    alt={brand.name}
-                    className="max-w-full max-h-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="p-3 text-center">
-                  <span className="font-semibold text-sm" data-testid={`text-brand-name-${brand.id}`}>
-                    {brand.name}
-                  </span>
-                </div>
-              </Card>
+                <img
+                  src={brand.image}
+                  alt={brand.name}
+                  className="max-w-full max-h-full object-contain"
+                  loading="lazy"
+                />
+              </div>
             </Link>
           ))}
         </div>
