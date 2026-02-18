@@ -145,7 +145,7 @@ export function Header() {
                 <Input
                   type="text"
                   placeholder="Поиск товаров..."
-                  className="w-44 md:w-56 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
+                  className="w-56 md:w-80 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
