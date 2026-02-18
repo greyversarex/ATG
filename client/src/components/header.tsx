@@ -138,14 +138,14 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <div ref={searchRef} className="relative hidden sm:block">
+          <div className="flex items-center gap-3">
+            <div ref={searchRef} className="relative hidden sm:block mr-1">
               <form onSubmit={handleSearchSubmit} className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="text"
                   placeholder="Поиск товаров..."
-                  className="w-44 md:w-56 pl-8 text-sm bg-white/15 border-white/20 text-white placeholder:text-white/50 focus:bg-white/25"
+                  className="w-44 md:w-56 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
