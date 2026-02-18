@@ -172,28 +172,42 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background-color: hsl(220 12% 93%);
+    background-color: hsl(215 8% 78%);
   }
 
   .dark body {
-    background-color: hsl(220 15% 9%);
+    background-color: hsl(220 10% 10%);
   }
 
   #root > div {
     background:
-      radial-gradient(circle 800px at 10% 0%, hsl(0 50% 94% / 0.6) 0%, transparent 70%),
-      radial-gradient(circle 600px at 90% 30%, hsl(220 40% 92% / 0.5) 0%, transparent 60%),
-      radial-gradient(circle 700px at 50% 100%, hsl(210 30% 90% / 0.5) 0%, transparent 60%),
-      linear-gradient(160deg, hsl(220 15% 97%) 0%, hsl(220 12% 93%) 25%, hsl(215 10% 89%) 50%, hsl(220 12% 91%) 75%, hsl(220 15% 95%) 100%);
+      linear-gradient(180deg,
+        hsl(215 10% 92%) 0%,
+        hsl(215 8% 82%) 12%,
+        hsl(215 6% 76%) 25%,
+        hsl(215 8% 84%) 38%,
+        hsl(215 6% 74%) 50%,
+        hsl(215 8% 80%) 62%,
+        hsl(215 6% 72%) 75%,
+        hsl(215 8% 78%) 88%,
+        hsl(215 10% 85%) 100%
+      );
     min-height: 100vh;
   }
 
   .dark #root > div {
     background:
-      radial-gradient(circle 800px at 10% 0%, hsl(0 30% 12% / 0.4) 0%, transparent 70%),
-      radial-gradient(circle 600px at 90% 30%, hsl(220 30% 14% / 0.4) 0%, transparent 60%),
-      radial-gradient(circle 700px at 50% 100%, hsl(210 25% 10% / 0.3) 0%, transparent 60%),
-      linear-gradient(160deg, hsl(220 15% 11%) 0%, hsl(220 14% 8%) 30%, hsl(220 12% 7%) 60%, hsl(220 15% 10%) 100%);
+      linear-gradient(180deg,
+        hsl(215 12% 16%) 0%,
+        hsl(215 10% 11%) 12%,
+        hsl(215 8% 8%) 25%,
+        hsl(215 10% 13%) 38%,
+        hsl(215 8% 7%) 50%,
+        hsl(215 10% 11%) 62%,
+        hsl(215 8% 6%) 75%,
+        hsl(215 10% 10%) 88%,
+        hsl(215 12% 14%) 100%
+      );
   }
 
   .shadcn-card {
