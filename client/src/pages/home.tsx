@@ -58,6 +58,10 @@ export default function Home() {
     queryKey: ["/api/products/bestsellers"],
   });
 
+  const { data: discounted, isLoading: loadingDiscounted } = useQuery<Product[]>({
+    queryKey: ["/api/products/discounted"],
+  });
+
   const { data: services } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
@@ -126,6 +130,28 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </section>
+        )}
+
+        {(discounted && discounted.length > 0) && (
+          <section data-testid="section-discounts">
+            <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+              <h2 className="text-lg font-bold">Скидки</h2>
+              <Link href="/discounts">
+                <Button variant="ghost" size="sm" data-testid="button-view-all-discounts">
+                  Смотреть все
+                </Button>
+              </Link>
+            </div>
+            {loadingDiscounted ? (
+              <ProductsSkeleton />
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {discounted.slice(0, 4).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
           </section>
         )}
 

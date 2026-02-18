@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -59,6 +59,12 @@ export function Footer() {
                 </a>
               </li>
               <li className="flex items-start gap-2">
+                <Mail className="w-4 h-4 mt-0.5 opacity-50 shrink-0" />
+                <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-sm opacity-60" data-testid="footer-email">
+                  Amirtechgroup.tj@gmail.com
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 opacity-50 shrink-0" />
                 <span className="text-sm opacity-60" data-testid="footer-address">
                   г. Душанбе, р-н Сино, ул. Рахмон Набиев, 2 гузаргох
@@ -68,13 +74,20 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-sm mb-4 text-white">О компании</h4>
-            <p className="text-sm opacity-60 leading-relaxed">
-              Генеральный директор: Шарипов Парвиз
-            </p>
-            <p className="text-sm opacity-60 mt-2">
-              Почтовый индекс: 734026
-            </p>
+            <h4 className="font-semibold text-sm mb-4 text-white">Наше расположение</h4>
+            <div className="rounded-md overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3068.8!2d68.7864!3d38.5598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JTRg9GI0LDQvdCx0LUsINGA0LDQudC-0L0g0KHQuNC90L4!5e0!3m2!1sru!2s!4v1700000000000"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="ATG Location"
+                data-testid="map-footer"
+              />
+            </div>
           </div>
         </div>
 

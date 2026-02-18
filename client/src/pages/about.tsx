@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Users, Award, Wrench, GraduationCap, Shield, MapPin, Phone } from "lucide-react";
+import { Users, Award, Wrench, GraduationCap, Shield, MapPin, Phone, Mail } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 const highlights = [
@@ -81,7 +81,7 @@ export default function About() {
         </div>
       </div>
 
-      <Card className="p-6 overflow-visible" data-testid="card-contacts">
+      <Card className="p-6 overflow-visible mb-10" data-testid="card-contacts">
         <h2 className="font-bold text-lg mb-4">Контакты</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="space-y-3">
@@ -98,7 +98,30 @@ export default function About() {
               <Phone className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
               <a href="tel:+992176100100" className="text-primary" data-testid="link-about-phone">+992 17 610 01 00</a>
             </div>
+            <div className="flex items-start gap-2">
+              <Mail className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
+              <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-primary" data-testid="link-about-email">Amirtechgroup.tj@gmail.com</a>
+            </div>
           </div>
+        </div>
+      </Card>
+
+      <Card className="overflow-hidden" data-testid="card-map">
+        <div className="p-4 pb-0">
+          <h2 className="font-bold text-lg mb-3">Наше расположение</h2>
+        </div>
+        <div style={{ aspectRatio: "16/7" }}>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3068.8!2d68.7864!3d38.5598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JTRg9GI0LDQvdCx0LUsINGA0LDQudC-0L0g0KHQuNC90L4!5e0!3m2!1sru!2s!4v1700000000000"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="ATG Location"
+            data-testid="map-about"
+          />
         </div>
       </Card>
     </div>
