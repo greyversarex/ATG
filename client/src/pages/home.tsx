@@ -8,7 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Wrench, Shield, GraduationCap, Headphones } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
-import type { Banner, Brand, Category, Product, Service } from "@shared/schema";
+import { Card } from "@/components/ui/card";
+import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
 
 function HeroSkeleton() {
   return <Skeleton className="w-full aspect-[16/6] rounded-xl" />;
@@ -64,6 +65,10 @@ export default function Home() {
 
   const { data: services } = useQuery<Service[]>({
     queryKey: ["/api/services"],
+  });
+
+  const { data: newsList } = useQuery<News[]>({
+    queryKey: ["/api/news"],
   });
 
   const promoBanner = promoBanners?.[0];
@@ -175,6 +180,45 @@ export default function Home() {
                   </div>
                 );
               })}
+            </div>
+          </section>
+        )}
+        {newsList && newsList.length > 0 && (
+          <section data-testid="section-news">
+            <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
+              <h2 className="text-lg font-bold">Новости</h2>
+              <Link href="/news">
+                <Button variant="ghost" size="sm" data-testid="button-view-all-news">
+                  Смотреть все
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {newsList.slice(0, 3).map((item) => (
+                <Link key={item.id} href="/news">
+                  <Card className="overflow-visible group cursor-pointer hover-elevate" data-testid={`card-home-news-${item.id}`}>
+                    <div className="aspect-video overflow-hidden rounded-t-xl">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <time className="text-xs text-muted-foreground">
+                        {new Date(item.date).toLocaleDateString("ru-RU", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      <h3 className="font-semibold text-sm mt-1.5 mb-1 line-clamp-2">{item.title}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{item.content}</p>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
             </div>
           </section>
         )}
