@@ -172,6 +172,17 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/admin/brands/:id", async (req, res) => {
+    try {
+      const validated = insertBrandSchema.partial().parse(req.body);
+      const updated = await storage.updateBrand(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
   app.delete("/api/admin/brands/:id", async (req, res) => {
     await storage.deleteBrand(req.params.id);
     res.json({ ok: true });
@@ -182,6 +193,17 @@ export async function registerRoutes(
       const validated = insertCategorySchema.parse(req.body);
       const cat = await storage.createCategory(validated);
       res.json(cat);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.patch("/api/admin/categories/:id", async (req, res) => {
+    try {
+      const validated = insertCategorySchema.partial().parse(req.body);
+      const updated = await storage.updateCategory(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
     } catch (e) {
       handleZodError(res, e);
     }
@@ -202,6 +224,17 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/admin/products/:id", async (req, res) => {
+    try {
+      const validated = insertProductSchema.partial().parse(req.body);
+      const updated = await storage.updateProduct(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
   app.delete("/api/admin/products/:id", async (req, res) => {
     await storage.deleteProduct(req.params.id);
     res.json({ ok: true });
@@ -212,6 +245,17 @@ export async function registerRoutes(
       const validated = insertBannerSchema.parse(req.body);
       const banner = await storage.createBanner(validated);
       res.json(banner);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.patch("/api/admin/banners/:id", async (req, res) => {
+    try {
+      const validated = insertBannerSchema.partial().parse(req.body);
+      const updated = await storage.updateBanner(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
     } catch (e) {
       handleZodError(res, e);
     }
@@ -232,6 +276,17 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/admin/news/:id", async (req, res) => {
+    try {
+      const validated = insertNewsSchema.partial().parse(req.body);
+      const updated = await storage.updateNews(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
   app.delete("/api/admin/news/:id", async (req, res) => {
     await storage.deleteNews(req.params.id);
     res.json({ ok: true });
@@ -242,6 +297,17 @@ export async function registerRoutes(
       const validated = insertServiceSchema.parse(req.body);
       const service = await storage.createService(validated);
       res.json(service);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
+  app.patch("/api/admin/services/:id", async (req, res) => {
+    try {
+      const validated = insertServiceSchema.partial().parse(req.body);
+      const updated = await storage.updateService(req.params.id, validated);
+      if (!updated) return res.status(404).json({ message: "Не найдено" });
+      res.json(updated);
     } catch (e) {
       handleZodError(res, e);
     }

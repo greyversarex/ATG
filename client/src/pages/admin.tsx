@@ -11,7 +11,7 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2 } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X } from "lucide-react";
 import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
@@ -95,16 +95,25 @@ export default function Admin() {
   );
 }
 
+const emptyProductForm = {
+  name: "", description: "", shortSpecs: "", price: "", image: "",
+  brandId: "", categoryId: "", isBestseller: false, discountPercent: "0",
+};
+
 function ProductsAdmin() {
   const { toast } = useToast();
   const { data: products } = useQuery<Product[]>({ queryKey: ["/api/products"] });
   const { data: brands } = useQuery<Brand[]>({ queryKey: ["/api/brands"] });
   const { data: categories } = useQuery<Category[]>({ queryKey: ["/api/categories"] });
 
-  const [form, setForm] = useState({
-    name: "", description: "", shortSpecs: "", price: "", image: "",
-    brandId: "", categoryId: "", isBestseller: false, discountPercent: "0",
-  });
+  const [form, setForm] = useState(emptyProductForm);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const invalidateProducts = () => {
+    queryClient.invalidateQueries({ queryKey: ["/api/products"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/products/bestsellers"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/products/discounted"] });
+  };
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/products", {
@@ -113,11 +122,24 @@ function ProductsAdmin() {
       discountPercent: parseInt(form.discountPercent) || 0,
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products/bestsellers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products/discounted"] });
-      setForm({ name: "", description: "", shortSpecs: "", price: "", image: "", brandId: "", categoryId: "", isBestseller: false, discountPercent: "0" });
+      invalidateProducts();
+      setForm(emptyProductForm);
       toast({ title: "Товар добавлен" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/products/${id}`, {
+      ...form,
+      price: parseFloat(form.price) || 0,
+      discountPercent: parseInt(form.discountPercent) || 0,
+    }),
+    onSuccess: () => {
+      invalidateProducts();
+      setForm(emptyProductForm);
+      setEditingId(null);
+      toast({ title: "Товар обновлён" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -125,17 +147,50 @@ function ProductsAdmin() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => apiRequest("DELETE", `/api/admin/products/${id}`),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products/bestsellers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products/discounted"] });
+      invalidateProducts();
       toast({ title: "Товар удалён" });
     },
   });
 
+  const startEdit = (p: Product) => {
+    setEditingId(p.id);
+    setForm({
+      name: p.name,
+      description: p.description || "",
+      shortSpecs: p.shortSpecs || "",
+      price: String(p.price),
+      image: p.image || "",
+      brandId: p.brandId || "",
+      categoryId: p.categoryId || "",
+      isBestseller: p.isBestseller || false,
+      discountPercent: String(p.discountPercent || 0),
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm(emptyProductForm);
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить товар</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать товар" : "Добавить товар"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-product">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-product-name" />
           <Input placeholder="Цена" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} data-testid="input-product-price" />
@@ -159,8 +214,8 @@ function ProductsAdmin() {
           <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" />
         </div>
         <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
-        <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-product">
-          <Plus className="w-4 h-4 mr-1" />Добавить
+        <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-product">
+          {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
 
@@ -174,9 +229,14 @@ function ProductsAdmin() {
                 <p className="text-xs text-muted-foreground">{p.price.toLocaleString("ru-RU")} сом.</p>
               </div>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-product-${p.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(p)} data-testid={`button-edit-product-${p.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(p.id)} data-testid={`button-delete-product-${p.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -188,6 +248,7 @@ function BrandsAdmin() {
   const { toast } = useToast();
   const { data: brands } = useQuery<Brand[]>({ queryKey: ["/api/brands"] });
   const [form, setForm] = useState({ name: "", image: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/brands", form),
@@ -195,6 +256,17 @@ function BrandsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/brands"] });
       setForm({ name: "", image: "" });
       toast({ title: "Бренд добавлен" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/brands/${id}`, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/brands"] });
+      setForm({ name: "", image: "" });
+      setEditingId(null);
+      toast({ title: "Бренд обновлён" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -207,18 +279,43 @@ function BrandsAdmin() {
     },
   });
 
+  const startEdit = (b: Brand) => {
+    setEditingId(b.id);
+    setForm({ name: b.name, image: b.image || "" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ name: "", image: "" });
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить бренд</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать бренд" : "Добавить бренд"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-brand">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="space-y-3">
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-brand-name" />
           <div>
             <label className="text-sm font-medium mb-1 block">Логотип</label>
             <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image" />
           </div>
-          <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-brand">
-            <Plus className="w-4 h-4 mr-1" />Добавить
+          <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-brand">
+            {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
           </Button>
         </div>
       </Card>
@@ -229,9 +326,14 @@ function BrandsAdmin() {
               {b.image && <img src={b.image} alt="" className="w-10 h-10 object-contain rounded-md bg-muted shrink-0" />}
               <span className="text-sm font-medium">{b.name}</span>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-brand-${b.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(b)} data-testid={`button-edit-brand-${b.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-brand-${b.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -243,6 +345,7 @@ function CategoriesAdmin() {
   const { toast } = useToast();
   const { data: categories } = useQuery<Category[]>({ queryKey: ["/api/categories"] });
   const [form, setForm] = useState({ name: "", image: "", parentId: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/categories", { ...form, parentId: form.parentId || null }),
@@ -250,6 +353,17 @@ function CategoriesAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
       setForm({ name: "", image: "", parentId: "" });
       toast({ title: "Категория добавлена" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/categories/${id}`, { ...form, parentId: form.parentId || null }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      setForm({ name: "", image: "", parentId: "" });
+      setEditingId(null);
+      toast({ title: "Категория обновлена" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -262,18 +376,50 @@ function CategoriesAdmin() {
     },
   });
 
+  const startEdit = (c: Category) => {
+    setEditingId(c.id);
+    setForm({ name: c.name, image: c.image || "", parentId: c.parentId || "" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ name: "", image: "", parentId: "" });
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить категорию</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать категорию" : "Добавить категорию"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-category">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="space-y-3">
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-category-name" />
+          <Select value={form.parentId || "_none"} onValueChange={(v) => setForm({ ...form, parentId: v === "_none" ? "" : v })}>
+            <SelectTrigger data-testid="select-category-parent"><SelectValue placeholder="Родительская категория" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="_none">Без родительской</SelectItem>
+              {categories?.filter(c => c.id !== editingId).map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <div>
             <label className="text-sm font-medium mb-1 block">Изображение</label>
             <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image" />
           </div>
-          <Button onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-category">
-            <Plus className="w-4 h-4 mr-1" />Добавить
+          <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-category">
+            {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
           </Button>
         </div>
       </Card>
@@ -284,9 +430,14 @@ function CategoriesAdmin() {
               {c.image && <img src={c.image} alt="" className="w-10 h-10 object-contain rounded-md bg-muted shrink-0" />}
               <span className="text-sm font-medium">{c.name}</span>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-category-${c.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(c)} data-testid={`button-edit-category-${c.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(c.id)} data-testid={`button-delete-category-${c.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -299,6 +450,7 @@ function BannersAdmin() {
   const { data: heroBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "hero"] });
   const { data: promoBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "promo"] });
   const [form, setForm] = useState({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/banners", form),
@@ -306,6 +458,17 @@ function BannersAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/banners"] });
       setForm({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
       toast({ title: "Баннер добавлен" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/banners/${id}`, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/banners"] });
+      setForm({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
+      setEditingId(null);
+      toast({ title: "Баннер обновлён" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -318,12 +481,44 @@ function BannersAdmin() {
     },
   });
 
+  const startEdit = (b: Banner) => {
+    setEditingId(b.id);
+    setForm({
+      type: b.type,
+      image: b.image || "",
+      title: b.title || "",
+      description: b.description || "",
+      buttonText: b.buttonText || "",
+      buttonLink: b.buttonLink || "",
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   const all = [...(heroBanners || []), ...(promoBanners || [])];
 
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить баннер</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать баннер" : "Добавить баннер"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-banner">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
             <SelectTrigger data-testid="select-banner-type"><SelectValue /></SelectTrigger>
@@ -341,8 +536,8 @@ function BannersAdmin() {
           <label className="text-sm font-medium mb-1 block">Изображение</label>
           <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" />
         </div>
-        <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-banner">
-          <Plus className="w-4 h-4 mr-1" />Добавить
+        <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-banner">
+          {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
       <div className="space-y-2">
@@ -355,9 +550,14 @@ function BannersAdmin() {
                 <p className="text-xs text-muted-foreground">{b.type === "hero" ? "Главный слайд" : "Промо"}</p>
               </div>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-banner-${b.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(b)} data-testid={`button-edit-banner-${b.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(b.id)} data-testid={`button-delete-banner-${b.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -369,6 +569,7 @@ function NewsAdmin() {
   const { toast } = useToast();
   const { data: newsList } = useQuery<News[]>({ queryKey: ["/api/news"] });
   const [form, setForm] = useState({ title: "", content: "", image: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/news", form),
@@ -376,6 +577,17 @@ function NewsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/news"] });
       setForm({ title: "", content: "", image: "" });
       toast({ title: "Новость добавлена" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/news/${id}`, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/news"] });
+      setForm({ title: "", content: "", image: "" });
+      setEditingId(null);
+      toast({ title: "Новость обновлена" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -388,10 +600,35 @@ function NewsAdmin() {
     },
   });
 
+  const startEdit = (n: News) => {
+    setEditingId(n.id);
+    setForm({ title: n.title, content: n.content || "", image: n.image || "" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ title: "", content: "", image: "" });
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить новость</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать новость" : "Добавить новость"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-news">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="space-y-3">
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-news-title" />
           <div>
@@ -400,8 +637,8 @@ function NewsAdmin() {
           </div>
           <Textarea placeholder="Текст новости" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} data-testid="input-news-content" />
         </div>
-        <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-news">
-          <Plus className="w-4 h-4 mr-1" />Добавить
+        <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-news">
+          {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
       <div className="space-y-2">
@@ -411,9 +648,14 @@ function NewsAdmin() {
               {n.image && <img src={n.image} alt="" className="w-16 h-10 object-cover rounded-md shrink-0" />}
               <p className="text-sm font-medium truncate">{n.title}</p>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-news-${n.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(n)} data-testid={`button-edit-news-${n.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(n.id)} data-testid={`button-delete-news-${n.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
@@ -425,6 +667,7 @@ function ServicesAdmin() {
   const { toast } = useToast();
   const { data: services } = useQuery<Service[]>({ queryKey: ["/api/services"] });
   const [form, setForm] = useState({ title: "", description: "", icon: "wrench" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/services", form),
@@ -432,6 +675,17 @@ function ServicesAdmin() {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       setForm({ title: "", description: "", icon: "wrench" });
       toast({ title: "Услуга добавлена" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/services/${id}`, form),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/services"] });
+      setForm({ title: "", description: "", icon: "wrench" });
+      setEditingId(null);
+      toast({ title: "Услуга обновлена" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
   });
@@ -444,10 +698,35 @@ function ServicesAdmin() {
     },
   });
 
+  const startEdit = (s: Service) => {
+    setEditingId(s.id);
+    setForm({ title: s.title, description: s.description || "", icon: s.icon || "wrench" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ title: "", description: "", icon: "wrench" });
+  };
+
+  const handleSubmit = () => {
+    if (editingId) {
+      updateMutation.mutate(editingId);
+    } else {
+      createMutation.mutate();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <h3 className="font-semibold mb-3">Добавить услугу</h3>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <h3 className="font-semibold">{editingId ? "Редактировать услугу" : "Добавить услугу"}</h3>
+          {editingId && (
+            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-service">
+              <X className="w-4 h-4 mr-1" />Отмена
+            </Button>
+          )}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input placeholder="Название" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-service-title" />
           <Select value={form.icon} onValueChange={(v) => setForm({ ...form, icon: v })}>
@@ -461,17 +740,22 @@ function ServicesAdmin() {
           </Select>
         </div>
         <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-service-description" />
-        <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-service">
-          <Plus className="w-4 h-4 mr-1" />Добавить
+        <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-service">
+          {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
       <div className="space-y-2">
         {services?.map((s) => (
           <div key={s.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-service-${s.id}`}>
             <p className="text-sm font-medium">{s.title}</p>
-            <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-service-${s.id}`}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button size="icon" variant="ghost" onClick={() => startEdit(s)} data-testid={`button-edit-service-${s.id}`}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(s.id)} data-testid={`button-delete-service-${s.id}`}>
+                <Trash2 className="w-4 h-4 text-destructive" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>

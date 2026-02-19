@@ -19,11 +19,13 @@ export interface IStorage {
   getBrands(): Promise<Brand[]>;
   getBrand(id: string): Promise<Brand | undefined>;
   createBrand(brand: InsertBrand): Promise<Brand>;
+  updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand>;
   deleteBrand(id: string): Promise<void>;
 
   getCategories(): Promise<Category[]>;
   getCategory(id: string): Promise<Category | undefined>;
   createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: string, category: Partial<InsertCategory>): Promise<Category>;
   deleteCategory(id: string): Promise<void>;
 
   getProducts(): Promise<Product[]>;
@@ -32,18 +34,22 @@ export interface IStorage {
   getBestsellers(): Promise<Product[]>;
   getDiscountedProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product>;
   deleteProduct(id: string): Promise<void>;
 
   getBannersByType(type: string): Promise<Banner[]>;
   createBanner(banner: InsertBanner): Promise<Banner>;
+  updateBanner(id: string, banner: Partial<InsertBanner>): Promise<Banner>;
   deleteBanner(id: string): Promise<void>;
 
   getNews(): Promise<News[]>;
   createNews(item: InsertNews): Promise<News>;
+  updateNews(id: string, item: Partial<InsertNews>): Promise<News>;
   deleteNews(id: string): Promise<void>;
 
   getServices(): Promise<Service[]>;
   createService(service: InsertService): Promise<Service>;
+  updateService(id: string, service: Partial<InsertService>): Promise<Service>;
   deleteService(id: string): Promise<void>;
 }
 
@@ -77,6 +83,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand> {
+    const [updated] = await db.update(brands).set(brand).where(eq(brands.id, id)).returning();
+    return updated;
+  }
+
   async deleteBrand(id: string): Promise<void> {
     await db.delete(brands).where(eq(brands.id, id));
   }
@@ -93,6 +104,11 @@ export class DatabaseStorage implements IStorage {
   async createCategory(category: InsertCategory): Promise<Category> {
     const [created] = await db.insert(categories).values(category).returning();
     return created;
+  }
+
+  async updateCategory(id: string, category: Partial<InsertCategory>): Promise<Category> {
+    const [updated] = await db.update(categories).set(category).where(eq(categories.id, id)).returning();
+    return updated;
   }
 
   async deleteCategory(id: string): Promise<void> {
@@ -132,6 +148,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product> {
+    const [updated] = await db.update(products).set(product).where(eq(products.id, id)).returning();
+    return updated;
+  }
+
   async deleteProduct(id: string): Promise<void> {
     await db.delete(products).where(eq(products.id, id));
   }
@@ -147,6 +168,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async updateBanner(id: string, banner: Partial<InsertBanner>): Promise<Banner> {
+    const [updated] = await db.update(banners).set(banner).where(eq(banners.id, id)).returning();
+    return updated;
+  }
+
   async deleteBanner(id: string): Promise<void> {
     await db.delete(banners).where(eq(banners.id, id));
   }
@@ -160,6 +186,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async updateNews(id: string, item: Partial<InsertNews>): Promise<News> {
+    const [updated] = await db.update(news).set(item).where(eq(news.id, id)).returning();
+    return updated;
+  }
+
   async deleteNews(id: string): Promise<void> {
     await db.delete(news).where(eq(news.id, id));
   }
@@ -171,6 +202,11 @@ export class DatabaseStorage implements IStorage {
   async createService(service: InsertService): Promise<Service> {
     const [created] = await db.insert(services).values(service).returning();
     return created;
+  }
+
+  async updateService(id: string, service: Partial<InsertService>): Promise<Service> {
+    const [updated] = await db.update(services).set(service).where(eq(services.id, id)).returning();
+    return updated;
   }
 
   async deleteService(id: string): Promise<void> {
