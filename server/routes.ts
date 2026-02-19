@@ -8,10 +8,15 @@ import {
 import { ZodError } from "zod";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { randomUUID } from "crypto";
 import express from "express";
 import bcrypt from "bcryptjs";
 import type { Request, Response, NextFunction } from "express";
+
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads", { recursive: true });
+}
 
 const uploadStorage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, "uploads"),
