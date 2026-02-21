@@ -41,22 +41,31 @@ export function ImageUpload({ value, onChange, testId, shape }: ImageUploadProps
   const handleFileSelected = async (file: File) => {
     const url = await uploadFile(file, file.name);
     if (url) {
+      setPendingOriginal(url);
       setCropImage(url);
     }
   };
+
+  const [pendingOriginal, setPendingOriginal] = useState<string | null>(null);
 
   const handleCropSave = async (croppedBlob: Blob) => {
     const url = await uploadFile(croppedBlob, "cropped.png");
     if (url) {
       onChange(url);
+    } else if (pendingOriginal) {
+      onChange(pendingOriginal);
     }
+    setPendingOriginal(null);
     setCropImage(null);
   };
 
   const handleCropCancel = () => {
-    if (cropImage) {
+    if (pendingOriginal) {
+      onChange(pendingOriginal);
+    } else if (cropImage && !value) {
       onChange(cropImage);
     }
+    setPendingOriginal(null);
     setCropImage(null);
   };
 

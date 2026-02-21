@@ -62,12 +62,21 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
   useEffect(() => {
     if (!imageUrl || !open) return;
     const image = new Image();
-    image.crossOrigin = "anonymous";
     image.onload = () => {
       setImg(image);
       const fit = fitImage(image);
       setScale(fit.scale);
       setOffset(fit.offset);
+    };
+    image.onerror = () => {
+      const retry = new Image();
+      retry.onload = () => {
+        setImg(retry);
+        const fit = fitImage(retry);
+        setScale(fit.scale);
+        setOffset(fit.offset);
+      };
+      retry.src = imageUrl + (imageUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
     };
     image.src = imageUrl;
   }, [imageUrl, open, fitImage]);
@@ -146,26 +155,36 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
       outCanvas.width = outputW;
       outCanvas.height = outputH;
       const ctx = outCanvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) {
+        setSaving(false);
+        return;
+      }
 
       ctx.fillStyle = card.bg;
       ctx.fillRect(0, 0, outputW, outputH);
 
-      const ratioX = outputW / canvasW;
-      const ratioY = outputH / canvasH;
-      const w = img.width * scale * ratioX;
-      const h = img.height * scale * ratioY;
-      const ox = offset.x * ratioX;
-      const oy = offset.y * ratioY;
+      const ratio = outputW / canvasW;
+      const w = img.width * scale * ratio;
+      const h = img.height * scale * ratio;
+      const ox = offset.x * ratio;
+      const oy = offset.y * ratio;
       ctx.drawImage(img, ox, oy, w, h);
 
       outCanvas.toBlob(
         (blob) => {
-          if (blob) onSave(blob);
+          if (blob) {
+            onSave(blob);
+          } else {
+            const dataUrl = outCanvas.toDataURL("image/png");
+            fetch(dataUrl)
+              .then((r) => r.blob())
+              .then((b) => onSave(b))
+              .catch(() => setSaving(false));
+            return;
+          }
           setSaving(false);
         },
-        "image/png",
-        1
+        "image/png"
       );
     } catch {
       setSaving(false);

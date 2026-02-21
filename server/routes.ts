@@ -56,7 +56,11 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  app.use("/uploads", express.static("uploads"));
+  app.use("/uploads", (_req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cache-Control", "no-cache");
+    next();
+  }, express.static("uploads"));
 
   app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
     if (!req.file) {
