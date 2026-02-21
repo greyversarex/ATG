@@ -19,13 +19,13 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
               className="hover-elevate cursor-pointer overflow-visible"
               data-testid={`card-category-${cat.id}`}
             >
-              <div className="aspect-square overflow-hidden rounded-t-xl flex items-center justify-center p-5" style={{
+              <div className="aspect-square overflow-hidden rounded-t-xl" style={{
                 background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
               }}>
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="max-w-full max-h-full object-contain"
+                  className="w-full h-full object-cover"
                   loading="lazy"
                 />
               </div>
