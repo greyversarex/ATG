@@ -7,10 +7,9 @@ interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   testId?: string;
-  defaultAspect?: number;
 }
 
-export function ImageUpload({ value, onChange, testId, defaultAspect }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, testId }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
@@ -22,7 +21,7 @@ export function ImageUpload({ value, onChange, testId, defaultAspect }: ImageUpl
     setError("");
     try {
       const formData = new FormData();
-      formData.append("file", file, filename || "image.jpg");
+      formData.append("file", file, filename || "image.png");
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) {
         const err = await res.json();
@@ -46,7 +45,7 @@ export function ImageUpload({ value, onChange, testId, defaultAspect }: ImageUpl
   };
 
   const handleCropSave = async (croppedBlob: Blob) => {
-    const url = await uploadFile(croppedBlob, "cropped.jpg");
+    const url = await uploadFile(croppedBlob, "cropped.png");
     if (url) {
       onChange(url);
     }
@@ -184,7 +183,6 @@ export function ImageUpload({ value, onChange, testId, defaultAspect }: ImageUpl
           imageUrl={cropImage}
           onClose={handleCropCancel}
           onSave={handleCropSave}
-          defaultAspect={defaultAspect}
         />
       )}
     </div>

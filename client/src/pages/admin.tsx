@@ -215,7 +215,7 @@ function ProductsAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" defaultAspect={1} />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image"  />
         </div>
         <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-product">
@@ -315,7 +315,7 @@ function BrandsAdmin() {
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-brand-name" />
           <div>
             <label className="text-sm font-medium mb-1 block">Логотип</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image" defaultAspect={32/28} />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image"  />
           </div>
           <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-brand">
             {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
@@ -419,7 +419,7 @@ function CategoriesAdmin() {
           </Select>
           <div>
             <label className="text-sm font-medium mb-1 block">Изображение</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image" defaultAspect={4/3} />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image"  />
           </div>
           <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-category">
             {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
@@ -537,7 +537,7 @@ function BannersAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" defaultAspect={form.type === "hero" ? 16/6 : 16/5} />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image"  />
         </div>
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-banner">
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
@@ -636,7 +636,7 @@ function NewsAdmin() {
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-news-title" />
           <div>
             <label className="text-sm font-medium mb-1 block">Изображение</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-news-image" defaultAspect={16/9} />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-news-image"  />
           </div>
           <Textarea placeholder="Текст новости" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} data-testid="input-news-content" />
         </div>
