@@ -65,6 +65,48 @@ export async function registerRoutes(
     res.json({ url: `/uploads/${req.file.filename}` });
   });
 
+  app.get("/api/uploads", requireAuth, (_req, res) => {
+    try {
+      const uploadsDir = "uploads";
+      if (!fs.existsSync(uploadsDir)) {
+        return res.json([]);
+      }
+      const files = fs.readdirSync(uploadsDir)
+        .filter(f => /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i.test(f))
+        .map(f => {
+          const stat = fs.statSync(path.join(uploadsDir, f));
+          return {
+            url: `/uploads/${f}`,
+            name: f,
+            size: stat.size,
+            createdAt: stat.birthtime.toISOString(),
+          };
+        })
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      res.json(files);
+    } catch {
+      res.json([]);
+    }
+  });
+
+  app.delete("/api/uploads/:filename", requireAuth, (req, res) => {
+    const filename = path.basename(req.params.filename as string);
+    if (!filename || filename.includes("..")) {
+      return res.status(400).json({ message: "Недопустимое имя файла" });
+    }
+    const filePath = path.join("uploads", filename);
+    const resolved = path.resolve(filePath);
+    if (!resolved.startsWith(path.resolve("uploads"))) {
+      return res.status(400).json({ message: "Недопустимый путь" });
+    }
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      res.json({ ok: true });
+    } else {
+      res.status(404).json({ message: "Файл не найден" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {

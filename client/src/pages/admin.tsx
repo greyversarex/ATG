@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ImageUpload } from "@/components/image-upload";
+import { ImageGalleryModal } from "@/components/image-gallery-modal";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X } from "lucide-react";
 import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
+
+function useImageGallery(onSelect: (url: string) => void) {
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const openGallery = useCallback(() => setGalleryOpen(true), []);
+  const closeGallery = useCallback(() => setGalleryOpen(false), []);
+  return { galleryOpen, openGallery, closeGallery, onSelect };
+}
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
 
@@ -44,6 +52,12 @@ export default function Admin() {
     },
   });
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      setLocation("/login");
+    }
+  }, [authLoading, user, setLocation]);
+
   if (authLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -53,7 +67,6 @@ export default function Admin() {
   }
 
   if (!user) {
-    setLocation("/login");
     return null;
   }
 
@@ -108,6 +121,7 @@ function ProductsAdmin() {
 
   const [form, setForm] = useState(emptyProductForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const gallery = useImageGallery((url) => setForm(f => ({ ...f, image: url })));
 
   const invalidateProducts = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/products"] });
@@ -211,13 +225,14 @@ function ProductsAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" onOpenGallery={gallery.openGallery} />
         </div>
         <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-product">
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
+      <ImageGalleryModal open={gallery.galleryOpen} onClose={gallery.closeGallery} onSelect={gallery.onSelect} />
 
       <div className="space-y-2">
         {products?.map((p) => (
@@ -249,6 +264,7 @@ function BrandsAdmin() {
   const { data: brands } = useQuery<Brand[]>({ queryKey: ["/api/brands"] });
   const [form, setForm] = useState({ name: "", image: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const gallery = useImageGallery((url) => setForm(f => ({ ...f, image: url })));
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/brands", form),
@@ -312,13 +328,14 @@ function BrandsAdmin() {
           <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-brand-name" />
           <div>
             <label className="text-sm font-medium mb-1 block">Логотип</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image" />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-brand-image" onOpenGallery={gallery.openGallery} />
           </div>
           <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-brand">
             {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
           </Button>
         </div>
       </Card>
+      <ImageGalleryModal open={gallery.galleryOpen} onClose={gallery.closeGallery} onSelect={gallery.onSelect} />
       <div className="space-y-2">
         {brands?.map((b) => (
           <div key={b.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-brand-${b.id}`}>
@@ -346,6 +363,7 @@ function CategoriesAdmin() {
   const { data: categories } = useQuery<Category[]>({ queryKey: ["/api/categories"] });
   const [form, setForm] = useState({ name: "", image: "", parentId: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const gallery = useImageGallery((url) => setForm(f => ({ ...f, image: url })));
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/categories", { ...form, parentId: form.parentId || null }),
@@ -416,13 +434,14 @@ function CategoriesAdmin() {
           </Select>
           <div>
             <label className="text-sm font-medium mb-1 block">Изображение</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image" />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-category-image" onOpenGallery={gallery.openGallery} />
           </div>
           <Button onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-category">
             {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
           </Button>
         </div>
       </Card>
+      <ImageGalleryModal open={gallery.galleryOpen} onClose={gallery.closeGallery} onSelect={gallery.onSelect} />
       <div className="space-y-2">
         {categories?.map((c) => (
           <div key={c.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-category-${c.id}`}>
@@ -451,6 +470,7 @@ function BannersAdmin() {
   const { data: promoBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "promo"] });
   const [form, setForm] = useState({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const gallery = useImageGallery((url) => setForm(f => ({ ...f, image: url })));
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/banners", form),
@@ -534,12 +554,13 @@ function BannersAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" onOpenGallery={gallery.openGallery} />
         </div>
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-banner">
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
+      <ImageGalleryModal open={gallery.galleryOpen} onClose={gallery.closeGallery} onSelect={gallery.onSelect} />
       <div className="space-y-2">
         {all.map((b) => (
           <div key={b.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-banner-${b.id}`}>
@@ -570,6 +591,7 @@ function NewsAdmin() {
   const { data: newsList } = useQuery<News[]>({ queryKey: ["/api/news"] });
   const [form, setForm] = useState({ title: "", content: "", image: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const gallery = useImageGallery((url) => setForm(f => ({ ...f, image: url })));
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/news", form),
@@ -633,7 +655,7 @@ function NewsAdmin() {
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-news-title" />
           <div>
             <label className="text-sm font-medium mb-1 block">Изображение</label>
-            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-news-image" />
+            <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-news-image" onOpenGallery={gallery.openGallery} />
           </div>
           <Textarea placeholder="Текст новости" value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} data-testid="input-news-content" />
         </div>
@@ -641,6 +663,7 @@ function NewsAdmin() {
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
         </Button>
       </Card>
+      <ImageGalleryModal open={gallery.galleryOpen} onClose={gallery.closeGallery} onSelect={gallery.onSelect} />
       <div className="space-y-2">
         {newsList?.map((n) => (
           <div key={n.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-news-${n.id}`}>
