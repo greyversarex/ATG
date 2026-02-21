@@ -539,7 +539,7 @@ function BannersAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" shape={form.type === "hero" ? "hero" : form.type === "bottom" ? "promo" : "promo"} />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" shape={form.type === "hero" ? "hero" : form.type === "bottom" ? "bottom" : "promo"} />
         </div>
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-banner">
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}

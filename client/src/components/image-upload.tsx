@@ -52,18 +52,16 @@ export function ImageUpload({ value, onChange, testId, shape }: ImageUploadProps
     const url = await uploadFile(croppedBlob, "cropped.png");
     if (url) {
       onChange(url);
-    } else if (pendingOriginal) {
-      onChange(pendingOriginal);
+      setPendingOriginal(null);
+      setCropImage(null);
+    } else {
+      setError("Не удалось сохранить обрезанное изображение. Попробуйте ещё раз.");
     }
-    setPendingOriginal(null);
-    setCropImage(null);
   };
 
   const handleCropCancel = () => {
-    if (pendingOriginal) {
+    if (pendingOriginal && !value) {
       onChange(pendingOriginal);
-    } else if (cropImage && !value) {
-      onChange(cropImage);
     }
     setPendingOriginal(null);
     setCropImage(null);

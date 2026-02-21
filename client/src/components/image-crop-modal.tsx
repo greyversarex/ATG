@@ -4,22 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Check, RotateCcw, ZoomIn, ZoomOut, Move } from "lucide-react";
 
-const MAX_CANVAS_W = 420;
+const PREVIEW_W = 420;
 
 interface CardShape {
   ratio: number;
   label: string;
-  rounded: boolean;
   bg: string;
 }
 
 export const CARD_SHAPES: Record<string, CardShape> = {
-  brand: { ratio: 3 / 2, label: "Карточка бренда", rounded: true, bg: "#ffffff" },
-  product: { ratio: 1, label: "Карточка товара", rounded: true, bg: "#f0f1f3" },
-  category: { ratio: 1, label: "Карточка категории", rounded: true, bg: "#f0f1f3" },
-  hero: { ratio: 16 / 6, label: "Герой-баннер", rounded: true, bg: "#1a1a1a" },
-  promo: { ratio: 16 / 5, label: "Промо-баннер", rounded: true, bg: "#1a1a1a" },
-  news: { ratio: 16 / 9, label: "Карточка новости", rounded: true, bg: "#f0f1f3" },
+  brand: { ratio: 3 / 2, label: "Карточка бренда", bg: "#ffffff" },
+  product: { ratio: 1, label: "Карточка товара", bg: "#f0f1f3" },
+  category: { ratio: 1, label: "Карточка категории", bg: "#f0f1f3" },
+  hero: { ratio: 16 / 6, label: "Герой-баннер", bg: "#1a1a1a" },
+  promo: { ratio: 16 / 5, label: "Промо-баннер", bg: "#1a1a1a" },
+  bottom: { ratio: 16 / 5, label: "Нижний баннер", bg: "#1a1a1a" },
+  news: { ratio: 16 / 9, label: "Карточка новости", bg: "#f0f1f3" },
 };
 
 interface ImageCropModalProps {
@@ -32,76 +32,89 @@ interface ImageCropModalProps {
 
 export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand" }: ImageCropModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [img, setImg] = useState<HTMLImageElement | null>(null);
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const scaleRef = useRef(1);
+  const offsetRef = useRef({ x: 0, y: 0 });
+  const [, forceUpdate] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [saving, setSaving] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const card = CARD_SHAPES[shape] || CARD_SHAPES.brand;
-  const canvasW = MAX_CANVAS_W;
-  const canvasH = Math.round(MAX_CANVAS_W / card.ratio);
-  const outputW = 900;
-  const outputH = Math.round(900 / card.ratio);
+  const previewW = PREVIEW_W;
+  const previewH = Math.round(PREVIEW_W / card.ratio);
+  const outW = 900;
+  const outH = Math.round(900 / card.ratio);
+
+  const setScale = (v: number) => {
+    scaleRef.current = v;
+    forceUpdate((n) => n + 1);
+  };
+  const setOffset = (v: { x: number; y: number }) => {
+    offsetRef.current = v;
+    forceUpdate((n) => n + 1);
+  };
 
   const fitImage = useCallback(
     (image: HTMLImageElement) => {
-      const fitScale = Math.min(canvasW / image.width, canvasH / image.height) * 0.85;
+      const s = Math.min(previewW / image.width, previewH / image.height) * 0.85;
       return {
-        scale: fitScale,
+        scale: s,
         offset: {
-          x: (canvasW - image.width * fitScale) / 2,
-          y: (canvasH - image.height * fitScale) / 2,
+          x: (previewW - image.width * s) / 2,
+          y: (previewH - image.height * s) / 2,
         },
       };
     },
-    [canvasW, canvasH]
+    [previewW, previewH]
   );
 
   useEffect(() => {
     if (!imageUrl || !open) return;
+    setImgLoaded(false);
     const image = new Image();
     image.onload = () => {
-      setImg(image);
+      imgRef.current = image;
       const fit = fitImage(image);
-      setScale(fit.scale);
-      setOffset(fit.offset);
-    };
-    image.onerror = () => {
-      const retry = new Image();
-      retry.onload = () => {
-        setImg(retry);
-        const fit = fitImage(retry);
-        setScale(fit.scale);
-        setOffset(fit.offset);
-      };
-      retry.src = imageUrl + (imageUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
+      scaleRef.current = fit.scale;
+      offsetRef.current = fit.offset;
+      setImgLoaded(true);
     };
     image.src = imageUrl;
   }, [imageUrl, open, fitImage]);
 
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !img) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const drawCanvas = useCallback(
+    (canvas: HTMLCanvasElement, w: number, h: number) => {
+      const img = imgRef.current;
+      if (!img) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    ctx.fillStyle = card.bg;
-    ctx.fillRect(0, 0, canvasW, canvasH);
+      const sx = w / previewW;
+      const sy = h / previewH;
 
-    const w = img.width * scale;
-    const h = img.height * scale;
-    ctx.drawImage(img, offset.x, offset.y, w, h);
-  }, [img, scale, offset, canvasW, canvasH, card.bg]);
+      ctx.fillStyle = card.bg;
+      ctx.fillRect(0, 0, w, h);
+
+      const iw = img.width * scaleRef.current * sx;
+      const ih = img.height * scaleRef.current * sy;
+      const ix = offsetRef.current.x * sx;
+      const iy = offsetRef.current.y * sy;
+      ctx.drawImage(img, ix, iy, iw, ih);
+    },
+    [previewW, previewH, card.bg]
+  );
 
   useEffect(() => {
-    draw();
-  }, [draw]);
+    const canvas = canvasRef.current;
+    if (!canvas || !imgLoaded) return;
+    drawCanvas(canvas, previewW, previewH);
+  });
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setDragging(true);
-    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+    setDragStart({ x: e.clientX - offsetRef.current.x, y: e.clientY - offsetRef.current.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -115,7 +128,7 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
     if (e.touches.length !== 1) return;
     const t = e.touches[0];
     setDragging(true);
-    setDragStart({ x: t.clientX - offset.x, y: t.clientY - offset.y });
+    setDragStart({ x: t.clientX - offsetRef.current.x, y: t.clientY - offsetRef.current.y });
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -130,59 +143,56 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.02 : 0.02;
-    setScale((s) => Math.max(0.02, Math.min(5, s + delta)));
+    setScale(Math.max(0.02, Math.min(5, scaleRef.current + delta)));
   };
 
   const handleReset = () => {
+    const img = imgRef.current;
     if (!img) return;
     const fit = fitImage(img);
-    setScale(fit.scale);
-    setOffset(fit.offset);
+    scaleRef.current = fit.scale;
+    offsetRef.current = fit.offset;
+    forceUpdate((n) => n + 1);
   };
 
   const centerImage = () => {
+    const img = imgRef.current;
     if (!img) return;
-    const w = img.width * scale;
-    const h = img.height * scale;
-    setOffset({ x: (canvasW - w) / 2, y: (canvasH - h) / 2 });
+    const w = img.width * scaleRef.current;
+    const h = img.height * scaleRef.current;
+    setOffset({ x: (previewW - w) / 2, y: (previewH - h) / 2 });
   };
 
-  const handleSave = async () => {
-    if (!img) return;
+  const handleSave = () => {
+    if (!imgRef.current) return;
     setSaving(true);
+
     try {
       const outCanvas = document.createElement("canvas");
-      outCanvas.width = outputW;
-      outCanvas.height = outputH;
-      const ctx = outCanvas.getContext("2d");
-      if (!ctx) {
-        setSaving(false);
-        return;
-      }
-
-      ctx.fillStyle = card.bg;
-      ctx.fillRect(0, 0, outputW, outputH);
-
-      const ratio = outputW / canvasW;
-      const w = img.width * scale * ratio;
-      const h = img.height * scale * ratio;
-      const ox = offset.x * ratio;
-      const oy = offset.y * ratio;
-      ctx.drawImage(img, ox, oy, w, h);
+      outCanvas.width = outW;
+      outCanvas.height = outH;
+      drawCanvas(outCanvas, outW, outH);
 
       outCanvas.toBlob(
         (blob) => {
-          if (blob) {
+          if (blob && blob.size > 0) {
             onSave(blob);
           } else {
-            const dataUrl = outCanvas.toDataURL("image/png");
-            fetch(dataUrl)
-              .then((r) => r.blob())
-              .then((b) => onSave(b))
-              .catch(() => setSaving(false));
-            return;
+            try {
+              const dataUrl = outCanvas.toDataURL("image/png");
+              const byteString = atob(dataUrl.split(",")[1]);
+              const mimeString = dataUrl.split(",")[0].split(":")[1].split(";")[0];
+              const ab = new ArrayBuffer(byteString.length);
+              const ia = new Uint8Array(ab);
+              for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+              }
+              const fallbackBlob = new Blob([ab], { type: mimeString });
+              onSave(fallbackBlob);
+            } catch {
+              setSaving(false);
+            }
           }
-          setSaving(false);
         },
         "image/png"
       );
@@ -191,8 +201,12 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
     }
   };
 
-  const scalePercent = img
-    ? Math.round((scale / (Math.min(canvasW / img.width, canvasH / img.height) * 0.85)) * 100)
+  const scalePercent = imgRef.current
+    ? Math.round(
+        (scaleRef.current /
+          (Math.min(previewW / imgRef.current.width, previewH / imgRef.current.height) * 0.85)) *
+          100
+      )
     : 100;
 
   return (
@@ -212,15 +226,15 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
         <div className="flex justify-center px-4">
           <canvas
             ref={canvasRef}
-            width={canvasW}
-            height={canvasH}
+            width={previewW}
+            height={previewH}
             className="shadow-md cursor-grab active:cursor-grabbing"
             style={{
-              width: canvasW,
-              height: canvasH,
+              width: previewW,
+              height: previewH,
               touchAction: "none",
               border: "2px solid #e5e7eb",
-              borderRadius: card.rounded ? "12px" : "4px",
+              borderRadius: "12px",
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -238,7 +252,7 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave, shape = "brand
           <div className="flex items-center gap-3">
             <ZoomOut className="w-4 h-4 text-muted-foreground shrink-0" />
             <Slider
-              value={[scale]}
+              value={[scaleRef.current]}
               min={0.02}
               max={5}
               step={0.01}
