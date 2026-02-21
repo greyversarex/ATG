@@ -7,9 +7,10 @@ interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   testId?: string;
+  shape?: string;
 }
 
-export function ImageUpload({ value, onChange, testId }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, testId, shape }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
@@ -183,6 +184,7 @@ export function ImageUpload({ value, onChange, testId }: ImageUploadProps) {
           imageUrl={cropImage}
           onClose={handleCropCancel}
           onSave={handleCropSave}
+          shape={shape}
         />
       )}
     </div>
