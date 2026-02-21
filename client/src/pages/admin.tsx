@@ -452,6 +452,7 @@ function BannersAdmin() {
   const { toast } = useToast();
   const { data: heroBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "hero"] });
   const { data: promoBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "promo"] });
+  const { data: bottomBanners } = useQuery<Banner[]>({ queryKey: ["/api/banners", "bottom"] });
   const [form, setForm] = useState({ type: "hero", image: "", title: "", description: "", buttonText: "", buttonLink: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -509,7 +510,7 @@ function BannersAdmin() {
     }
   };
 
-  const all = [...(heroBanners || []), ...(promoBanners || [])];
+  const all = [...(heroBanners || []), ...(promoBanners || []), ...(bottomBanners || [])];
 
   return (
     <div className="space-y-6">
@@ -528,6 +529,7 @@ function BannersAdmin() {
             <SelectContent>
               <SelectItem value="hero">Главный слайд</SelectItem>
               <SelectItem value="promo">Промо баннер</SelectItem>
+              <SelectItem value="bottom">Нижний баннер</SelectItem>
             </SelectContent>
           </Select>
           <Input placeholder="Заголовок" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} data-testid="input-banner-title" />
@@ -537,7 +539,7 @@ function BannersAdmin() {
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" shape={form.type === "hero" ? "hero" : "promo"} />
+          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-banner-image" shape={form.type === "hero" ? "hero" : form.type === "bottom" ? "promo" : "promo"} />
         </div>
         <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-banner">
           {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
@@ -550,7 +552,7 @@ function BannersAdmin() {
               {b.image && <img src={b.image} alt="" className="w-16 h-10 object-cover rounded-md shrink-0" />}
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{b.title || "Без заголовка"}</p>
-                <p className="text-xs text-muted-foreground">{b.type === "hero" ? "Главный слайд" : "Промо"}</p>
+                <p className="text-xs text-muted-foreground">{b.type === "hero" ? "Главный слайд" : b.type === "bottom" ? "Нижний баннер" : "Промо"}</p>
               </div>
             </div>
             <div className="flex items-center gap-1">

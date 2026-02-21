@@ -47,6 +47,10 @@ export default function Home() {
     queryKey: ["/api/banners", "promo"],
   });
 
+  const { data: bottomBanners } = useQuery<Banner[]>({
+    queryKey: ["/api/banners", "bottom"],
+  });
+
   const { data: brands, isLoading: loadingBrands } = useQuery<Brand[]>({
     queryKey: ["/api/brands"],
   });
@@ -72,6 +76,7 @@ export default function Home() {
   });
 
   const promoBanner = promoBanners?.[0];
+  const bottomBanner = bottomBanners?.[0];
 
   return (
     <div className="min-h-screen">
@@ -219,6 +224,34 @@ export default function Home() {
                   </Card>
                 </Link>
               ))}
+            </div>
+          </section>
+        )}
+
+        {bottomBanner && (
+          <section data-testid="section-bottom-banner">
+            <div className="relative overflow-hidden rounded-xl shadow-xl aspect-[16/5] sm:aspect-[16/4]">
+              <img
+                src={bottomBanner.image}
+                alt={bottomBanner.title || ""}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+              <div className="absolute inset-0 flex items-center px-6 sm:px-10 md:px-16">
+                <div className="max-w-lg">
+                  {bottomBanner.title && (
+                    <h3 className="text-white text-lg sm:text-2xl font-bold mb-2 drop-shadow-lg">{bottomBanner.title}</h3>
+                  )}
+                  {bottomBanner.description && (
+                    <p className="text-white/80 text-sm mb-4 line-clamp-2 drop-shadow-md">{bottomBanner.description}</p>
+                  )}
+                  {bottomBanner.buttonText && bottomBanner.buttonLink && (
+                    <a href={bottomBanner.buttonLink}>
+                      <Button size="sm" className="shadow-lg">{bottomBanner.buttonText}</Button>
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
           </section>
         )}

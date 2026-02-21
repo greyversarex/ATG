@@ -40,7 +40,7 @@ export const products = pgTable("products", {
 
 export const banners = pgTable("banners", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  type: text("type").notNull(), // 'hero' | 'promo'
+  type: text("type").notNull(), // 'hero' | 'promo' | 'bottom'
   image: text("image").notNull(),
   title: text("title"),
   description: text("description"),
