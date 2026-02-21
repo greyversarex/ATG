@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Check, RotateCcw, ZoomIn, ZoomOut, Move } from "lucide-react";
 
-const CANVAS_SIZE = 400;
-const OUTPUT_SIZE = 800;
+const CANVAS_W = 420;
+const CANVAS_H = 280;
+const OUTPUT_W = 900;
+const OUTPUT_H = 600;
 
 interface ImageCropModalProps {
   open: boolean;
@@ -23,21 +25,30 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [saving, setSaving] = useState(false);
 
+  const fitImage = useCallback((image: HTMLImageElement) => {
+    const fitScale = Math.min(CANVAS_W / image.width, CANVAS_H / image.height) * 0.85;
+    const s = fitScale;
+    return {
+      scale: s,
+      offset: {
+        x: (CANVAS_W - image.width * s) / 2,
+        y: (CANVAS_H - image.height * s) / 2,
+      },
+    };
+  }, []);
+
   useEffect(() => {
     if (!imageUrl || !open) return;
     const image = new Image();
     image.crossOrigin = "anonymous";
     image.onload = () => {
       setImg(image);
-      const fitScale = Math.min(CANVAS_SIZE / image.width, CANVAS_SIZE / image.height);
-      setScale(fitScale);
-      setOffset({
-        x: (CANVAS_SIZE - image.width * fitScale) / 2,
-        y: (CANVAS_SIZE - image.height * fitScale) / 2,
-      });
+      const fit = fitImage(image);
+      setScale(fit.scale);
+      setOffset(fit.offset);
     };
     image.src = imageUrl;
-  }, [imageUrl, open]);
+  }, [imageUrl, open, fitImage]);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -46,25 +57,11 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
     if (!ctx) return;
 
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
     const w = img.width * scale;
     const h = img.height * scale;
     ctx.drawImage(img, offset.x, offset.y, w, h);
-
-    ctx.strokeStyle = "#e5e7eb";
-    ctx.lineWidth = 1;
-    const third = CANVAS_SIZE / 3;
-    for (let i = 1; i < 3; i++) {
-      ctx.beginPath();
-      ctx.moveTo(third * i, 0);
-      ctx.lineTo(third * i, CANVAS_SIZE);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, third * i);
-      ctx.lineTo(CANVAS_SIZE, third * i);
-      ctx.stroke();
-    }
   }, [img, scale, offset]);
 
   useEffect(() => {
@@ -102,24 +99,21 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.02 : 0.02;
-    setScale((s) => Math.max(0.05, Math.min(5, s + delta)));
+    setScale((s) => Math.max(0.02, Math.min(5, s + delta)));
   };
 
   const handleReset = () => {
     if (!img) return;
-    const fitScale = Math.min(CANVAS_SIZE / img.width, CANVAS_SIZE / img.height);
-    setScale(fitScale);
-    setOffset({
-      x: (CANVAS_SIZE - img.width * fitScale) / 2,
-      y: (CANVAS_SIZE - img.height * fitScale) / 2,
-    });
+    const fit = fitImage(img);
+    setScale(fit.scale);
+    setOffset(fit.offset);
   };
 
   const centerImage = () => {
     if (!img) return;
     const w = img.width * scale;
     const h = img.height * scale;
-    setOffset({ x: (CANVAS_SIZE - w) / 2, y: (CANVAS_SIZE - h) / 2 });
+    setOffset({ x: (CANVAS_W - w) / 2, y: (CANVAS_H - h) / 2 });
   };
 
   const handleSave = async () => {
@@ -127,19 +121,20 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
     setSaving(true);
     try {
       const outCanvas = document.createElement("canvas");
-      outCanvas.width = OUTPUT_SIZE;
-      outCanvas.height = OUTPUT_SIZE;
+      outCanvas.width = OUTPUT_W;
+      outCanvas.height = OUTPUT_H;
       const ctx = outCanvas.getContext("2d");
       if (!ctx) return;
 
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
+      ctx.fillRect(0, 0, OUTPUT_W, OUTPUT_H);
 
-      const ratio = OUTPUT_SIZE / CANVAS_SIZE;
-      const w = img.width * scale * ratio;
-      const h = img.height * scale * ratio;
-      const ox = offset.x * ratio;
-      const oy = offset.y * ratio;
+      const ratioX = OUTPUT_W / CANVAS_W;
+      const ratioY = OUTPUT_H / CANVAS_H;
+      const w = img.width * scale * ratioX;
+      const h = img.height * scale * ratioY;
+      const ox = offset.x * ratioX;
+      const oy = offset.y * ratioY;
       ctx.drawImage(img, ox, oy, w, h);
 
       outCanvas.toBlob(
@@ -155,26 +150,36 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
     }
   };
 
-  const scalePercent = img ? Math.round((scale / Math.min(CANVAS_SIZE / img.width, CANVAS_SIZE / img.height)) * 100) : 100;
+  const scalePercent = img
+    ? Math.round((scale / (Math.min(CANVAS_W / img.width, CANVAS_H / img.height) * 0.85)) * 100)
+    : 100;
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-[480px] max-h-[90vh] flex flex-col p-0 gap-0">
+      <DialogContent className="max-w-[500px] max-h-[90vh] flex flex-col p-0 gap-0">
         <DialogHeader className="px-4 pt-4 pb-2">
           <DialogTitle>Настройка изображения</DialogTitle>
         </DialogHeader>
 
+        <p className="px-4 pb-1 text-xs text-muted-foreground">
+          Рамка показывает, как изображение будет выглядеть на карточке
+        </p>
         <p className="px-4 pb-2 text-xs text-muted-foreground flex items-center gap-1">
-          <Move className="w-3 h-3" /> Перетащите изображение мышью для позиционирования
+          <Move className="w-3 h-3" /> Перетащите мышью для позиционирования
         </p>
 
         <div className="flex justify-center px-4">
           <canvas
             ref={canvasRef}
-            width={CANVAS_SIZE}
-            height={CANVAS_SIZE}
-            className="border-2 border-dashed border-gray-300 rounded-lg cursor-grab active:cursor-grabbing"
-            style={{ width: CANVAS_SIZE, height: CANVAS_SIZE, touchAction: "none" }}
+            width={CANVAS_W}
+            height={CANVAS_H}
+            className="rounded-xl shadow-md cursor-grab active:cursor-grabbing"
+            style={{
+              width: CANVAS_W,
+              height: CANVAS_H,
+              touchAction: "none",
+              border: "2px solid #e5e7eb",
+            }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
@@ -192,7 +197,7 @@ export function ImageCropModal({ open, imageUrl, onClose, onSave }: ImageCropMod
             <ZoomOut className="w-4 h-4 text-muted-foreground shrink-0" />
             <Slider
               value={[scale]}
-              min={0.05}
+              min={0.02}
               max={5}
               step={0.01}
               onValueChange={([v]) => setScale(v)}
