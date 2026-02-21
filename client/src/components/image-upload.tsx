@@ -1,43 +1,68 @@
 import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, X, Loader2, RefreshCw, ImageIcon } from "lucide-react";
+import { Upload, X, Loader2, RefreshCw, Crop } from "lucide-react";
+import { ImageCropModal } from "./image-crop-modal";
 
 interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
   testId?: string;
-  onOpenGallery?: () => void;
+  defaultAspect?: number;
 }
 
-export function ImageUpload({ value, onChange, testId, onOpenGallery }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, testId, defaultAspect }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [cropImage, setCropImage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUpload = async (file: File) => {
+  const uploadFile = async (file: File | Blob, filename?: string) => {
     setUploading(true);
     setError("");
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", file, filename || "image.jpg");
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || "Ошибка загрузки");
       }
       const data = await res.json();
-      onChange(data.url);
+      return data.url as string;
     } catch (e: any) {
       setError(e.message || "Ошибка загрузки");
+      return null;
     } finally {
       setUploading(false);
     }
   };
 
+  const handleFileSelected = async (file: File) => {
+    const url = await uploadFile(file, file.name);
+    if (url) {
+      setCropImage(url);
+    }
+  };
+
+  const handleCropSave = async (croppedBlob: Blob) => {
+    const url = await uploadFile(croppedBlob, "cropped.jpg");
+    if (url) {
+      onChange(url);
+    }
+    setCropImage(null);
+  };
+
+  const handleCropCancel = () => {
+    if (cropImage) {
+      onChange(cropImage);
+    }
+    setCropImage(null);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) handleUpload(file);
+    if (file) handleFileSelected(file);
     e.target.value = "";
   };
 
@@ -59,11 +84,17 @@ export function ImageUpload({ value, onChange, testId, onOpenGallery }: ImageUpl
     setDragOver(false);
     const file = e.dataTransfer.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      handleUpload(file);
+      handleFileSelected(file);
     } else {
       setError("Допустимы только изображения");
     }
   }, []);
+
+  const openCropExisting = () => {
+    if (value) {
+      setCropImage(value);
+    }
+  };
 
   return (
     <div data-testid={testId}>
@@ -87,24 +118,22 @@ export function ImageUpload({ value, onChange, testId, onOpenGallery }: ImageUpl
               size="icon"
               variant="secondary"
               className="h-8 w-8"
+              onClick={openCropExisting}
+              title="Обрезать / масштабировать"
+              data-testid={testId ? `${testId}-crop` : undefined}
+            >
+              <Crop className="w-4 h-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="secondary"
+              className="h-8 w-8"
               onClick={() => inputRef.current?.click()}
               title="Заменить"
               data-testid={testId ? `${testId}-replace` : undefined}
             >
               <RefreshCw className="w-4 h-4" />
             </Button>
-            {onOpenGallery && (
-              <Button
-                size="icon"
-                variant="secondary"
-                className="h-8 w-8"
-                onClick={onOpenGallery}
-                title="Выбрать из галереи"
-                data-testid={testId ? `${testId}-gallery` : undefined}
-              >
-                <ImageIcon className="w-4 h-4" />
-              </Button>
-            )}
             <Button
               size="icon"
               variant="destructive"
@@ -142,28 +171,22 @@ export function ImageUpload({ value, onChange, testId, onOpenGallery }: ImageUpl
               <span className="text-xs text-muted-foreground/70">
                 JPG, PNG, GIF, WebP, SVG (до 10 МБ)
               </span>
-              {onOpenGallery && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  type="button"
-                  className="mt-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenGallery();
-                  }}
-                  data-testid={testId ? `${testId}-gallery` : undefined}
-                >
-                  <ImageIcon className="w-4 h-4 mr-2" />
-                  Выбрать из галереи
-                </Button>
-              )}
             </div>
           )}
         </div>
       )}
 
       {error && <p className="text-xs text-destructive mt-1">{error}</p>}
+
+      {cropImage && (
+        <ImageCropModal
+          open={!!cropImage}
+          imageUrl={cropImage}
+          onClose={handleCropCancel}
+          onSave={handleCropSave}
+          defaultAspect={defaultAspect}
+        />
+      )}
     </div>
   );
 }
