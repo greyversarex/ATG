@@ -6,8 +6,8 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("text"), 600);
-    const t2 = setTimeout(() => setPhase("fade"), 2400);
-    const t3 = setTimeout(() => onComplete(), 3200);
+    const t2 = setTimeout(() => setPhase("fade"), 2800);
+    const t3 = setTimeout(() => onComplete(), 3600);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -60,14 +60,14 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           style={{
             top: 0,
             bottom: 0,
-            width: "150px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.1) 70%, transparent)",
+            width: "200px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.08) 80%, transparent)",
             transform: "skewX(-20deg)",
             zIndex: 20,
           }}
-          initial={{ left: "-15%" }}
-          animate={{ left: "115%" }}
-          transition={{ duration: 0.5, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+          initial={{ left: "-20%" }}
+          animate={{ left: "120%" }}
+          transition={{ duration: 0.6, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
         />
 
         <div className="relative flex flex-col items-center justify-center">
@@ -75,19 +75,37 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             className="relative"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
           >
-            <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center">
-              <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
-            </div>
             <motion.div
-              className="absolute inset-0 rounded-2xl border-2 border-white/20"
-              initial={{ scale: 1, opacity: 0.8 }}
-              animate={{ scale: 1.6, opacity: 0 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+              className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center"
+              animate={{
+                filter: [
+                  "drop-shadow(0 0 0px rgba(255,255,255,0))",
+                  "drop-shadow(0 0 40px rgba(255,255,255,0.4))",
+                  "drop-shadow(0 0 20px rgba(255,255,255,0.15))",
+                ],
+              }}
+              transition={{ duration: 1.5, delay: 0.7, ease: "easeOut" }}
+            >
+              <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain" />
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{ border: "3px solid rgba(255,255,255,0.3)" }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 2.5, opacity: [0, 0.6, 0] }}
+              transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
+            />
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{ border: "2px solid rgba(255,255,255,0.2)" }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 3, opacity: [0, 0.4, 0] }}
+              transition={{ duration: 1.8, delay: 0.6, ease: "easeOut" }}
             />
           </motion.div>
-
         </div>
       </motion.div>
     </AnimatePresence>
