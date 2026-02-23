@@ -55,6 +55,21 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           ))}
         </div>
 
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{
+            top: 0,
+            bottom: 0,
+            width: "120px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.12) 70%, transparent)",
+            transform: "skewX(-20deg)",
+            zIndex: 20,
+          }}
+          initial={{ left: "-10%" }}
+          animate={{ left: "110%" }}
+          transition={{ duration: 0.8, delay: 1.0, ease: "easeInOut" }}
+        />
+
         <div className="relative flex flex-col items-center justify-center">
           <motion.div
             className="relative"
@@ -62,28 +77,9 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
           >
-            <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center relative overflow-hidden">
+            <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center">
               <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
-              <motion.div
-                className="absolute pointer-events-none"
-                style={{
-                  top: "-20%",
-                  bottom: "-20%",
-                  width: "60px",
-                  background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.5) 70%, transparent)",
-                  transform: "skewX(-20deg)",
-                }}
-                initial={{ left: "-15%" }}
-                animate={{ left: "115%" }}
-                transition={{ duration: 0.7, delay: 1.0, ease: "easeInOut" }}
-              />
             </div>
-            <motion.div
-              className="absolute inset-0 rounded-2xl border-2 border-white/30"
-              initial={{ scale: 1, opacity: 1 }}
-              animate={{ scale: 1.5, opacity: 0 }}
-              transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
-            />
           </motion.div>
 
         </div>
