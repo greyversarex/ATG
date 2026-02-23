@@ -46,4 +46,3 @@ expertMode = true
 [userenv]
 
 [userenv.production]
-FORCE_RESEED = "true"
