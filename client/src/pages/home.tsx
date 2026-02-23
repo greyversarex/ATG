@@ -14,37 +14,37 @@ import type { Banner, Brand, Category, Product, Service, News } from "@shared/sc
 
 function AnimatedCounter({ value, suffix = "", prefix = "" }: { value: number; suffix?: string; prefix?: string }) {
   const [count, setCount] = useState(0);
-  const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
-
-  const animate = useCallback(() => {
-    if (hasAnimated) return;
-    setHasAnimated(true);
-    const duration = 1500;
-    const steps = 40;
-    const increment = value / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-  }, [value, hasAnimated]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) animate(); },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          setCount(0);
+          const duration = 1500;
+          const steps = 40;
+          const increment = value / steps;
+          let current = 0;
+          timerRef.current = setInterval(() => {
+            current += increment;
+            if (current >= value) {
+              setCount(value);
+              if (timerRef.current) clearInterval(timerRef.current);
+            } else {
+              setCount(Math.floor(current));
+            }
+          }, duration / steps);
+        }
+      },
       { threshold: 0.5 }
     );
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [animate]);
+    return () => { observer.disconnect(); if (timerRef.current) clearInterval(timerRef.current); };
+  }, [value]);
 
   return <span ref={ref}>{prefix}{count}{suffix}</span>;
 }
@@ -72,6 +72,13 @@ const serviceIcons: Record<string, typeof Wrench> = {
   shield: Shield,
   graduation: GraduationCap,
   headphones: Headphones,
+};
+
+const serviceIconAnimations: Record<string, string> = {
+  wrench: "service-spin",
+  shield: "service-shine",
+  graduation: "service-glow",
+  headphones: "service-pulse",
 };
 
 export default function Home() {
@@ -170,7 +177,7 @@ export default function Home() {
                 { num: 1000, suffix: "+", label: "клиентов" },
                 { num: 300, suffix: "+", label: "обученных специалистов" },
                 { num: 5, suffix: "+", label: "официальных дилерств" },
-                { num: 0, suffix: " ₽", label: "доставка по Душанбе" },
+                { num: 0, suffix: " с.", label: "доставка по Душанбе" },
               ].map((item) => (
                 <div key={item.label} className="flex flex-col items-center text-center gap-1" data-testid={`stat-trust-${item.label}`}>
                   <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
@@ -274,28 +281,19 @@ export default function Home() {
           <section data-testid="section-services">
             <h2 className="text-lg font-bold mb-6">Наши услуги</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {services.map((service, index) => {
+              {services.map((service) => {
+                const iconAnim = serviceIconAnimations[service.icon] || "animate-spin-slow";
                 const IconComp = serviceIcons[service.icon] || Wrench;
-                const colors = [
-                  { bg: "bg-red-50 dark:bg-red-950/30", border: "border-red-200 dark:border-red-900/50", iconBg: "bg-red-500", num: "text-red-200 dark:text-red-900/40" },
-                  { bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-900/50", iconBg: "bg-blue-500", num: "text-blue-200 dark:text-blue-900/40" },
-                  { bg: "bg-amber-50 dark:bg-amber-950/30", border: "border-amber-200 dark:border-amber-900/50", iconBg: "bg-amber-500", num: "text-amber-200 dark:text-amber-900/40" },
-                  { bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-200 dark:border-emerald-900/50", iconBg: "bg-emerald-500", num: "text-emerald-200 dark:text-emerald-900/40" },
-                ];
-                const color = colors[index % colors.length];
                 return (
                   <div
                     key={service.id}
-                    className={`relative rounded-xl ${color.bg} border ${color.border} p-5 sm:p-6 flex items-start gap-4 overflow-hidden transition-transform hover:scale-[1.02]`}
+                    className="group relative rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 p-5 sm:p-6 flex items-start gap-4 overflow-hidden transition-transform hover:scale-[1.02]"
                     data-testid={`card-service-${service.id}`}
                   >
-                    <span className={`absolute -top-3 -right-2 text-7xl font-black ${color.num} select-none pointer-events-none`}>
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <div className={`${color.iconBg} w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg`}>
-                      <IconComp className="w-6 h-6 text-white" />
+                    <div className="bg-primary w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                      <IconComp className={`w-6 h-6 text-white ${iconAnim}`} />
                     </div>
-                    <div className="relative z-10">
+                    <div>
                       <h4 className="font-bold text-sm sm:text-base mb-1">{service.title}</h4>
                       <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{service.description}</p>
                     </div>

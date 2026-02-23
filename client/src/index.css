@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes service-spin-kf {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  50% { transform: rotate(-10deg); }
+  75% { transform: rotate(15deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes service-shine-kf {
+  0%, 100% { filter: drop-shadow(0 0 0px rgba(255,255,255,0)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); transform: scale(1.1); }
+}
+@keyframes service-glow-kf {
+  0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 0px rgba(255,200,0,0)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(255,200,0,0.7)); }
+}
+@keyframes service-pulse-kf {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.service-spin { animation: service-spin-kf 2.5s ease-in-out infinite; }
+.service-shine { animation: service-shine-kf 2s ease-in-out infinite; }
+.service-glow { animation: service-glow-kf 2s ease-in-out infinite; }
+.service-pulse { animation: service-pulse-kf 1.5s ease-in-out infinite; }
+
 .ribbon-scroll {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border)) transparent;
