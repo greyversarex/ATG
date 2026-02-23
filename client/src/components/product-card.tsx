@@ -14,8 +14,8 @@ export function ProductCard({ product }: ProductCardProps) {
     : null;
 
   return (
-    <Card className="overflow-visible group flex flex-col" data-testid={`card-product-${product.id}`}>
-      <div className="relative aspect-square overflow-hidden rounded-t-xl" style={{
+    <Card className="overflow-visible group flex flex-col h-full" data-testid={`card-product-${product.id}`}>
+      <div className="relative aspect-square overflow-hidden rounded-t-md" style={{
         background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
       }}>
         <img
@@ -33,35 +33,35 @@ export function ProductCard({ product }: ProductCardProps) {
         ) : null}
       </div>
 
-      <div className="flex flex-col flex-1 p-3.5 gap-2">
-        <h3 className="font-semibold text-sm leading-tight line-clamp-2 min-h-[2.5em]" data-testid={`text-product-name-${product.id}`}>
+      <div className="flex flex-col flex-1 p-3.5 gap-1">
+        <h3 className="font-semibold text-sm leading-tight line-clamp-2 h-[2.5em]" data-testid={`text-product-name-${product.id}`}>
           {product.name}
         </h3>
 
-        {product.shortSpecs && (
-          <p className="text-xs text-muted-foreground line-clamp-2">{product.shortSpecs}</p>
-        )}
+        <p className="text-xs text-muted-foreground line-clamp-2 h-[2.5em]">
+          {product.shortSpecs || "\u00A0"}
+        </p>
 
-        <div className="mt-auto pt-2 flex items-end justify-between gap-2 flex-wrap">
-          <div className="flex flex-col">
+        <div className="mt-auto pt-1 flex items-end justify-between gap-2">
+          <div className="flex flex-col min-w-0">
             {discountedPrice ? (
               <>
-                <span className="text-xs text-muted-foreground line-through">
+                <span className="text-xs text-muted-foreground line-through whitespace-nowrap">
                   {product.price.toLocaleString("ru-RU")} сом.
                 </span>
-                <span className="font-bold text-sm text-primary" data-testid={`text-price-${product.id}`}>
+                <span className="font-bold text-sm text-primary whitespace-nowrap" data-testid={`text-price-${product.id}`}>
                   {discountedPrice.toLocaleString("ru-RU")} сом.
                 </span>
               </>
             ) : (
-              <span className="font-bold text-sm" data-testid={`text-price-${product.id}`}>
+              <span className="font-bold text-sm whitespace-nowrap" data-testid={`text-price-${product.id}`}>
                 {product.price.toLocaleString("ru-RU")} сом.
               </span>
             )}
           </div>
 
           <Link href={`/product/${product.id}`}>
-            <Button size="sm" data-testid={`button-details-${product.id}`}>
+            <Button size="sm" className="shrink-0" data-testid={`button-details-${product.id}`}>
               Подробнее
             </Button>
           </Link>
