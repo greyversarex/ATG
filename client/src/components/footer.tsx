@@ -11,13 +11,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-md border border-white/20">
-                <span className="text-white font-bold text-base">A</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-sm leading-tight text-white">ATG.TJ</span>
-                <span className="text-[10px] opacity-50 leading-tight">AMIR TECH GROUP</span>
-              </div>
+              <img src="/images/atg-logo.png" alt="ATG" className="h-10 object-contain drop-shadow-md" />
             </div>
             <p className="text-sm opacity-60 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.

@@ -110,13 +110,7 @@ export function Header() {
         <div className="flex items-center justify-between gap-3 h-16">
           <Link href="/" data-testid="link-home">
             <div className="flex items-center gap-2.5 cursor-pointer">
-              <div className="w-10 h-10 rounded-md bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-md border border-white/20">
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-base leading-tight tracking-tight text-white">ATG.TJ</span>
-                <span className="text-[10px] text-white/60 leading-tight">AMIR TECH GROUP</span>
-              </div>
+              <img src="/images/atg-logo.png" alt="ATG" className="h-10 object-contain drop-shadow-md" />
             </div>
           </Link>
 
