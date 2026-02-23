@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { HeroSlider } from "@/components/hero-slider";
 import { BrandsRibbon } from "@/components/brands-ribbon";
 import { CategoriesGrid } from "@/components/categories-grid";
@@ -10,6 +11,43 @@ import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
+
+function AnimatedCounter({ value, suffix = "", prefix = "" }: { value: number; suffix?: string; prefix?: string }) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  const animate = useCallback(() => {
+    if (hasAnimated) return;
+    setHasAnimated(true);
+    const duration = 1500;
+    const steps = 40;
+    const increment = value / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+  }, [value, hasAnimated]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) animate(); },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [animate]);
+
+  return <span ref={ref}>{prefix}{count}{suffix}</span>;
+}
 
 function HeroSkeleton() {
   return <Skeleton className="w-full aspect-[16/6] rounded-xl" />;
@@ -128,14 +166,16 @@ export default function Home() {
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
               {[
-                { value: "7+", label: "лет на рынке" },
-                { value: "1000+", label: "клиентов" },
-                { value: "300+", label: "обученных специалистов" },
-                { value: "5+", label: "официальных дилерств" },
-                { value: "0 ₽", label: "доставка по Душанбе" },
+                { num: 7, suffix: "+", label: "лет на рынке" },
+                { num: 1000, suffix: "+", label: "клиентов" },
+                { num: 300, suffix: "+", label: "обученных специалистов" },
+                { num: 5, suffix: "+", label: "официальных дилерств" },
+                { num: 0, suffix: " ₽", label: "доставка по Душанбе" },
               ].map((item) => (
                 <div key={item.label} className="flex flex-col items-center text-center gap-1" data-testid={`stat-trust-${item.label}`}>
-                  <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">{item.value}</span>
+                  <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    <AnimatedCounter value={item.num} suffix={item.suffix} />
+                  </span>
                   <span className="text-xs sm:text-sm text-white/80 leading-tight">{item.label}</span>
                 </div>
               ))}
