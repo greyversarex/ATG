@@ -234,33 +234,35 @@ export default function Home() {
 
         <section data-testid="section-why-atg">
           <h2 className="text-lg font-bold mb-4">Почему выбирают ATG</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { icon: CheckCircle, title: "Оригинальное оборудование", desc: "Работаем только с официальными производителями." },
               { icon: Award, title: "Обучение и сертификация", desc: "Собственный учебный центр ATG." },
               { icon: LifeBuoy, title: "Сервис и поддержка", desc: "Консультации и техническая помощь." },
               { icon: Truck, title: "Быстрая доставка", desc: "Склад в Душанбе. Всё в наличии." },
             ].map((item) => (
-              <div key={item.title} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50" data-testid={`card-why-${item.title}`}>
-                <item.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-semibold text-sm leading-tight">{item.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+              <Card key={item.title} className="p-5 flex flex-col items-center text-center gap-3" data-testid={`card-why-${item.title}`}>
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <item.icon className="w-6 h-6 text-primary" />
                 </div>
-              </div>
+                <div>
+                  <h4 className="font-semibold text-sm">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                </div>
+              </Card>
             ))}
           </div>
         </section>
 
-        <section data-testid="section-cta" className="text-center py-8 px-4 rounded-xl" style={{
+        <section data-testid="section-cta" className="text-center py-10 px-6 rounded-xl" style={{
           background: "linear-gradient(135deg, hsl(0 84% 38%) 0%, hsl(0 84% 48%) 50%, hsl(0 84% 35%) 100%)"
         }}>
           <h2 className="text-white text-xl sm:text-2xl font-bold mb-2">Открой или модернизируй автосервис вместе с ATG</h2>
-          <Link href="/catalog">
+          <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%8B%D0%B9%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82%20%D0%BE%D0%B1%D0%BE%D1%80%D1%83%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" target="_blank" rel="noopener noreferrer">
             <Button size="lg" className="mt-3 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg" data-testid="button-cta-calc">
               Получить бесплатный расчёт оборудования
             </Button>
-          </Link>
+          </a>
         </section>
 
         {bottomBanner && (
