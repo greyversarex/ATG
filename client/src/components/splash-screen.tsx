@@ -62,24 +62,20 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
           >
-            <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center relative">
-              <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" style={{ WebkitMaskImage: "url(/images/atg-logo.png)", WebkitMaskSize: "contain", WebkitMaskRepeat: "no-repeat", WebkitMaskPosition: "center", maskImage: "url(/images/atg-logo.png)", maskSize: "contain", maskRepeat: "no-repeat", maskPosition: "center" }} />
+            <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center relative overflow-hidden">
+              <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
               <motion.div
-                className="absolute inset-0 pointer-events-none"
+                className="absolute pointer-events-none"
                 style={{
-                  background: "linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.35) 42%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.35) 58%, transparent 70%)",
-                  WebkitMaskImage: "url(/images/atg-logo.png)",
-                  WebkitMaskSize: "contain",
-                  WebkitMaskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
-                  maskImage: "url(/images/atg-logo.png)",
-                  maskSize: "contain",
-                  maskRepeat: "no-repeat",
-                  maskPosition: "center",
+                  top: "-20%",
+                  bottom: "-20%",
+                  width: "60px",
+                  background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.5) 70%, transparent)",
+                  transform: "skewX(-20deg)",
                 }}
-                initial={{ x: "-150%" }}
-                animate={{ x: "150%" }}
-                transition={{ duration: 0.9, delay: 1.0, ease: "easeInOut" }}
+                initial={{ left: "-15%" }}
+                animate={{ left: "115%" }}
+                transition={{ duration: 0.7, delay: 1.0, ease: "easeInOut" }}
               />
             </div>
             <motion.div
