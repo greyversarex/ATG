@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Banner } from "@shared/schema";
 
 interface HeroSliderProps {
@@ -12,10 +11,6 @@ export function HeroSlider({ banners }: HeroSliderProps) {
 
   const next = useCallback(() => {
     setCurrent((prev) => (prev + 1) % banners.length);
-  }, [banners.length]);
-
-  const prev = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
   }, [banners.length]);
 
   useEffect(() => {
@@ -70,30 +65,9 @@ export function HeroSlider({ banners }: HeroSliderProps) {
             )}
           </div>
         </div>
-      </div>
 
-      {banners.length > 1 && (
-        <>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 text-white backdrop-blur-sm no-default-hover-elevate"
-            onClick={prev}
-            data-testid="button-slider-prev"
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 text-white backdrop-blur-sm no-default-hover-elevate"
-            onClick={next}
-            data-testid="button-slider-next"
-          >
-            <ChevronRight />
-          </Button>
-
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {banners.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {banners.map((_, i) => (
               <button
                 key={i}
@@ -105,8 +79,8 @@ export function HeroSlider({ banners }: HeroSliderProps) {
               />
             ))}
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 }
