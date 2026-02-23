@@ -128,16 +128,13 @@ export default function Home() {
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
               {[
-                { icon: Calendar, value: "7+", label: "лет на рынке" },
-                { icon: Users, value: "1000+", label: "клиентов" },
-                { icon: GraduationCap, value: "300+", label: "обученных специалистов" },
-                { icon: Globe, value: "5+", label: "официальных дилерств" },
-                { icon: MapPin, value: "0 ₽", label: "доставка по Душанбе" },
+                { value: "7+", label: "лет на рынке" },
+                { value: "1000+", label: "клиентов" },
+                { value: "300+", label: "обученных специалистов" },
+                { value: "5+", label: "официальных дилерств" },
+                { value: "0 ₽", label: "доставка по Душанбе" },
               ].map((item) => (
-                <div key={item.label} className="flex flex-col items-center text-center gap-2" data-testid={`stat-trust-${item.label}`}>
-                  <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                    <item.icon className="w-6 h-6 text-white" />
-                  </div>
+                <div key={item.label} className="flex flex-col items-center text-center gap-1" data-testid={`stat-trust-${item.label}`}>
                   <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">{item.value}</span>
                   <span className="text-xs sm:text-sm text-white/80 leading-tight">{item.label}</span>
                 </div>
