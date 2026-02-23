@@ -55,21 +55,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           ))}
         </div>
 
-        <motion.div
-          className="absolute pointer-events-none"
-          style={{
-            top: 0,
-            bottom: 0,
-            width: "200px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08) 20%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.08) 80%, transparent)",
-            transform: "skewX(-20deg)",
-            zIndex: 20,
-          }}
-          initial={{ left: "-20%" }}
-          animate={{ left: "120%" }}
-          transition={{ duration: 0.6, delay: 1.0, ease: [0.25, 0.1, 0.25, 1] }}
-        />
-
         <div className="relative flex flex-col items-center justify-center">
           <motion.div
             className="relative"
