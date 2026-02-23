@@ -202,32 +202,30 @@ export default function Home() {
                 </Button>
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-2 ribbon-scroll -mx-4 px-4">
-              {newsList.map((item) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {newsList.slice(0, 4).map((item) => (
                 <Link key={item.id} href="/news" data-testid={`link-home-news-${item.id}`}>
-                  <div className="w-64 sm:w-72 shrink-0">
-                    <Card className="overflow-visible group cursor-pointer hover-elevate h-full flex flex-col" data-testid={`card-home-news-${item.id}`}>
-                      <div className="aspect-video overflow-hidden rounded-t-md">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </div>
-                      <div className="p-4 flex flex-col flex-1">
-                        <time className="text-xs text-muted-foreground">
-                          {new Date(item.date).toLocaleDateString("ru-RU", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </time>
-                        <h3 className="font-semibold text-sm mt-1.5 mb-1 line-clamp-2 h-[2.5em]">{item.title}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2 h-[2.5em]">{item.content}</p>
-                      </div>
-                    </Card>
-                  </div>
+                  <Card className="overflow-visible group cursor-pointer hover-elevate h-full flex flex-col" data-testid={`card-home-news-${item.id}`}>
+                    <div className="aspect-video overflow-hidden rounded-t-md">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div className="p-4 flex flex-col flex-1">
+                      <time className="text-xs text-muted-foreground">
+                        {new Date(item.date).toLocaleDateString("ru-RU", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </time>
+                      <h3 className="font-semibold text-sm mt-1.5 mb-1 line-clamp-2">{item.title}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{item.content}</p>
+                    </div>
+                  </Card>
                 </Link>
               ))}
             </div>
