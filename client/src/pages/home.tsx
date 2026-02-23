@@ -115,24 +115,34 @@ export default function Home() {
           <BrandsRibbon brands={brands || []} />
         )}
 
-        <section data-testid="section-trust" className="rounded-xl bg-muted/50 border p-6 sm:p-8">
-          <h2 className="text-lg font-bold text-center mb-6" data-testid="text-trust-title">Нам доверяют по всей Республике Таджикистан</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {[
-              { icon: Calendar, value: "7+", label: "лет на рынке" },
-              { icon: Users, value: "1000+", label: "клиентов" },
-              { icon: GraduationCap, value: "300+", label: "обученных специалистов" },
-              { icon: Globe, value: "5+", label: "официальных дилерств" },
-              { icon: MapPin, value: "0 ₽", label: "доставка по Душанбе" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col items-center text-center gap-2" data-testid={`stat-trust-${item.label}`}>
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <item.icon className="w-5 h-5 text-primary" />
+        <section data-testid="section-trust" className="rounded-2xl py-10 px-6 sm:px-10 text-white overflow-hidden relative" style={{
+          background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 70% 25%) 50%, hsl(0 84% 30%) 100%)"
+        }}>
+          <div className="absolute inset-0 opacity-[0.07]" style={{
+            backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)",
+            backgroundSize: "60px 60px, 80px 80px"
+          }} />
+          <div className="relative z-10">
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-8" data-testid="text-trust-title">
+              Нам доверяют по всей Республике Таджикистан
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
+              {[
+                { icon: Calendar, value: "7+", label: "лет на рынке" },
+                { icon: Users, value: "1000+", label: "клиентов" },
+                { icon: GraduationCap, value: "300+", label: "обученных специалистов" },
+                { icon: Globe, value: "5+", label: "официальных дилерств" },
+                { icon: MapPin, value: "0 ₽", label: "доставка по Душанбе" },
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col items-center text-center gap-2" data-testid={`stat-trust-${item.label}`}>
+                  <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                    <item.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">{item.value}</span>
+                  <span className="text-xs sm:text-sm text-white/80 leading-tight">{item.label}</span>
                 </div>
-                <span className="text-xl sm:text-2xl font-extrabold text-primary">{item.value}</span>
-                <span className="text-xs text-muted-foreground leading-tight">{item.label}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
@@ -225,21 +235,33 @@ export default function Home() {
 
         {services && services.length > 0 && (
           <section data-testid="section-services">
-            <h2 className="text-lg font-bold mb-4">Наши услуги</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {services.map((service) => {
+            <h2 className="text-lg font-bold mb-6">Наши услуги</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {services.map((service, index) => {
                 const IconComp = serviceIcons[service.icon] || Wrench;
+                const colors = [
+                  { bg: "bg-red-50 dark:bg-red-950/30", border: "border-red-200 dark:border-red-900/50", iconBg: "bg-red-500", num: "text-red-200 dark:text-red-900/40" },
+                  { bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-900/50", iconBg: "bg-blue-500", num: "text-blue-200 dark:text-blue-900/40" },
+                  { bg: "bg-amber-50 dark:bg-amber-950/30", border: "border-amber-200 dark:border-amber-900/50", iconBg: "bg-amber-500", num: "text-amber-200 dark:text-amber-900/40" },
+                  { bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-200 dark:border-emerald-900/50", iconBg: "bg-emerald-500", num: "text-emerald-200 dark:text-emerald-900/40" },
+                ];
+                const color = colors[index % colors.length];
                 return (
                   <div
                     key={service.id}
-                    className="convex-card flex flex-col items-center text-center p-6"
+                    className={`relative rounded-xl ${color.bg} border ${color.border} p-5 sm:p-6 flex items-start gap-4 overflow-hidden transition-transform hover:scale-[1.02]`}
                     data-testid={`card-service-${service.id}`}
                   >
-                    <div className="mb-3">
-                      <IconComp className="w-10 h-10 text-primary" />
+                    <span className={`absolute -top-3 -right-2 text-7xl font-black ${color.num} select-none pointer-events-none`}>
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                    <div className={`${color.iconBg} w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-lg`}>
+                      <IconComp className="w-6 h-6 text-white" />
                     </div>
-                    <h4 className="font-semibold text-sm mb-1">{service.title}</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{service.description}</p>
+                    <div className="relative z-10">
+                      <h4 className="font-bold text-sm sm:text-base mb-1">{service.title}</h4>
+                      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{service.description}</p>
+                    </div>
                   </div>
                 );
               })}
