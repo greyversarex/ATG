@@ -62,8 +62,17 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
           >
-            <div className="w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+            <div className="w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center overflow-hidden relative">
               <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.4) 55%, transparent 65%)",
+                }}
+                initial={{ x: "-120%" }}
+                animate={{ x: "120%" }}
+                transition={{ duration: 0.8, delay: 1.0, ease: "easeInOut" }}
+              />
             </div>
             <motion.div
               className="absolute inset-0 rounded-2xl border-2 border-white/30"
