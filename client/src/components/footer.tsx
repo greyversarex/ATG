@@ -11,7 +11,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md" />
+              <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md mt-[-47px] mb-[-47px] pt-[0px] pb-[0px] pl-[0px] pr-[0px] ml-[-17px] mr-[-17px]" />
             </div>
             <p className="text-sm opacity-60 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
