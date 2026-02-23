@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Wrench, Shield, GraduationCap, Headphones } from "lucide-react";
+import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
@@ -231,6 +231,37 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        <section data-testid="section-why-atg">
+          <h2 className="text-lg font-bold mb-4">Почему выбирают ATG</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { icon: CheckCircle, title: "Оригинальное оборудование", desc: "Работаем только с официальными производителями." },
+              { icon: Award, title: "Обучение и сертификация", desc: "Собственный учебный центр ATG." },
+              { icon: LifeBuoy, title: "Сервис и поддержка", desc: "Консультации и техническая помощь." },
+              { icon: Truck, title: "Быстрая доставка", desc: "Склад в Душанбе. Всё в наличии." },
+            ].map((item) => (
+              <div key={item.title} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50" data-testid={`card-why-${item.title}`}>
+                <item.icon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-sm leading-tight">{item.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section data-testid="section-cta" className="text-center py-8 px-4 rounded-xl" style={{
+          background: "linear-gradient(135deg, hsl(0 84% 38%) 0%, hsl(0 84% 48%) 50%, hsl(0 84% 35%) 100%)"
+        }}>
+          <h2 className="text-white text-xl sm:text-2xl font-bold mb-2">Открой или модернизируй автосервис вместе с ATG</h2>
+          <Link href="/catalog">
+            <Button size="lg" className="mt-3 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg" data-testid="button-cta-calc">
+              Получить бесплатный расчёт оборудования
+            </Button>
+          </Link>
+        </section>
 
         {bottomBanner && (
           <section data-testid="section-bottom-banner">
