@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { FloatingContact } from "@/components/floating-contact";
 import { SplashScreen } from "@/components/splash-screen";
 import { useState, useCallback } from "react";
 import Home from "@/pages/home";
@@ -50,6 +51,7 @@ function App() {
           </main>
           <Footer />
         </div>
+        <FloatingContact />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
