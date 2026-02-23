@@ -60,14 +60,14 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           style={{
             top: 0,
             bottom: 0,
-            width: "120px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12) 30%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.12) 70%, transparent)",
+            width: "150px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.1) 70%, transparent)",
             transform: "skewX(-20deg)",
             zIndex: 20,
           }}
-          initial={{ left: "-10%" }}
-          animate={{ left: "110%" }}
-          transition={{ duration: 0.8, delay: 1.0, ease: "easeInOut" }}
+          initial={{ left: "-15%" }}
+          animate={{ left: "115%" }}
+          transition={{ duration: 0.5, delay: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
         />
 
         <div className="relative flex flex-col items-center justify-center">
@@ -80,6 +80,12 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             <div className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center">
               <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
+            <motion.div
+              className="absolute inset-0 rounded-2xl border-2 border-white/20"
+              initial={{ scale: 1, opacity: 0.8 }}
+              animate={{ scale: 1.6, opacity: 0 }}
+              transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+            />
           </motion.div>
 
         </div>
