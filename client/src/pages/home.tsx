@@ -194,7 +194,7 @@ export default function Home() {
 
         <section data-testid="section-bestsellers">
           <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
-            <h2 className="text-lg font-bold">Хиты продаж</h2>
+            <h2 className="text-xl sm:text-2xl font-bold">Хиты продаж</h2>
             <Link href="/catalog">
               <Button variant="ghost" size="sm" data-testid="button-view-all-bestsellers">
                 Смотреть все
@@ -245,7 +245,7 @@ export default function Home() {
         {(discounted && discounted.length > 0) && (
           <section data-testid="section-discounts">
             <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
-              <h2 className="text-lg font-bold">Скидки</h2>
+              <h2 className="text-xl sm:text-2xl font-bold">Скидки</h2>
               <Link href="/discounts">
                 <Button variant="ghost" size="sm" data-testid="button-view-all-discounts">
                   Смотреть все
@@ -279,7 +279,7 @@ export default function Home() {
 
         {services && services.length > 0 && (
           <section data-testid="section-services">
-            <h2 className="text-lg font-bold mb-6">Наши услуги</h2>
+            <h2 className="text-xl sm:text-2xl font-bold mb-6">Наши услуги</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {services.map((service) => {
                 const iconAnim = serviceIconAnimations[service.icon] || "animate-spin-slow";
@@ -306,7 +306,7 @@ export default function Home() {
         {newsList && newsList.length > 0 && (
           <section data-testid="section-news">
             <div className="flex items-center justify-between gap-4 mb-4 flex-wrap">
-              <h2 className="text-lg font-bold">Новости</h2>
+              <h2 className="text-xl sm:text-2xl font-bold">Новости</h2>
               <Link href="/news">
                 <Button variant="ghost" size="sm" data-testid="button-view-all-news">
                   Смотреть все
