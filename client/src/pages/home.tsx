@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck } from "lucide-react";
+import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin, MessageCircle } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
@@ -83,6 +83,28 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-10">
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
+        <section data-testid="section-hero-intro" className="text-center py-8 sm:py-10">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight" data-testid="text-hero-title">
+            ATG — №1 поставщик автодиагностического<br className="hidden sm:block" /> оборудования в Таджикистане
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base mt-3 max-w-2xl mx-auto" data-testid="text-hero-subtitle">
+            Официальный дилер Autel, Thinkcar, Xtool, Sivik. Поставка, обучение и сервисная поддержка.
+          </p>
+          <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
+            <Link href="/catalog">
+              <Button size="lg" className="font-semibold shadow-lg" data-testid="button-hero-catalog">
+                Смотреть каталог
+              </Button>
+            </Link>
+            <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E" target="_blank" rel="noopener noreferrer">
+              <Button size="lg" variant="outline" className="font-semibold border-2" data-testid="button-hero-consult">
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Получить консультацию
+              </Button>
+            </a>
+          </div>
+        </section>
+
         {loadingBrands ? (
           <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -93,24 +115,23 @@ export default function Home() {
           <BrandsRibbon brands={brands || []} />
         )}
 
-        <section data-testid="section-why-atg">
-          <h2 className="text-lg font-bold mb-4">Почему выбирают ATG</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <section data-testid="section-trust" className="rounded-xl bg-muted/50 border p-6 sm:p-8">
+          <h2 className="text-lg font-bold text-center mb-6" data-testid="text-trust-title">Нам доверяют по всей Республике Таджикистан</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
-              { icon: CheckCircle, title: "Оригинальное оборудование", desc: "Работаем только с официальными производителями." },
-              { icon: Award, title: "Обучение и сертификация", desc: "Собственный учебный центр ATG." },
-              { icon: LifeBuoy, title: "Сервис и поддержка", desc: "Консультации и техническая помощь." },
-              { icon: Truck, title: "Быстрая доставка", desc: "Склад в Душанбе. Всё в наличии." },
+              { icon: Calendar, value: "7+", label: "лет на рынке" },
+              { icon: Users, value: "1000+", label: "клиентов" },
+              { icon: GraduationCap, value: "300+", label: "обученных специалистов" },
+              { icon: Globe, value: "5+", label: "официальных дилерств" },
+              { icon: MapPin, value: "0 ₽", label: "доставка по Душанбе" },
             ].map((item) => (
-              <Card key={item.title} className="p-5 flex flex-col items-center text-center gap-3" data-testid={`card-why-${item.title}`}>
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-primary" />
+              <div key={item.label} className="flex flex-col items-center text-center gap-2" data-testid={`stat-trust-${item.label}`}>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                  <h4 className="font-semibold text-sm">{item.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-                </div>
-              </Card>
+                <span className="text-xl sm:text-2xl font-extrabold text-primary">{item.value}</span>
+                <span className="text-xs text-muted-foreground leading-tight">{item.label}</span>
+              </div>
             ))}
           </div>
         </section>
