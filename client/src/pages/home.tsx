@@ -107,9 +107,11 @@ export default function Home() {
           {loadingBestsellers ? (
             <ProductsSkeleton />
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
               {(bestsellers || []).map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <div key={product.id} className="w-48 sm:w-56 shrink-0">
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           )}
@@ -156,9 +158,11 @@ export default function Home() {
             {loadingDiscounted ? (
               <ProductsSkeleton />
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {discounted.slice(0, 4).map((product) => (
-                  <ProductCard key={product.id} product={product} />
+              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+                {discounted.map((product) => (
+                  <div key={product.id} className="w-48 sm:w-56 shrink-0">
+                    <ProductCard product={product} />
+                  </div>
                 ))}
               </div>
             )}
