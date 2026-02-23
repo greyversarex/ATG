@@ -107,7 +107,7 @@ export default function Home() {
           {loadingBestsellers ? (
             <ProductsSkeleton />
           ) : (
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-2 ribbon-scroll -mx-4 px-4">
               {(bestsellers || []).map((product) => (
                 <div key={product.id} className="w-48 sm:w-56 shrink-0">
                   <ProductCard product={product} />
@@ -158,7 +158,7 @@ export default function Home() {
             {loadingDiscounted ? (
               <ProductsSkeleton />
             ) : (
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+              <div className="flex gap-4 overflow-x-auto pb-2 ribbon-scroll -mx-4 px-4">
                 {discounted.map((product) => (
                   <div key={product.id} className="w-48 sm:w-56 shrink-0">
                     <ProductCard product={product} />
@@ -202,7 +202,7 @@ export default function Home() {
                 </Button>
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-2 ribbon-scroll -mx-4 px-4">
               {newsList.map((item) => (
                 <Link key={item.id} href="/news" data-testid={`link-home-news-${item.id}`}>
                   <div className="w-64 sm:w-72 shrink-0">
