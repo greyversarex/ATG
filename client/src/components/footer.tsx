@@ -13,7 +13,7 @@ export function Footer() {
             <div className="flex items-center gap-2.5 mb-2">
               <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md mt-[-47px] mb-[-47px] pt-[0px] pb-[0px] pl-[0px] pr-[0px] ml-[-17px] mr-[-17px]" />
             </div>
-            <p className="text-sm opacity-60 leading-relaxed">
+            <p className="text-sm opacity-80 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
             </p>
           </div>
@@ -30,9 +30,9 @@ export function Footer() {
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href}>
-                    <span className="text-sm opacity-60 cursor-pointer transition-opacity duration-200" style={{ textDecoration: "none" }}
+                    <span className="text-sm opacity-80 cursor-pointer transition-opacity duration-200" style={{ textDecoration: "none" }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                      onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.6")}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
                       data-testid={`footer-${item.href.slice(1)}`}
                     >
                       {item.label}
@@ -47,20 +47,20 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-4 text-white">Контакты</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
-                <Phone className="w-4 h-4 mt-0.5 opacity-50 shrink-0" />
-                <a href="tel:+992176100100" className="text-sm opacity-60" data-testid="footer-phone">
+                <Phone className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
+                <a href="tel:+992176100100" className="text-sm opacity-80" data-testid="footer-phone">
                   +992 17 610 01 00
                 </a>
               </li>
               <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 mt-0.5 opacity-50 shrink-0" />
-                <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-sm opacity-60" data-testid="footer-email">
+                <Mail className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
+                <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-sm opacity-80" data-testid="footer-email">
                   Amirtechgroup.tj@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 opacity-50 shrink-0" />
-                <span className="text-sm opacity-60" data-testid="footer-address">
+                <MapPin className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
+                <span className="text-sm opacity-80" data-testid="footer-address">
                   г. Душанбе, р-н Сино, ул. Рахмон Набиев, 2 гузаргох
                 </span>
               </li>
@@ -86,7 +86,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-6">
-          <p className="text-center text-xs opacity-40" data-testid="text-copyright">
+          <p className="text-center text-xs opacity-60" data-testid="text-copyright">
             &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). Все права защищены.
           </p>
         </div>
