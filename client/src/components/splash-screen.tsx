@@ -62,7 +62,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             animate={{ scale: 1, rotate: 0 }}
             transition={{ duration: 0.7, type: "spring", bounce: 0.4 }}
           >
-            <div className="w-72 h-72 sm:w-80 sm:h-80 flex items-center justify-center">
+            <div className="w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
               <img src="/images/atg-logo.png" alt="ATG" className="w-full h-full object-contain drop-shadow-2xl" />
             </div>
             <motion.div
@@ -73,17 +73,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             />
           </motion.div>
 
-          <motion.p
-            className="text-white/60 text-sm sm:text-base tracking-widest uppercase mt-4"
-            initial={{ opacity: 0, letterSpacing: "0.5em" }}
-            animate={{
-              opacity: phase === "logo" ? 0 : 1,
-              letterSpacing: phase === "logo" ? "0.5em" : "0.2em",
-            }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          >
-            ATG.TJ
-          </motion.p>
         </div>
       </motion.div>
     </AnimatePresence>
