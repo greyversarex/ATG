@@ -110,7 +110,7 @@ export function Header() {
         <div className="flex items-center justify-between gap-3 h-16">
           <Link href="/" data-testid="link-home">
             <div className="flex items-center gap-2.5 cursor-pointer">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-20 object-contain drop-shadow-md" />
+              <img src="/images/atg-logo.png" alt="ATG" className="h-28 object-contain drop-shadow-md" />
             </div>
           </Link>
 
