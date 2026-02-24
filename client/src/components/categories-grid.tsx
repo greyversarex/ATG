@@ -11,8 +11,8 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
 
   return (
     <section data-testid="section-categories">
-      <h2 className="text-lg font-bold mb-4">Категории товаров</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+      <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Категории товаров</h2>
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
         {categories.map((cat) => (
           <Link key={cat.id} href={`/catalog?category=${cat.id}`} data-testid={`link-category-${cat.id}`}>
             <Card
@@ -29,8 +29,8 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
                   loading="lazy"
                 />
               </div>
-              <div className="p-2 text-center">
-                <span className="text-xs font-semibold leading-tight line-clamp-2" data-testid={`text-category-name-${cat.id}`}>
+              <div className="p-1.5 sm:p-2 text-center">
+                <span className="text-[10px] sm:text-xs font-semibold leading-tight line-clamp-2" data-testid={`text-category-name-${cat.id}`}>
                   {cat.name}
                 </span>
               </div>

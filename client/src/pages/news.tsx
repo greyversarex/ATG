@@ -12,11 +12,11 @@ export default function NewsPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6" data-testid="text-news-title">Новости</h1>
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" data-testid="text-news-title">Новости</h1>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="space-y-2">
               <Skeleton className="aspect-video rounded-xl" />
@@ -26,9 +26,9 @@ export default function NewsPage() {
           ))}
         </div>
       ) : !newsList?.length ? (
-        <p className="text-center text-muted-foreground py-16">Новостей пока нет</p>
+        <p className="text-center text-muted-foreground py-16 text-sm">Новостей пока нет</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {newsList.map((item) => (
             <Card key={item.id} className="overflow-visible group" data-testid={`card-news-${item.id}`}>
               <div className="aspect-video overflow-hidden rounded-t-xl">
@@ -39,18 +39,18 @@ export default function NewsPage() {
                   loading="lazy"
                 />
               </div>
-              <div className="p-4">
-                <time className="text-xs text-muted-foreground" data-testid={`text-news-date-${item.id}`}>
+              <div className="p-3 sm:p-4">
+                <time className="text-[10px] sm:text-xs text-muted-foreground" data-testid={`text-news-date-${item.id}`}>
                   {new Date(item.date).toLocaleDateString("ru-RU", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
                 </time>
-                <h3 className="font-semibold text-sm mt-1.5 mb-2" data-testid={`text-news-title-${item.id}`}>
+                <h3 className="font-semibold text-xs sm:text-sm mt-1 sm:mt-1.5 mb-1.5 sm:mb-2" data-testid={`text-news-title-${item.id}`}>
                   {item.title}
                 </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed line-clamp-3">
                   {item.content}
                 </p>
               </div>

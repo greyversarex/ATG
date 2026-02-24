@@ -10,8 +10,8 @@ export function BrandsRibbon({ brands }: BrandsRibbonProps) {
 
   return (
     <section data-testid="section-brands-ribbon">
-      <h2 className="text-lg font-bold mb-4">Бренды</h2>
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+      <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Бренды</h2>
+      <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
         {brands.map((brand) => (
           <Link key={brand.id} href={`/catalog?brand=${brand.id}`}>
             <div

@@ -12,19 +12,19 @@ export default function Brands() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6" data-testid="text-brands-title">Бренды</h1>
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" data-testid="text-brands-title">Бренды</h1>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
             <Skeleton key={i} className="aspect-[3/2] rounded-lg" />
           ))}
         </div>
       ) : !brands?.length ? (
-        <p className="text-center text-muted-foreground py-16">Бренды не найдены</p>
+        <p className="text-center text-muted-foreground py-16 text-sm">Бренды не найдены</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4">
           {brands.map((brand) => (
             <Link key={brand.id} href={`/catalog?brand=${brand.id}`}>
               <div

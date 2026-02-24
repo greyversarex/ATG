@@ -4,6 +4,7 @@
 Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading supplier of automotive parts and diagnostic equipment in Tajikistan. The site features a product catalog, brand pages, news section, admin panel, and company information.
 
 ## Recent Changes
+- 2026-02-24: Comprehensive mobile optimization — all pages, components, header, footer, catalog filters (bottom sheet), hero slider (4:3 mobile, prev/next buttons), product cards (compact), floating contact, splash screen (min() sizing), consistent responsive breakpoints across all pages
 - 2026-02-24: Added favorites/wishlist feature — heart button on product cards, favorites counter in header, dedicated /favorites page, localStorage-based (no auth required)
 - 2026-02-24: Fixed production session management — manual session table creation, fallback SESSION_SECRET, removed dependency on connect-pg-simple's table.sql file
 - 2026-02-24: Full SEO optimization — meta tags (OG, Twitter, geo, keywords), JSON-LD structured data (Organization, LocalBusiness, WebSite), dynamic page titles/descriptions per route, robots.txt, sitemap.xml, noscript fallback content, optimized Google Fonts loading (Inter only)

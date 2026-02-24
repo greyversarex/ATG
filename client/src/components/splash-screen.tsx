@@ -54,7 +54,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
 
         <div className="relative flex items-center justify-center">
           <motion.div
-            className="w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center"
+            className="w-[min(20rem,80vw)] h-[min(20rem,80vw)] sm:w-[28rem] sm:h-[28rem] flex items-center justify-center"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
@@ -63,7 +63,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           </motion.div>
 
           <motion.div
-            className="absolute w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] rounded-full"
+            className="absolute w-[min(20rem,80vw)] h-[min(20rem,80vw)] sm:w-[28rem] sm:h-[28rem] rounded-full"
             style={{
               background: "radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)",
             }}
@@ -73,7 +73,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           />
 
           <motion.div
-            className="absolute w-[22rem] h-[22rem] sm:w-[28rem] sm:h-[28rem] rounded-full border border-white/20"
+            className="absolute w-[min(20rem,80vw)] h-[min(20rem,80vw)] sm:w-[28rem] sm:h-[28rem] rounded-full border border-white/20"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 2, opacity: [0, 0.5, 0] }}
             transition={{ duration: 1.4, delay: 0.5, ease: "easeOut" }}

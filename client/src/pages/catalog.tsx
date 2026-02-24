@@ -103,7 +103,7 @@ export default function Catalog() {
       {categories && categories.length > 0 && (
         <div>
           <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">Категории</h4>
-          <div className="space-y-0.5">
+          <div className="space-y-0.5 max-h-[40vh] overflow-y-auto lg:max-h-none">
             {categories.map((cat) => (
               <FilterCheckbox
                 key={cat.id}
@@ -157,7 +157,7 @@ export default function Catalog() {
       </div>
 
       {hasFilters && (
-        <Button variant="destructive" size="sm" className="w-full" onClick={clearFilters} data-testid="button-clear-filters">
+        <Button variant="destructive" size="sm" className="w-full" onClick={() => { clearFilters(); setShowFilters(false); }} data-testid="button-clear-filters">
           <X className="w-3.5 h-3.5 mr-1.5" />
           Сбросить фильтры
         </Button>
@@ -166,44 +166,56 @@ export default function Catalog() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-        <h1 className="text-2xl font-bold" data-testid="text-catalog-title">Каталог</h1>
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold" data-testid="text-catalog-title">Каталог</h1>
         <Button
           variant="outline"
           size="sm"
-          className="lg:hidden"
+          className="lg:hidden text-xs sm:text-sm"
           onClick={() => setShowFilters(!showFilters)}
           data-testid="button-toggle-filters"
         >
           <Filter className="w-4 h-4 mr-1" />
           Фильтры
+          {hasFilters && <span className="ml-1 w-2 h-2 rounded-full bg-primary" />}
         </Button>
       </div>
 
       <div className="flex gap-6">
+        {showFilters && (
+          <div
+            className="lg:hidden fixed inset-0 z-40 bg-black/40"
+            onClick={() => setShowFilters(false)}
+          />
+        )}
         <aside
           className={`${
-            showFilters ? "block fixed inset-0 z-40 bg-background p-4 overflow-y-auto" : "hidden"
-          } lg:block lg:relative lg:z-auto lg:bg-transparent lg:p-0 w-full lg:w-60 shrink-0`}
+            showFilters
+              ? "fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl shadow-2xl max-h-[85dvh] overflow-y-auto animate-in slide-in-from-bottom duration-200"
+              : "hidden"
+          } lg:block lg:relative lg:z-auto lg:bg-transparent lg:rounded-none lg:shadow-none lg:max-h-none lg:animate-none w-full lg:w-60 shrink-0`}
         >
-          <div className="flex items-center justify-between lg:hidden mb-4">
+          <div className="flex items-center justify-between lg:hidden p-4 pb-2 sticky top-0 bg-background z-10">
             <h3 className="font-bold text-lg">Фильтры</h3>
             <Button size="icon" variant="ghost" onClick={() => setShowFilters(false)} data-testid="button-close-filters">
               <X />
             </Button>
           </div>
+          <div className="w-full h-1 flex justify-center lg:hidden -mt-1 mb-1">
+            <div className="w-10 h-1 rounded-full bg-muted-foreground/20" />
+          </div>
 
-          <div className="bg-card border border-border rounded-md p-4">
+          <div className="bg-card border border-border rounded-md p-4 mx-4 mb-4 lg:mx-0 lg:mb-0">
             {filterContent}
           </div>
         </aside>
 
         <div className="flex-1 min-w-0">
           {searchText && (
-            <div className="flex items-center gap-2 mb-4 flex-wrap">
-              <span className="text-sm text-muted-foreground">Результаты по запросу:</span>
-              <span className="text-sm font-semibold">"{searchText}"</span>
+            <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
+              <span className="text-xs sm:text-sm text-muted-foreground">Результаты:</span>
+              <span className="text-xs sm:text-sm font-semibold">"{searchText}"</span>
               <Button variant="ghost" size="sm" onClick={() => setSearchText("")} data-testid="button-clear-search">
                 <X className="w-3.5 h-3.5" />
               </Button>
@@ -211,18 +223,18 @@ export default function Catalog() {
           )}
 
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="aspect-square rounded-xl" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-3 sm:h-4 w-3/4" />
+                  <Skeleton className="h-3 sm:h-4 w-1/2" />
                 </div>
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground" data-testid="text-no-products">Товары не найдены</p>
+            <div className="text-center py-12 sm:py-16">
+              <p className="text-muted-foreground text-sm" data-testid="text-no-products">Товары не найдены</p>
               {hasFilters && (
                 <Button variant="outline" size="sm" className="mt-3" onClick={clearFilters}>
                   Сбросить фильтры
@@ -231,10 +243,10 @@ export default function Catalog() {
             </div>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground mb-4" data-testid="text-products-count">
-                Найдено: {filtered.length} товар(ов)
+              <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4" data-testid="text-products-count">
+                Найдено: {filtered.length}
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {filtered.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

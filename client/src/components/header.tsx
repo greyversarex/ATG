@@ -85,6 +85,19 @@ export function Header() {
   const { count } = useFavorites();
 
   useEffect(() => {
+    setMobileOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
+  useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setSearchOpen(false);
@@ -108,11 +121,11 @@ export function Header() {
       background: "linear-gradient(135deg, hsl(0 84% 38%) 0%, hsl(0 84% 48%) 40%, hsl(0 75% 42%) 70%, hsl(0 84% 35%) 100%)",
       boxShadow: "0 4px 20px rgba(0,0,0,0.25)"
     }}>
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between gap-3 h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 h-14 sm:h-16">
           <Link href="/" data-testid="link-home">
-            <div className="flex items-center gap-2.5 cursor-pointer">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-28 object-contain drop-shadow-md" />
+            <div className="flex items-center gap-2 cursor-pointer shrink-0">
+              <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md" />
             </div>
           </Link>
 
@@ -134,14 +147,14 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <div ref={searchRef} className="relative hidden sm:block mr-1">
               <form onSubmit={handleSearchSubmit} className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="text"
                   placeholder="Поиск товаров..."
-                  className="w-56 md:w-80 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
+                  className="w-44 md:w-80 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -189,79 +202,85 @@ export function Header() {
             <Button
               size="icon"
               variant="ghost"
-              className="lg:hidden text-white no-default-hover-elevate no-default-active-elevate hover:bg-white/10"
+              className="lg:hidden text-white no-default-hover-elevate no-default-active-elevate hover:bg-white/10 w-9 h-9"
               onClick={() => setMobileOpen(!mobileOpen)}
               data-testid="button-mobile-menu"
             >
-              {mobileOpen ? <X /> : <Menu />}
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden border-t border-white/15" style={{
-          background: "linear-gradient(180deg, hsl(0 84% 42%) 0%, hsl(0 84% 38%) 100%)"
-        }}>
-          <nav className="flex flex-col p-4 gap-1">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (searchQuery.trim().length >= 2) {
-                  setLoc(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
-                  setMobileOpen(false);
-                  setSearchQuery("");
-                }
-              }}
-              className="relative sm:hidden mb-2"
-            >
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" />
-              <Input
-                type="text"
-                placeholder="Поиск товаров..."
-                className="w-full pl-8 text-sm bg-white/15 border-white/20 text-white placeholder:text-white/50"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                data-testid="input-search-mobile"
-              />
-            </form>
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href}>
+        <>
+          <div
+            className="lg:hidden fixed inset-0 top-14 sm:top-16 bg-black/40 z-40"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="lg:hidden fixed left-0 right-0 top-14 sm:top-16 z-50 border-t border-white/15 max-h-[calc(100dvh-3.5rem)] sm:max-h-[calc(100dvh-4rem)] overflow-y-auto" style={{
+            background: "linear-gradient(180deg, hsl(0 84% 42%) 0%, hsl(0 84% 38%) 100%)"
+          }}>
+            <nav className="flex flex-col p-3 gap-0.5">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (searchQuery.trim().length >= 2) {
+                    setLoc(`/catalog?search=${encodeURIComponent(searchQuery.trim())}`);
+                    setMobileOpen(false);
+                    setSearchQuery("");
+                  }
+                }}
+                className="relative sm:hidden mb-2"
+              >
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" />
+                <Input
+                  type="text"
+                  placeholder="Поиск товаров..."
+                  className="w-full pl-8 text-sm bg-white/15 border-white/20 text-white placeholder:text-white/50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  data-testid="input-search-mobile"
+                />
+              </form>
+              {navItems.map((item) => (
+                <Link key={item.href} href={item.href}>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start no-default-hover-elevate no-default-active-elevate h-11 ${
+                      location === item.href
+                        ? "bg-white/20 text-white"
+                        : "text-white/90 hover:bg-white/10 hover:text-white"
+                    }`}
+                    onClick={() => setMobileOpen(false)}
+                    data-testid={`mobile-nav-${item.href.slice(1)}`}
+                  >
+                    {item.label}
+                  </Button>
+                </Link>
+              ))}
+              <Link href="/favorites">
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start no-default-hover-elevate no-default-active-elevate ${
-                    location === item.href
+                  className={`w-full justify-start no-default-hover-elevate no-default-active-elevate h-11 ${
+                    location === "/favorites"
                       ? "bg-white/20 text-white"
                       : "text-white/90 hover:bg-white/10 hover:text-white"
                   }`}
                   onClick={() => setMobileOpen(false)}
-                  data-testid={`mobile-nav-${item.href.slice(1)}`}
+                  data-testid="mobile-nav-favorites"
                 >
-                  {item.label}
+                  <Heart className="w-4 h-4 mr-2" />
+                  Избранное {count > 0 && `(${count})`}
                 </Button>
               </Link>
-            ))}
-            <Link href="/favorites">
-              <Button
-                variant="ghost"
-                className={`w-full justify-start no-default-hover-elevate no-default-active-elevate ${
-                  location === "/favorites"
-                    ? "bg-white/20 text-white"
-                    : "text-white/90 hover:bg-white/10 hover:text-white"
-                }`}
-                onClick={() => setMobileOpen(false)}
-                data-testid="mobile-nav-favorites"
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Избранное {count > 0 && `(${count})`}
-              </Button>
-            </Link>
-            <a href="tel:+992176100100" className="flex items-center gap-2 px-4 py-2 text-sm text-white/70">
-              <Phone className="w-4 h-4" />
-              +992 17 610 01 00
-            </a>
-          </nav>
-        </div>
+              <a href="tel:+992176100100" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/70 md:hidden">
+                <Phone className="w-4 h-4" />
+                +992 17 610 01 00
+              </a>
+            </nav>
+          </div>
+        </>
       )}
     </header>
   );

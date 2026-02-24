@@ -29,9 +29,15 @@
 .ribbon-scroll {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border)) transparent;
+  -webkit-overflow-scrolling: touch;
 }
 .ribbon-scroll::-webkit-scrollbar {
-  height: 6px;
+  height: 4px;
+}
+@media (min-width: 640px) {
+  .ribbon-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
 }
 .ribbon-scroll::-webkit-scrollbar-track {
   background: transparent;

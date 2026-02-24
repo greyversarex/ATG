@@ -7,36 +7,36 @@ export function Footer() {
       background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 84% 45%) 30%, hsl(0 75% 40%) 60%, hsl(0 84% 32%) 100%)",
       color: "hsl(0 0% 95%)"
     }}>
-      <div className="max-w-7xl mx-auto px-4 pt-8 pb-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-6 sm:pt-8 pb-4 sm:pb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2.5 mb-2">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md mt-[-47px] mb-[-47px] pl-0 pr-0 ml-[-17px] mr-[-17px]" />
+              <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md" />
             </div>
-            <p className="text-sm opacity-80 leading-relaxed">
+            <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
             </p>
-            <p className="text-sm opacity-80 leading-relaxed mt-1.5">
+            <p className="text-xs sm:text-sm opacity-80 leading-relaxed mt-1.5 hidden sm:block">
               №1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.
             </p>
             <div className="flex items-center gap-2 mt-3">
               <Link href="/catalog">
-                <span className="inline-flex items-center px-3 py-1.5 rounded text-xs font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow-sm" data-testid="button-footer-catalog">
-                  Смотреть каталог
+                <span className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow-sm" data-testid="button-footer-catalog">
+                  Каталог
                 </span>
               </Link>
               <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82" target="_blank" rel="noopener noreferrer">
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-xs font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-estimate">
+                <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-estimate">
                   <MessageCircle className="w-3 h-3" />
-                  Получить расчёт
+                  Расчёт
                 </span>
               </a>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold text-sm mb-4 text-white">Навигация</h4>
-            <ul className="space-y-2">
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Навигация</h4>
+            <ul className="space-y-1.5 sm:space-y-2">
               {[
                 { label: "Каталог", href: "/catalog" },
                 { label: "Бренды", href: "/brands" },
@@ -46,7 +46,7 @@ export function Footer() {
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href}>
-                    <span className="text-sm opacity-80 cursor-pointer transition-opacity duration-200" style={{ textDecoration: "none" }}
+                    <span className="text-xs sm:text-sm opacity-80 cursor-pointer transition-opacity duration-200" style={{ textDecoration: "none" }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
                       data-testid={`footer-${item.href.slice(1)}`}
@@ -60,32 +60,32 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-sm mb-4 text-white">Контакты</h4>
-            <ul className="space-y-3">
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Контакты</h4>
+            <ul className="space-y-2 sm:space-y-3">
               <li className="flex items-start gap-2">
-                <Phone className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                <a href="tel:+992176100100" className="text-sm opacity-80" data-testid="footer-phone">
+                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 opacity-70 shrink-0" />
+                <a href="tel:+992176100100" className="text-xs sm:text-sm opacity-80" data-testid="footer-phone">
                   +992 17 610 01 00
                 </a>
               </li>
               <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-sm opacity-80" data-testid="footer-email">
+                <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 opacity-70 shrink-0" />
+                <a href="mailto:Amirtechgroup.tj@gmail.com" className="text-xs sm:text-sm opacity-80 break-all" data-testid="footer-email">
                   Amirtechgroup.tj@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 opacity-70 shrink-0" />
-                <span className="text-sm opacity-80" data-testid="footer-address">
-                  г. Душанбе, р-н Сино, ул. Рахмон Набиев, 2 гузаргох
+                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 opacity-70 shrink-0" />
+                <span className="text-xs sm:text-sm opacity-80" data-testid="footer-address">
+                  г. Душанбе, р-н Сино, ул. Рахмон Набиев
                 </span>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-semibold text-sm mb-4 text-white">Наше расположение</h4>
-            <div className="rounded-md overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1">
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Наше расположение</h4>
+            <div className="rounded-md overflow-hidden shadow-md" style={{ aspectRatio: "16/9" }}>
               <iframe
                 src="https://maps.google.com/maps?q=38.5437,68.8068&z=16&output=embed&hl=ru"
                 width="100%"
@@ -102,32 +102,32 @@ export function Footer() {
               href="https://www.google.com/maps/dir/?api=1&destination=38.5437,68.8068&travelmode=driving"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 flex items-center justify-center gap-1.5 text-xs font-medium bg-white/15 hover:bg-white/25 transition-colors rounded-md py-2 px-3"
+              className="mt-2 flex items-center justify-center gap-1.5 text-[10px] sm:text-xs font-medium bg-white/15 hover:bg-white/25 transition-colors rounded-md py-1.5 sm:py-2 px-3"
               data-testid="button-footer-directions"
             >
-              <Navigation className="w-3.5 h-3.5" />
+              <Navigation className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               Построить маршрут
             </a>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mt-6 pt-6 border-t border-white/10 text-center">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-8 gap-y-2 mt-5 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10 text-center">
           {[
             { num: "7+", label: "лет на рынке" },
             { num: "1000+", label: "клиентов" },
-            { num: "300+", label: "обученных специалистов" },
-            { num: "5+", label: "официальных дилерств" },
-            { num: "0 с.", label: "доставка по Душанбе" },
+            { num: "300+", label: "специалистов" },
+            { num: "5+", label: "дилерств" },
+            { num: "0 с.", label: "доставка" },
           ].map((s) => (
             <div key={s.label} className="flex flex-col items-center">
-              <span className="text-base font-extrabold text-white">{s.num}</span>
-              <span className="text-[10px] opacity-60">{s.label}</span>
+              <span className="text-sm sm:text-base font-extrabold text-white">{s.num}</span>
+              <span className="text-[9px] sm:text-[10px] opacity-60">{s.label}</span>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-white/10 mt-6 pt-4">
-          <p className="text-center text-xs opacity-60" data-testid="text-copyright">
+        <div className="border-t border-white/10 mt-4 sm:mt-6 pt-3 sm:pt-4">
+          <p className="text-center text-[10px] sm:text-xs opacity-60" data-testid="text-copyright">
             &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). Все права защищены.
           </p>
         </div>
