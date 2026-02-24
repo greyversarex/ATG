@@ -11,7 +11,7 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
 import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
@@ -282,6 +282,25 @@ function BrandsAdmin() {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: (items: { id: string; sortOrder: number }[]) =>
+      apiRequest("PATCH", "/api/admin/brands/reorder", { items }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/brands"] });
+    },
+  });
+
+  const moveBrand = (index: number, direction: "up" | "down") => {
+    if (!brands) return;
+    const swapIndex = direction === "up" ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= brands.length) return;
+    const items = [
+      { id: brands[index].id, sortOrder: brands[swapIndex].sortOrder },
+      { id: brands[swapIndex].id, sortOrder: brands[index].sortOrder },
+    ];
+    reorderMutation.mutate(items);
+  };
+
   const startEdit = (b: Brand) => {
     setEditingId(b.id);
     setForm({ name: b.name, image: b.image || "" });
@@ -323,9 +342,18 @@ function BrandsAdmin() {
         </div>
       </Card>
       <div className="space-y-2">
-        {brands?.map((b) => (
+        {brands?.map((b, i) => (
           <div key={b.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-brand-${b.id}`}>
             <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-0.5">
+                <Button size="icon" variant="ghost" className="h-5 w-5" disabled={i === 0 || reorderMutation.isPending} onClick={() => moveBrand(i, "up")} data-testid={`button-brand-up-${b.id}`}>
+                  <ArrowUp className="w-3 h-3" />
+                </Button>
+                <Button size="icon" variant="ghost" className="h-5 w-5" disabled={i === (brands?.length ?? 0) - 1 || reorderMutation.isPending} onClick={() => moveBrand(i, "down")} data-testid={`button-brand-down-${b.id}`}>
+                  <ArrowDown className="w-3 h-3" />
+                </Button>
+              </div>
+              <span className="text-xs text-muted-foreground w-5 text-center">{i + 1}</span>
               {b.image && <img src={b.image} alt="" className="w-10 h-10 object-contain rounded-md bg-muted shrink-0" />}
               <span className="text-sm font-medium">{b.name}</span>
             </div>
@@ -379,6 +407,25 @@ function CategoriesAdmin() {
     },
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: (items: { id: string; sortOrder: number }[]) =>
+      apiRequest("PATCH", "/api/admin/categories/reorder", { items }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+    },
+  });
+
+  const moveCategory = (index: number, direction: "up" | "down") => {
+    if (!categories) return;
+    const swapIndex = direction === "up" ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= categories.length) return;
+    const items = [
+      { id: categories[index].id, sortOrder: categories[swapIndex].sortOrder },
+      { id: categories[swapIndex].id, sortOrder: categories[index].sortOrder },
+    ];
+    reorderMutation.mutate(items);
+  };
+
   const startEdit = (c: Category) => {
     setEditingId(c.id);
     setForm({ name: c.name, image: c.image || "", parentId: c.parentId || "" });
@@ -427,11 +474,21 @@ function CategoriesAdmin() {
         </div>
       </Card>
       <div className="space-y-2">
-        {categories?.map((c) => (
+        {categories?.map((c, i) => (
           <div key={c.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-category-${c.id}`}>
             <div className="flex items-center gap-3">
+              <div className="flex flex-col gap-0.5">
+                <Button size="icon" variant="ghost" className="h-5 w-5" disabled={i === 0 || reorderMutation.isPending} onClick={() => moveCategory(i, "up")} data-testid={`button-category-up-${c.id}`}>
+                  <ArrowUp className="w-3 h-3" />
+                </Button>
+                <Button size="icon" variant="ghost" className="h-5 w-5" disabled={i === (categories?.length ?? 0) - 1 || reorderMutation.isPending} onClick={() => moveCategory(i, "down")} data-testid={`button-category-down-${c.id}`}>
+                  <ArrowDown className="w-3 h-3" />
+                </Button>
+              </div>
+              <span className="text-xs text-muted-foreground w-5 text-center">{i + 1}</span>
               {c.image && <img src={c.image} alt="" className="w-10 h-10 object-contain rounded-md bg-muted shrink-0" />}
               <span className="text-sm font-medium">{c.name}</span>
+              {c.parentId && <span className="text-xs text-muted-foreground">(подкатегория)</span>}
             </div>
             <div className="flex items-center gap-1">
               <Button size="icon" variant="ghost" onClick={() => startEdit(c)} data-testid={`button-edit-category-${c.id}`}>

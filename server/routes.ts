@@ -213,6 +213,30 @@ export async function registerRoutes(
   // Admin routes — protected by auth
   app.use("/api/admin", requireAuth);
 
+  app.patch("/api/admin/brands/reorder", async (req, res) => {
+    try {
+      const items: { id: string; sortOrder: number }[] = req.body.items;
+      for (const item of items) {
+        await storage.updateBrand(item.id, { sortOrder: item.sortOrder });
+      }
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ message: "Ошибка при изменении порядка" });
+    }
+  });
+
+  app.patch("/api/admin/categories/reorder", async (req, res) => {
+    try {
+      const items: { id: string; sortOrder: number }[] = req.body.items;
+      for (const item of items) {
+        await storage.updateCategory(item.id, { sortOrder: item.sortOrder });
+      }
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ message: "Ошибка при изменении порядка" });
+    }
+  });
+
   app.post("/api/admin/brands", async (req, res) => {
     try {
       const validated = insertBrandSchema.parse(req.body);
