@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Phone } from "lucide-react";
-import { usePageTitle } from "@/hooks/use-page-title";
+import { useProductPageTitle } from "@/hooks/use-page-title";
 import type { Product, Brand, Category } from "@shared/schema";
 
 export default function ProductDetail() {
@@ -25,7 +25,7 @@ export default function ProductDetail() {
     enabled: !!product?.categoryId,
   });
 
-  usePageTitle(product?.name || "Товар");
+  useProductPageTitle(product?.name || "Товар", brand?.name);
 
   if (isLoading) {
     return (

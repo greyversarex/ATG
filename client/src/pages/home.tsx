@@ -45,7 +45,7 @@ const serviceIconAnimations: Record<string, string> = {
 };
 
 export default function Home() {
-  usePageTitle("Главная");
+  usePageTitle("");
 
   const { data: heroBanners, isLoading: loadingBanners } = useQuery<Banner[]>({
     queryKey: ["/api/banners", "hero"],
