@@ -8,21 +8,6 @@ export function Footer() {
       color: "hsl(0 0% 95%)"
     }}>
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-6">
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mb-6 pb-6 border-b border-white/10 text-center">
-          {[
-            { num: "7+", label: "лет на рынке" },
-            { num: "1000+", label: "клиентов" },
-            { num: "300+", label: "обученных специалистов" },
-            { num: "5+", label: "официальных дилерств" },
-            { num: "0 с.", label: "доставка по Душанбе" },
-          ].map((s) => (
-            <div key={s.label} className="flex flex-col items-center">
-              <span className="text-base font-extrabold text-white">{s.num}</span>
-              <span className="text-[10px] opacity-60">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
@@ -31,17 +16,17 @@ export function Footer() {
             <p className="text-sm opacity-80 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
             </p>
-            <p className="text-sm opacity-90 leading-relaxed mt-2 font-medium">
+            <p className="text-sm opacity-80 leading-relaxed mt-1.5">
               №1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.
             </p>
-            <div className="flex items-center gap-2 mt-3 flex-wrap">
+            <div className="flex items-center gap-2 mt-3">
               <Link href="/catalog">
-                <span className="inline-flex items-center px-3.5 py-1.5 rounded text-xs font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow-sm" data-testid="button-footer-catalog">
+                <span className="inline-flex items-center px-3 py-1.5 rounded text-xs font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow-sm" data-testid="button-footer-catalog">
                   Смотреть каталог
                 </span>
               </Link>
               <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82" target="_blank" rel="noopener noreferrer">
-                <span className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded text-xs font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-estimate">
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded text-xs font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-estimate">
                   <MessageCircle className="w-3 h-3" />
                   Получить расчёт
                 </span>
@@ -126,7 +111,22 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-8 pt-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mt-6 pt-6 border-t border-white/10 text-center">
+          {[
+            { num: "7+", label: "лет на рынке" },
+            { num: "1000+", label: "клиентов" },
+            { num: "300+", label: "обученных специалистов" },
+            { num: "5+", label: "официальных дилерств" },
+            { num: "0 с.", label: "доставка по Душанбе" },
+          ].map((s) => (
+            <div key={s.label} className="flex flex-col items-center">
+              <span className="text-base font-extrabold text-white">{s.num}</span>
+              <span className="text-[10px] opacity-60">{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="border-t border-white/10 mt-6 pt-4">
           <p className="text-center text-xs opacity-60" data-testid="text-copyright">
             &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). Все права защищены.
           </p>
