@@ -1,9 +1,10 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, Search } from "lucide-react";
+import { Menu, X, Phone, Search, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useFavorites } from "@/hooks/use-favorites";
 import type { Product } from "@shared/schema";
 
 const navItems = [
@@ -81,6 +82,7 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const [, setLoc] = useLocation();
+  const { count } = useFavorites();
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -160,6 +162,21 @@ export function Header() {
               )}
             </div>
 
+            <Link href="/favorites">
+              <button
+                className="relative flex items-center justify-center w-9 h-9 rounded-full transition-colors hover:bg-white/15 cursor-pointer"
+                data-testid="button-favorites-header"
+                aria-label="Избранное"
+              >
+                <Heart className={`w-5 h-5 ${count > 0 ? "fill-white text-white" : "text-white/80"}`} />
+                {count > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-white text-[10px] font-bold text-red-600 px-1 shadow-sm" data-testid="text-favorites-count">
+                    {count}
+                  </span>
+                )}
+              </button>
+            </Link>
+
             <a
               href="tel:+992176100100"
               className="hidden md:flex items-center gap-1.5 text-sm text-white/70"
@@ -224,6 +241,21 @@ export function Header() {
                 </Button>
               </Link>
             ))}
+            <Link href="/favorites">
+              <Button
+                variant="ghost"
+                className={`w-full justify-start no-default-hover-elevate no-default-active-elevate ${
+                  location === "/favorites"
+                    ? "bg-white/20 text-white"
+                    : "text-white/90 hover:bg-white/10 hover:text-white"
+                }`}
+                onClick={() => setMobileOpen(false)}
+                data-testid="mobile-nav-favorites"
+              >
+                <Heart className="w-4 h-4 mr-2" />
+                Избранное {count > 0 && `(${count})`}
+              </Button>
+            </Link>
             <a href="tel:+992176100100" className="flex items-center gap-2 px-4 py-2 text-sm text-white/70">
               <Phone className="w-4 h-4" />
               +992 17 610 01 00

@@ -2,6 +2,8 @@ import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Heart } from "lucide-react";
+import { useFavorites } from "@/hooks/use-favorites";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -9,6 +11,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { toggle, isFavorite } = useFavorites();
+  const liked = isFavorite(product.id);
   const discountedPrice = product.discountPercent
     ? product.price * (1 - product.discountPercent / 100)
     : null;
@@ -31,6 +35,22 @@ export function ProductCard({ product }: ProductCardProps) {
             </Badge>
           </div>
         ) : null}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggle(product.id);
+          }}
+          className="absolute top-2.5 right-2.5 w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all duration-200 hover:scale-110 hover:bg-white cursor-pointer"
+          data-testid={`button-favorite-${product.id}`}
+          aria-label={liked ? "Удалить из избранного" : "Добавить в избранное"}
+        >
+          <Heart
+            className={`w-4.5 h-4.5 transition-colors duration-200 ${
+              liked ? "fill-red-500 text-red-500" : "text-gray-400 hover:text-red-400"
+            }`}
+          />
+        </button>
       </div>
 
       <div className="flex flex-col flex-1 p-3.5 gap-1">
