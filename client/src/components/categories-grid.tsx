@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Card } from "@/components/ui/card";
+import { useI18n } from "@/lib/i18n";
 import type { Category } from "@shared/schema";
 
 interface CategoriesGridProps {
@@ -7,11 +8,12 @@ interface CategoriesGridProps {
 }
 
 export function CategoriesGrid({ categories }: CategoriesGridProps) {
+  const { t } = useI18n();
   if (!categories.length) return null;
 
   return (
     <section data-testid="section-categories">
-      <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Категории товаров</h2>
+      <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">{t("home.categories")}</h2>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
         {categories.map((cat) => (
           <Link key={cat.id} href={`/catalog?category=${cat.id}`} data-testid={`link-category-${cat.id}`}>

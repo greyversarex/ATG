@@ -1,7 +1,18 @@
 import { Link } from "wouter";
 import { Phone, MapPin, Mail, Navigation, MessageCircle } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export function Footer() {
+  const { t } = useI18n();
+
+  const navItems = [
+    { label: t("nav.catalog"), href: "/catalog" },
+    { label: t("nav.brands"), href: "/brands" },
+    { label: t("nav.discounts"), href: "/discounts" },
+    { label: t("nav.news"), href: "/news" },
+    { label: t("nav.about"), href: "/about" },
+  ];
+
   return (
     <footer className="mt-auto" style={{
       background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 84% 45%) 30%, hsl(0 75% 40%) 60%, hsl(0 84% 32%) 100%)",
@@ -14,36 +25,30 @@ export function Footer() {
               <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md" />
             </div>
             <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
-              Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
+              {t("footer.description")}
             </p>
             <p className="text-xs sm:text-sm opacity-80 leading-relaxed mt-1.5 hidden sm:block">
-              №1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.
+              {t("footer.description2")}
             </p>
             <div className="flex items-center gap-2 mt-3">
               <Link href="/catalog">
                 <span className="inline-flex items-center px-2.5 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow-sm" data-testid="button-footer-catalog">
-                  Каталог
+                  {t("footer.catalog")}
                 </span>
               </Link>
               <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82" target="_blank" rel="noopener noreferrer">
                 <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-estimate">
                   <MessageCircle className="w-3 h-3" />
-                  Расчёт
+                  {t("footer.estimate")}
                 </span>
               </a>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Навигация</h4>
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">{t("footer.navigation")}</h4>
             <ul className="space-y-1.5 sm:space-y-2">
-              {[
-                { label: "Каталог", href: "/catalog" },
-                { label: "Бренды", href: "/brands" },
-                { label: "Скидки", href: "/discounts" },
-                { label: "Новости", href: "/news" },
-                { label: "О компании", href: "/about" },
-              ].map((item) => (
+              {navItems.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href}>
                     <span className="text-xs sm:text-sm opacity-80 cursor-pointer transition-opacity duration-200" style={{ textDecoration: "none" }}
@@ -60,7 +65,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Контакты</h4>
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">{t("footer.contacts")}</h4>
             <ul className="space-y-2 sm:space-y-3">
               <li className="flex items-start gap-2">
                 <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 opacity-70 shrink-0" />
@@ -84,7 +89,7 @@ export function Footer() {
           </div>
 
           <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">Наше расположение</h4>
+            <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">{t("footer.location")}</h4>
             <div className="rounded-md overflow-hidden shadow-md" style={{ aspectRatio: "16/9" }}>
               <iframe
                 src="https://maps.google.com/maps?q=38.5437,68.8068&z=16&output=embed&hl=ru"
@@ -106,18 +111,18 @@ export function Footer() {
               data-testid="button-footer-directions"
             >
               <Navigation className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              Построить маршрут
+              {t("footer.getDirections")}
             </a>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-8 gap-y-2 mt-5 sm:mt-6 pt-4 sm:pt-6 border-t border-white/10 text-center">
           {[
-            { num: "7+", label: "лет на рынке" },
-            { num: "1000+", label: "клиентов" },
-            { num: "300+", label: "специалистов" },
-            { num: "5+", label: "дилерств" },
-            { num: "0 с.", label: "доставка" },
+            { num: "7+", label: t("footer.yearsOnMarket") },
+            { num: "1000+", label: t("footer.clients") },
+            { num: "300+", label: t("footer.specialists") },
+            { num: "5+", label: t("footer.dealerships") },
+            { num: "0 с.", label: t("footer.delivery") },
           ].map((s) => (
             <div key={s.label} className="flex flex-col items-center">
               <span className="text-sm sm:text-base font-extrabold text-white">{s.num}</span>
@@ -128,7 +133,7 @@ export function Footer() {
 
         <div className="border-t border-white/10 mt-4 sm:mt-6 pt-3 sm:pt-4">
           <p className="text-center text-[10px] sm:text-xs opacity-60" data-testid="text-copyright">
-            &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). Все права защищены.
+            &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). {t("footer.copyright")}
           </p>
         </div>
       </div>

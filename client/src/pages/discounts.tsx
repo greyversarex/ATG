@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { ProductCard } from "@/components/product-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useI18n } from "@/lib/i18n";
 import type { Product } from "@shared/schema";
 
 export default function Discounts() {
-  usePageTitle("Скидки");
+  usePageTitle("discounts");
+  const { t } = useI18n();
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/discounted"],
@@ -13,8 +15,8 @@ export default function Discounts() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2" data-testid="text-discounts-title">Скидки</h1>
-      <p className="text-muted-foreground text-xs sm:text-sm mb-4 sm:mb-6">Специальные предложения на избранные товары</p>
+      <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2" data-testid="text-discounts-title">{t("discounts.title")}</h1>
+      <p className="text-muted-foreground text-xs sm:text-sm mb-4 sm:mb-6">{t("discounts.subtitle")}</p>
 
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -28,7 +30,7 @@ export default function Discounts() {
         </div>
       ) : !products?.length ? (
         <p className="text-center text-muted-foreground py-16 text-sm" data-testid="text-no-discounts">
-          Сейчас нет товаров со скидкой
+          {t("discounts.empty")}
         </p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">

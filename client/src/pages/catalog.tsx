@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { useState, useMemo } from "react";
 import { Filter, X, Check } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useI18n } from "@/lib/i18n";
 import type { Product, Category, Brand } from "@shared/schema";
 
 function FilterCheckbox({
@@ -41,7 +42,8 @@ function FilterCheckbox({
 }
 
 export default function Catalog() {
-  usePageTitle("Каталог");
+  usePageTitle("catalog");
+  const { t, lang } = useI18n();
 
   const search = useSearch();
   const params = new URLSearchParams(search);
@@ -97,12 +99,13 @@ export default function Catalog() {
   };
 
   const hasFilters = selectedCategory || selectedBrand || searchText.trim().length >= 2 || priceRange[0] > 0 || priceRange[1] < maxPrice;
+  const locale = lang === "ru" ? "ru-RU" : "en-US";
 
   const filterContent = (
     <div className="space-y-5">
       {categories && categories.length > 0 && (
         <div>
-          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">Категории</h4>
+          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">{t("catalog.categories")}</h4>
           <div className="space-y-0.5 max-h-[40vh] overflow-y-auto lg:max-h-none">
             {categories.map((cat) => (
               <FilterCheckbox
@@ -122,7 +125,7 @@ export default function Catalog() {
 
       {brands && brands.length > 0 && (
         <div>
-          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">Бренды</h4>
+          <h4 className="font-bold text-sm mb-2 uppercase tracking-wide">{t("catalog.brands")}</h4>
           <div className="space-y-0.5">
             {brands.map((brand) => (
               <FilterCheckbox
@@ -141,7 +144,7 @@ export default function Catalog() {
       )}
 
       <div>
-        <h4 className="font-bold text-sm mb-3 uppercase tracking-wide">Цена</h4>
+        <h4 className="font-bold text-sm mb-3 uppercase tracking-wide">{t("catalog.price")}</h4>
         <Slider
           min={0}
           max={maxPrice}
@@ -151,15 +154,15 @@ export default function Catalog() {
           data-testid="slider-price"
         />
         <div className="flex justify-between gap-2 mt-2 text-xs text-muted-foreground">
-          <span>{priceRange[0].toLocaleString("ru-RU")} сом.</span>
-          <span>{priceRange[1].toLocaleString("ru-RU")} сом.</span>
+          <span>{priceRange[0].toLocaleString(locale)} {t("currency")}</span>
+          <span>{priceRange[1].toLocaleString(locale)} {t("currency")}</span>
         </div>
       </div>
 
       {hasFilters && (
         <Button variant="destructive" size="sm" className="w-full" onClick={() => { clearFilters(); setShowFilters(false); }} data-testid="button-clear-filters">
           <X className="w-3.5 h-3.5 mr-1.5" />
-          Сбросить фильтры
+          {t("catalog.clearFilters")}
         </Button>
       )}
     </div>
@@ -168,7 +171,7 @@ export default function Catalog() {
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
       <div className="flex items-center justify-between gap-3 mb-4 sm:mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold" data-testid="text-catalog-title">Каталог</h1>
+        <h1 className="text-xl sm:text-2xl font-bold" data-testid="text-catalog-title">{t("catalog.title")}</h1>
         <Button
           variant="outline"
           size="sm"
@@ -177,7 +180,7 @@ export default function Catalog() {
           data-testid="button-toggle-filters"
         >
           <Filter className="w-4 h-4 mr-1" />
-          Фильтры
+          {t("catalog.filters")}
           {hasFilters && <span className="ml-1 w-2 h-2 rounded-full bg-primary" />}
         </Button>
       </div>
@@ -197,7 +200,7 @@ export default function Catalog() {
           } lg:block lg:relative lg:z-auto lg:bg-transparent lg:rounded-none lg:shadow-none lg:max-h-none lg:animate-none w-full lg:w-60 shrink-0`}
         >
           <div className="flex items-center justify-between lg:hidden p-4 pb-2 sticky top-0 bg-background z-10">
-            <h3 className="font-bold text-lg">Фильтры</h3>
+            <h3 className="font-bold text-lg">{t("catalog.filters")}</h3>
             <Button size="icon" variant="ghost" onClick={() => setShowFilters(false)} data-testid="button-close-filters">
               <X />
             </Button>
@@ -214,7 +217,7 @@ export default function Catalog() {
         <div className="flex-1 min-w-0">
           {searchText && (
             <div className="flex items-center gap-2 mb-3 sm:mb-4 flex-wrap">
-              <span className="text-xs sm:text-sm text-muted-foreground">Результаты:</span>
+              <span className="text-xs sm:text-sm text-muted-foreground">{t("catalog.results")}</span>
               <span className="text-xs sm:text-sm font-semibold">"{searchText}"</span>
               <Button variant="ghost" size="sm" onClick={() => setSearchText("")} data-testid="button-clear-search">
                 <X className="w-3.5 h-3.5" />
@@ -234,17 +237,17 @@ export default function Catalog() {
             </div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-12 sm:py-16">
-              <p className="text-muted-foreground text-sm" data-testid="text-no-products">Товары не найдены</p>
+              <p className="text-muted-foreground text-sm" data-testid="text-no-products">{t("catalog.noProducts")}</p>
               {hasFilters && (
                 <Button variant="outline" size="sm" className="mt-3" onClick={clearFilters}>
-                  Сбросить фильтры
+                  {t("catalog.clearFilters")}
                 </Button>
               )}
             </div>
           ) : (
             <>
               <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4" data-testid="text-products-count">
-                Найдено: {filtered.length}
+                {t("catalog.found")} {filtered.length}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {filtered.map((product) => (

@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useI18n } from "@/lib/i18n";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
 
@@ -46,6 +47,7 @@ const serviceIconAnimations: Record<string, string> = {
 
 export default function Home() {
   usePageTitle("");
+  const { t, lang } = useI18n();
 
   const { data: heroBanners, isLoading: loadingBanners } = useQuery<Banner[]>({
     queryKey: ["/api/banners", "hero"],
@@ -105,10 +107,10 @@ export default function Home() {
 
         <section data-testid="section-bestsellers">
           <div className="flex items-center justify-between gap-3 mb-3 sm:mb-4">
-            <h2 className="text-base sm:text-2xl font-bold">Хиты продаж</h2>
+            <h2 className="text-base sm:text-2xl font-bold">{t("home.bestsellers")}</h2>
             <Link href="/catalog">
               <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8" data-testid="button-view-all-bestsellers">
-                Смотреть все
+                {t("home.viewAll")}
               </Button>
             </Link>
           </div>
@@ -156,10 +158,10 @@ export default function Home() {
         {(discounted && discounted.length > 0) && (
           <section data-testid="section-discounts">
             <div className="flex items-center justify-between gap-3 mb-3 sm:mb-4">
-              <h2 className="text-base sm:text-2xl font-bold">Скидки</h2>
+              <h2 className="text-base sm:text-2xl font-bold">{t("home.discounts")}</h2>
               <Link href="/discounts">
                 <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8" data-testid="button-view-all-discounts">
-                  Смотреть все
+                  {t("home.viewAll")}
                 </Button>
               </Link>
             </div>
@@ -180,17 +182,17 @@ export default function Home() {
         <section data-testid="section-cta" className="text-center py-8 sm:py-10 px-4 sm:px-6 rounded-xl" style={{
           background: "linear-gradient(135deg, hsl(0 84% 38%) 0%, hsl(0 84% 48%) 50%, hsl(0 84% 35%) 100%)"
         }}>
-          <h2 className="text-white text-base sm:text-xl md:text-2xl font-bold mb-2 leading-snug">Открой или модернизируй автосервис вместе с ATG</h2>
+          <h2 className="text-white text-base sm:text-xl md:text-2xl font-bold mb-2 leading-snug">{t("home.ctaTitle")}</h2>
           <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%B1%D0%B5%D1%81%D0%BF%D0%BB%D0%B0%D1%82%D0%BD%D1%8B%D0%B9%20%D1%80%D0%B0%D1%81%D1%87%D1%91%D1%82%20%D0%BE%D0%B1%D0%BE%D1%80%D1%83%D0%B4%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" target="_blank" rel="noopener noreferrer">
             <Button size="default" className="mt-3 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg text-xs sm:text-sm" data-testid="button-cta-calc">
-              Получить бесплатный расчёт
+              {t("home.ctaButton")}
             </Button>
           </a>
         </section>
 
         {services && services.length > 0 && (
           <section data-testid="section-services">
-            <h2 className="text-base sm:text-2xl font-bold mb-4 sm:mb-6">Наши услуги</h2>
+            <h2 className="text-base sm:text-2xl font-bold mb-4 sm:mb-6">{t("home.services")}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {services.map((service) => {
                 const iconAnim = serviceIconAnimations[service.icon] || "animate-spin-slow";
@@ -218,10 +220,10 @@ export default function Home() {
         {newsList && newsList.length > 0 && (
           <section data-testid="section-news">
             <div className="flex items-center justify-between gap-3 mb-3 sm:mb-4">
-              <h2 className="text-base sm:text-2xl font-bold">Новости</h2>
+              <h2 className="text-base sm:text-2xl font-bold">{t("home.news")}</h2>
               <Link href="/news">
                 <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8" data-testid="button-view-all-news">
-                  Смотреть все
+                  {t("home.viewAll")}
                 </Button>
               </Link>
             </div>
@@ -239,7 +241,7 @@ export default function Home() {
                     </div>
                     <div className="p-2.5 sm:p-4 flex flex-col flex-1">
                       <time className="text-[10px] sm:text-xs text-muted-foreground">
-                        {new Date(item.date).toLocaleDateString("ru-RU", {
+                        {new Date(item.date).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",

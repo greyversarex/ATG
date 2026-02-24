@@ -1,22 +1,16 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, Search, Heart } from "lucide-react";
+import { Menu, X, Phone, Search, Heart, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useI18n } from "@/lib/i18n";
 import type { Product } from "@shared/schema";
-
-const navItems = [
-  { label: "Каталог", href: "/catalog" },
-  { label: "Бренды", href: "/brands" },
-  { label: "Скидки", href: "/discounts" },
-  { label: "Новости", href: "/news" },
-  { label: "О компании", href: "/about" },
-];
 
 function SearchDropdown({ query, onClose }: { query: string; onClose: () => void }) {
   const [, setLocation] = useLocation();
+  const { t, lang } = useI18n();
   const { data: results, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/search", query],
     queryFn: async () => {
@@ -31,9 +25,9 @@ function SearchDropdown({ query, onClose }: { query: string; onClose: () => void
   return (
     <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-md shadow-lg z-50 max-h-80 overflow-y-auto" data-testid="search-dropdown">
       {isLoading ? (
-        <div className="p-4 text-sm text-muted-foreground text-center">Поиск...</div>
+        <div className="p-4 text-sm text-muted-foreground text-center">{t("search.searching")}</div>
       ) : !results?.length ? (
-        <div className="p-4 text-sm text-muted-foreground text-center">Ничего не найдено</div>
+        <div className="p-4 text-sm text-muted-foreground text-center">{t("search.noResults")}</div>
       ) : (
         <div>
           {results.slice(0, 6).map((product) => (
@@ -52,7 +46,7 @@ function SearchDropdown({ query, onClose }: { query: string; onClose: () => void
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{product.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {product.price.toLocaleString("ru-RU")} сом.
+                  {product.price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")} {t("currency")}
                 </p>
               </div>
             </button>
@@ -66,7 +60,7 @@ function SearchDropdown({ query, onClose }: { query: string; onClose: () => void
               }}
               data-testid="search-view-all"
             >
-              Показать все ({results.length})
+              {t("search.showAll")} ({results.length})
             </button>
           )}
         </div>
@@ -83,6 +77,15 @@ export function Header() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [, setLoc] = useLocation();
   const { count } = useFavorites();
+  const { t, lang, setLang } = useI18n();
+
+  const navItems = [
+    { label: t("nav.catalog"), href: "/catalog" },
+    { label: t("nav.brands"), href: "/brands" },
+    { label: t("nav.discounts"), href: "/discounts" },
+    { label: t("nav.news"), href: "/news" },
+    { label: t("nav.about"), href: "/about" },
+  ];
 
   useEffect(() => {
     setMobileOpen(false);
@@ -116,6 +119,10 @@ export function Header() {
     }
   };
 
+  const toggleLang = () => {
+    setLang(lang === "ru" ? "en" : "ru");
+  };
+
   return (
     <header className="sticky top-0 z-50" style={{
       background: "linear-gradient(135deg, hsl(0 84% 38%) 0%, hsl(0 84% 48%) 40%, hsl(0 75% 42%) 70%, hsl(0 84% 35%) 100%)",
@@ -129,12 +136,9 @@ export function Header() {
             </div>
           </Link>
 
-          <div className="hidden lg:flex flex-col justify-center ml-1 mr-auto select-none">
-            <span className="text-white/95 text-[15px] font-bold tracking-[0.15em] uppercase leading-tight drop-shadow-md" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "0.18em" }}>
+          <div className="flex lg:hidden flex-col justify-center ml-0.5 mr-auto select-none min-w-0">
+            <span className="text-white/95 text-[11px] sm:text-[13px] font-bold tracking-[0.12em] uppercase leading-tight drop-shadow-md truncate">
               Amir Tech Group
-            </span>
-            <span className="text-white/50 text-[9px] tracking-[0.3em] uppercase leading-none mt-0.5">
-              Автозапчасти и оборудование
             </span>
           </div>
 
@@ -162,7 +166,7 @@ export function Header() {
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="text"
-                  placeholder="Поиск товаров..."
+                  placeholder={t("search.placeholder")}
                   className="w-44 md:w-80 pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
                   value={searchQuery}
                   onChange={(e) => {
@@ -184,11 +188,21 @@ export function Header() {
               )}
             </div>
 
+            <button
+              onClick={toggleLang}
+              className="flex items-center justify-center gap-1 h-8 px-1.5 sm:px-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              data-testid="button-lang-toggle"
+              aria-label="Switch language"
+            >
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-xs font-semibold uppercase">{lang === "ru" ? "EN" : "RU"}</span>
+            </button>
+
             <Link href="/favorites">
               <button
                 className="relative flex items-center justify-center w-9 h-9 rounded-full transition-colors hover:bg-white/15 cursor-pointer"
                 data-testid="button-favorites-header"
-                aria-label="Избранное"
+                aria-label={t("nav.favorites")}
               >
                 <Heart className={`w-5 h-5 ${count > 0 ? "fill-white text-white" : "text-white/80"}`} />
                 {count > 0 && (
@@ -245,7 +259,7 @@ export function Header() {
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" />
                 <Input
                   type="text"
-                  placeholder="Поиск товаров..."
+                  placeholder={t("search.placeholder")}
                   className="w-full pl-8 text-sm bg-white/15 border-white/20 text-white placeholder:text-white/50"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -280,7 +294,7 @@ export function Header() {
                   data-testid="mobile-nav-favorites"
                 >
                   <Heart className="w-4 h-4 mr-2" />
-                  Избранное {count > 0 && `(${count})`}
+                  {t("nav.favorites")} {count > 0 && `(${count})`}
                 </Button>
               </Link>
               <a href="tel:+992176100100" className="flex items-center gap-2 px-4 py-2.5 text-sm text-white/70 md:hidden">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useI18n } from "@/lib/i18n";
 import type { Product } from "@shared/schema";
 
 interface ProductCardProps {
@@ -12,10 +13,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { toggle, isFavorite } = useFavorites();
+  const { t, lang } = useI18n();
   const liked = isFavorite(product.id);
   const discountedPrice = product.discountPercent
     ? product.price * (1 - product.discountPercent / 100)
     : null;
+  const locale = lang === "ru" ? "ru-RU" : "en-US";
 
   return (
     <Card className="overflow-visible group flex flex-col h-full" data-testid={`card-product-${product.id}`}>
@@ -43,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
           }}
           className="absolute top-1.5 right-1.5 sm:top-2.5 sm:right-2.5 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all duration-200 hover:scale-110 hover:bg-white cursor-pointer active:scale-95"
           data-testid={`button-favorite-${product.id}`}
-          aria-label={liked ? "Удалить из избранного" : "Добавить в избранное"}
+          aria-label={liked ? t("product.removeFromFavorites") : t("product.addToFavorites")}
         >
           <Heart
             className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 transition-colors duration-200 ${
@@ -67,22 +70,22 @@ export function ProductCard({ product }: ProductCardProps) {
             {discountedPrice ? (
               <>
                 <span className="text-[10px] sm:text-xs text-muted-foreground line-through whitespace-nowrap">
-                  {product.price.toLocaleString("ru-RU")} с.
+                  {product.price.toLocaleString(locale)} {t("currencyShort")}
                 </span>
                 <span className="font-bold text-xs sm:text-sm text-primary whitespace-nowrap" data-testid={`text-price-${product.id}`}>
-                  {discountedPrice.toLocaleString("ru-RU")} с.
+                  {discountedPrice.toLocaleString(locale)} {t("currencyShort")}
                 </span>
               </>
             ) : (
               <span className="font-bold text-xs sm:text-sm whitespace-nowrap" data-testid={`text-price-${product.id}`}>
-                {product.price.toLocaleString("ru-RU")} с.
+                {product.price.toLocaleString(locale)} {t("currencyShort")}
               </span>
             )}
           </div>
 
           <Link href={`/product/${product.id}`}>
             <Button size="sm" className="shrink-0 text-[10px] sm:text-xs h-7 sm:h-8 px-2 sm:px-3" data-testid={`button-details-${product.id}`}>
-              Подробнее
+              {t("product.details")}
             </Button>
           </Link>
         </div>

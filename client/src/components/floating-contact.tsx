@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MessageCircle, Phone, X } from "lucide-react";
 import { SiTelegram, SiWhatsapp } from "react-icons/si";
+import { useI18n } from "@/lib/i18n";
 
 const PHONE_NUMBER = "+992000000000";
 const TELEGRAM_LINK = "https://t.me/atg_tj";
@@ -9,6 +10,7 @@ const PHONE_LINK = `tel:${PHONE_NUMBER}`;
 
 export function FloatingContact() {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <div className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2 sm:gap-3" data-testid="floating-contact">
@@ -48,7 +50,7 @@ export function FloatingContact() {
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center shrink-0">
               <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">Позвонить</span>
+            <span className="text-xs sm:text-sm font-medium whitespace-nowrap">{t("floating.call")}</span>
           </a>
         </div>
       )}

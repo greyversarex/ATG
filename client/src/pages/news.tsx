@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useI18n } from "@/lib/i18n";
 import type { News } from "@shared/schema";
 
 export default function NewsPage() {
-  usePageTitle("Новости");
+  usePageTitle("news");
+  const { t, lang } = useI18n();
 
   const { data: newsList, isLoading } = useQuery<News[]>({
     queryKey: ["/api/news"],
@@ -13,7 +15,7 @@ export default function NewsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" data-testid="text-news-title">Новости</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" data-testid="text-news-title">{t("news.title")}</h1>
 
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
@@ -26,7 +28,7 @@ export default function NewsPage() {
           ))}
         </div>
       ) : !newsList?.length ? (
-        <p className="text-center text-muted-foreground py-16 text-sm">Новостей пока нет</p>
+        <p className="text-center text-muted-foreground py-16 text-sm">{t("news.empty")}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
           {newsList.map((item) => (
@@ -41,7 +43,7 @@ export default function NewsPage() {
               </div>
               <div className="p-3 sm:p-4">
                 <time className="text-[10px] sm:text-xs text-muted-foreground" data-testid={`text-news-date-${item.id}`}>
-                  {new Date(item.date).toLocaleDateString("ru-RU", {
+                  {new Date(item.date).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",

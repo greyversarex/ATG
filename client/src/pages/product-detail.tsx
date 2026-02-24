@@ -7,11 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Phone, Heart } from "lucide-react";
 import { useProductPageTitle } from "@/hooks/use-page-title";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useI18n } from "@/lib/i18n";
 import type { Product, Brand, Category } from "@shared/schema";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { toggle, isFavorite } = useFavorites();
+  const { t, lang } = useI18n();
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["/api/products", id],
@@ -28,6 +30,8 @@ export default function ProductDetail() {
   });
 
   useProductPageTitle(product?.name || "Товар", brand?.name);
+
+  const locale = lang === "ru" ? "ru-RU" : "en-US";
 
   if (isLoading) {
     return (
@@ -49,9 +53,9 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <p className="text-muted-foreground mb-4">Товар не найден</p>
+        <p className="text-muted-foreground mb-4">{t("product.notFound")}</p>
         <Link href="/catalog">
-          <Button variant="outline">Вернуться в каталог</Button>
+          <Button variant="outline">{t("product.backToCatalogBtn")}</Button>
         </Link>
       </div>
     );
@@ -68,7 +72,7 @@ export default function ProductDetail() {
       <Link href="/catalog">
         <Button variant="ghost" size="sm" className="mb-3 sm:mb-4 text-xs sm:text-sm" data-testid="button-back-catalog">
           <ArrowLeft className="w-4 h-4 mr-1" />
-          Каталог
+          {t("product.backToCatalog")}
         </Button>
       </Link>
 
@@ -93,7 +97,7 @@ export default function ProductDetail() {
               onClick={() => toggle(product.id)}
               className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all hover:scale-110 hover:bg-white cursor-pointer active:scale-95"
               data-testid="button-favorite-detail"
-              aria-label={liked ? "Удалить из избранного" : "Добавить в избранное"}
+              aria-label={liked ? t("product.removeFromFavorites") : t("product.addToFavorites")}
             >
               <Heart className={`w-5 h-5 transition-colors ${liked ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
@@ -116,22 +120,22 @@ export default function ProductDetail() {
               {discountedPrice ? (
                 <div className="flex items-baseline gap-2 sm:gap-3">
                   <span className="text-2xl sm:text-3xl font-bold text-primary" data-testid="text-discounted-price">
-                    {discountedPrice.toLocaleString("ru-RU")} с.
+                    {discountedPrice.toLocaleString(locale)} {t("currencyShort")}
                   </span>
                   <span className="text-sm sm:text-lg text-muted-foreground line-through">
-                    {product.price.toLocaleString("ru-RU")} с.
+                    {product.price.toLocaleString(locale)} {t("currencyShort")}
                   </span>
                 </div>
               ) : (
                 <span className="text-2xl sm:text-3xl font-bold" data-testid="text-product-price">
-                  {product.price.toLocaleString("ru-RU")} с.
+                  {product.price.toLocaleString(locale)} {t("currencyShort")}
                 </span>
               )}
             </div>
 
             {product.shortSpecs && (
               <div className="convex-card p-3 sm:p-4">
-                <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">Характеристики</h3>
+                <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">{t("product.specs")}</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed" data-testid="text-specs">
                   {product.shortSpecs}
                 </p>
@@ -140,7 +144,7 @@ export default function ProductDetail() {
 
             {product.description && (
               <div>
-                <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">Описание</h3>
+                <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">{t("product.description")}</h3>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed" data-testid="text-description">
                   {product.description}
                 </p>
@@ -148,7 +152,7 @@ export default function ProductDetail() {
             )}
 
             <div className="pt-3 sm:pt-4 border-t border-border/50">
-              <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">Для заказа свяжитесь с нами:</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">{t("product.orderContact")}</p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <a href="tel:+992176100100" className="flex-1 sm:flex-initial">
                   <Button className="shadow-md w-full sm:w-auto text-xs sm:text-sm" data-testid="button-call">

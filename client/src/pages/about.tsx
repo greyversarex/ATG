@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Award, Wrench, GraduationCap, Shield, MapPin, Phone, Mail, Navigation } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
+import { useI18n } from "@/lib/i18n";
 
 function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: string }) {
   const [count, setCount] = useState(0);
@@ -45,31 +46,23 @@ const ATG_LAT = 38.5437;
 const ATG_LNG = 68.8068;
 const ATG_ADDRESS = "Душанбе, р-н Сино, ул. Рахмон Набиев, 2 гузаргох";
 
-const directions = [
-  "Продажа диагностического оборудования (Thinkcar, Autel, OBDStar, Xhorse и др.)",
-  "Поставка автозапчастей и систем",
-  "Сервис и поддержка",
-  "Обучение специалистов",
-];
-
-const advantages = [
-  { icon: Award, text: "Глубокая экспертиза в автомобильной отрасли" },
-  { icon: Wrench, text: "Собственный автосервис и учебный центр" },
-  { icon: Shield, text: "Профессиональная диагностика, сход-развал, балансировка" },
-  { icon: GraduationCap, text: "Обучение специалистов автосервисов" },
-];
+const advantageIcons = [Award, Wrench, Shield, GraduationCap];
 
 export default function About() {
-  usePageTitle("О компании");
+  usePageTitle("about");
+  const { t, ta } = useI18n();
+
+  const directions = ta("about.directions");
+  const advantageTexts = ta("about.advantagesList");
 
   const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${ATG_LAT},${ATG_LNG}&travelmode=driving`;
-  const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${ATG_LAT},${ATG_LNG}&z=16&output=embed&hl=ru`;
+  const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${ATG_LAT},${ATG_LNG}&z=16&output=embed&hl=${lang}`;
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2" data-testid="text-about-title">О компании</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-1.5 sm:mb-2" data-testid="text-about-title">{t("about.title")}</h1>
       <p className="text-muted-foreground text-xs sm:text-base mb-6 sm:mb-8 max-w-2xl">
-        AMIR TECH GROUP (ATG) — ведущий поставщик комплексных решений для автомобильной отрасли в Таджикистане.
+        {t("about.subtitle")}
       </p>
 
       <section className="rounded-xl sm:rounded-2xl py-6 sm:py-10 px-4 sm:px-10 text-white overflow-hidden relative mb-6 sm:mb-10" style={{
@@ -82,10 +75,10 @@ export default function About() {
         <div className="relative z-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {[
-              { num: 10, suffix: "+", label: "лет на рынке", sublabel: "Успешной работы" },
-              { num: 15, suffix: "", label: "сотрудников", sublabel: "Квалифицированных" },
-              { num: 1, suffix: "", label: "учебный центр", sublabel: "Собственный" },
-              { num: 1000, suffix: "+", label: "клиентов", sublabel: "Доверяют нам" },
+              { num: 10, suffix: "+", label: t("about.yearsOnMarket"), sublabel: t("about.successfulWork") },
+              { num: 15, suffix: "", label: t("about.employees"), sublabel: t("about.qualified") },
+              { num: 1, suffix: "", label: t("about.trainingCenter"), sublabel: t("about.own") },
+              { num: 1000, suffix: "+", label: t("about.clients"), sublabel: t("about.trustUs") },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center text-center gap-0.5 sm:gap-1" data-testid={`stat-about-${item.label}`}>
                 <span className="text-2xl sm:text-4xl font-extrabold tracking-tight">
@@ -101,17 +94,17 @@ export default function About() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-10">
         <div className="convex-card p-4 sm:p-6">
-          <h2 className="font-bold text-base sm:text-lg mb-2 sm:mb-3">Специализация</h2>
+          <h2 className="font-bold text-base sm:text-lg mb-2 sm:mb-3">{t("about.specialization")}</h2>
           <div className="space-y-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            <p>Компания специализируется на дистрибуции автозапчастей, поставке профессионального оборудования для СТО, диагностических сканерах и компонентах пневмоподвески.</p>
-            <p>С более чем 10-летним опытом успешной работы мы обеспечиваем высококачественные решения для автомобильной индустрии Таджикистана.</p>
+            <p>{t("about.specText1")}</p>
+            <p>{t("about.specText2")}</p>
           </div>
         </div>
 
         <div className="convex-card p-4 sm:p-6">
-          <h2 className="font-bold text-base sm:text-lg mb-2 sm:mb-3">Ключевые направления</h2>
+          <h2 className="font-bold text-base sm:text-lg mb-2 sm:mb-3">{t("about.keyDirections")}</h2>
           <ul className="space-y-2 sm:space-y-2.5">
-            {directions.map((d, i) => (
+            {directions.map((d: string, i: number) => (
               <li key={i} className="flex items-start gap-2 sm:gap-2.5 text-xs sm:text-sm text-muted-foreground">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
                 {d}
@@ -122,26 +115,29 @@ export default function About() {
       </div>
 
       <div className="mb-6 sm:mb-10">
-        <h2 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">Преимущества</h2>
+        <h2 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{t("about.advantages")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {advantages.map((a, i) => (
-            <div key={i} className="convex-card flex items-start gap-3 p-4 sm:p-5" data-testid={`card-advantage-${i}`}>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0 shadow-sm">
-                <a.icon className="w-4 h-4 text-primary" />
+          {advantageTexts.map((text: string, i: number) => {
+            const Icon = advantageIcons[i] || Award;
+            return (
+              <div key={i} className="convex-card flex items-start gap-3 p-4 sm:p-5" data-testid={`card-advantage-${i}`}>
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 flex items-center justify-center shrink-0 shadow-sm">
+                  <Icon className="w-4 h-4 text-primary" />
+                </div>
+                <p className="text-xs sm:text-sm pt-1.5 sm:pt-2">{text}</p>
               </div>
-              <p className="text-xs sm:text-sm pt-1.5 sm:pt-2">{a.text}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       <Card className="p-4 sm:p-6 overflow-visible mb-6 sm:mb-10" data-testid="card-contacts">
-        <h2 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">Контакты</h2>
+        <h2 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{t("about.contacts")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
           <div className="space-y-2 sm:space-y-3">
-            <p><span className="text-muted-foreground">Компания:</span> Amir Tech Group (ATG)</p>
-            <p><span className="text-muted-foreground">Генеральный директор:</span> Шарипов Парвиз</p>
-            <p><span className="text-muted-foreground">Почтовый индекс:</span> 734026</p>
+            <p><span className="text-muted-foreground">{t("about.company")}</span> Amir Tech Group (ATG)</p>
+            <p><span className="text-muted-foreground">{t("about.ceo")}</span> Шарипов Парвиз</p>
+            <p><span className="text-muted-foreground">{t("about.postalCode")}</span> 734026</p>
           </div>
           <div className="space-y-2 sm:space-y-3">
             <div className="flex items-start gap-2">
@@ -163,7 +159,7 @@ export default function About() {
       <Card className="overflow-hidden" data-testid="card-map">
         <div className="p-3 sm:p-4 pb-2 sm:pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
           <div>
-            <h2 className="font-bold text-base sm:text-lg">Наше расположение</h2>
+            <h2 className="font-bold text-base sm:text-lg">{t("about.location")}</h2>
             <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
               <MapPin className="w-3 h-3" />
               г. {ATG_ADDRESS}
@@ -172,7 +168,7 @@ export default function About() {
           <a href={googleMapsDirectionsUrl} target="_blank" rel="noopener noreferrer">
             <Button size="sm" className="gap-2 w-full sm:w-auto text-xs sm:text-sm" data-testid="button-directions">
               <Navigation className="w-4 h-4" />
-              Построить маршрут
+              {t("about.getDirections")}
             </Button>
           </a>
         </div>
