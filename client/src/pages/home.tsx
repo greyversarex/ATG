@@ -248,7 +248,7 @@ export default function Home() {
                         })}
                       </time>
                       <h3 className="font-semibold text-xs sm:text-sm mt-1 sm:mt-1.5 mb-0.5 sm:mb-1 line-clamp-2">{item.title}</h3>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-3 hidden sm:block">{item.content}</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 max-sm:hidden">{item.content}</p>
                     </div>
                   </Card>
                 </Link>
