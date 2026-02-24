@@ -129,6 +129,15 @@ export function Header() {
             </div>
           </Link>
 
+          <div className="hidden lg:flex flex-col justify-center ml-1 mr-auto select-none">
+            <span className="text-white/95 text-[15px] font-bold tracking-[0.15em] uppercase leading-tight drop-shadow-md" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: "0.18em" }}>
+              Amir Tech Group
+            </span>
+            <span className="text-white/50 text-[9px] tracking-[0.3em] uppercase leading-none mt-0.5">
+              Автозапчасти и оборудование
+            </span>
+          </div>
+
           <nav className="hidden lg:flex items-center gap-1" data-testid="nav-desktop">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
