@@ -30,6 +30,21 @@ export function Footer() {
           </div>
         </div>
 
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mb-6 pb-6 border-b border-white/10 text-center">
+          {[
+            { num: "7+", label: "лет на рынке" },
+            { num: "1000+", label: "клиентов" },
+            { num: "300+", label: "обученных специалистов" },
+            { num: "5+", label: "официальных дилерств" },
+            { num: "0 с.", label: "доставка по Душанбе" },
+          ].map((s) => (
+            <div key={s.label} className="flex flex-col items-center">
+              <span className="text-base font-extrabold text-white">{s.num}</span>
+              <span className="text-[10px] opacity-60">{s.label}</span>
+            </div>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
