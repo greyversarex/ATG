@@ -41,7 +41,7 @@ export default function NewsPage() {
                   loading="lazy"
                 />
               </div>
-              <div className="p-3 sm:p-5">
+              <div className="p-3 sm:p-4 lg:p-5">
                 <time className="text-[10px] sm:text-xs text-muted-foreground" data-testid={`text-news-date-${item.id}`}>
                   {new Date(item.date).toLocaleDateString("ru-RU", {
                     year: "numeric",
@@ -49,10 +49,10 @@ export default function NewsPage() {
                     day: "numeric",
                   })}
                 </time>
-                <h3 className="font-semibold text-xs sm:text-base mt-1 sm:mt-2 mb-1 sm:mb-2" data-testid={`text-news-title-${item.id}`}>
+                <h3 className="font-semibold text-xs sm:text-sm lg:text-base mt-1 sm:mt-1.5 lg:mt-2 mb-1 sm:mb-1.5 lg:mb-2" data-testid={`text-news-title-${item.id}`}>
                   {item.title}
                 </h3>
-                <p className="text-[10px] sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground leading-relaxed line-clamp-2">
                   {item.content}
                 </p>
               </div>
