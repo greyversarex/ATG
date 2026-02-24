@@ -21,7 +21,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 pt-6 sm:pt-8 pb-4 sm:pb-6">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           <div className="col-span-2 sm:col-span-1">
-            <div className="flex items-center gap-2.5 mb-2">
+            <div className="flex items-center gap-2.5 mt-[-42px] mb-[-42px] pt-[9px] pb-[9px]">
               <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md" />
             </div>
             <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
