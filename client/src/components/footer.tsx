@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Phone, MapPin, Mail, Navigation } from "lucide-react";
+import { Phone, MapPin, Mail, Navigation, MessageCircle } from "lucide-react";
 
 export function Footer() {
   return (
@@ -7,11 +7,33 @@ export function Footer() {
       background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 84% 45%) 30%, hsl(0 75% 40%) 60%, hsl(0 84% 32%) 100%)",
       color: "hsl(0 0% 95%)"
     }}>
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 pt-8 pb-6">
+        <div className="text-center mb-8 pb-6 border-b border-white/10">
+          <h3 className="text-lg sm:text-xl font-bold text-white leading-snug" data-testid="text-footer-headline">
+            ATG — №1 поставщик автодиагностического оборудования в Таджикистане
+          </h3>
+          <p className="text-xs sm:text-sm opacity-70 mt-1.5">
+            Официальный дилер Autel, Thinkcar, Xtool, Sivik. Поставка, обучение и сервисная поддержка.
+          </p>
+          <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
+            <Link href="/catalog">
+              <span className="inline-flex items-center px-5 py-2 rounded-md text-sm font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow" data-testid="button-footer-catalog">
+                Смотреть каталог
+              </span>
+            </Link>
+            <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E" target="_blank" rel="noopener noreferrer">
+              <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-md text-sm font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-consult">
+                <MessageCircle className="w-4 h-4" />
+                Получить консультацию
+              </span>
+            </a>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2.5 mb-2">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md mt-[-47px] mb-[-47px] pt-[0px] pb-[0px] pl-[0px] pr-[0px] ml-[-17px] mr-[-17px]" />
+              <img src="/images/atg-logo.png" alt="ATG" className="h-36 object-contain drop-shadow-md mt-[-47px] mb-[-47px] pl-0 pr-0 ml-[-17px] mr-[-17px]" />
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
