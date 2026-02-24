@@ -242,11 +242,11 @@ export function Header() {
                 }}
                 className="relative sm:hidden mb-2"
               >
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 pointer-events-none" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <Input
                   type="text"
                   placeholder={t("search.placeholder")}
-                  className="w-full pl-8 text-sm bg-white/15 border-white/20 text-white placeholder:text-white/50"
+                  className="w-full pl-8 text-sm bg-white border-white/30 text-foreground placeholder:text-muted-foreground"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   data-testid="input-search-mobile"
