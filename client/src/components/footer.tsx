@@ -22,7 +22,7 @@ export function Footer() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2.5 mt-[-42px] mb-[-42px] pt-[9px] pb-[9px]">
-              <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md" />
+              <img src="/images/atg-logo.png" alt="ATG" className="h-20 sm:h-28 object-contain drop-shadow-md mt-[-4px] mb-[-4px] ml-[-13px] mr-[-13px]" />
             </div>
             <p className="text-xs sm:text-sm opacity-80 leading-relaxed">
               {t("footer.description")}
