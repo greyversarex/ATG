@@ -1,10 +1,11 @@
 # ATG.TJ - AMIR TECH GROUP Website
 
 ## Overview
-Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading supplier of automotive parts and diagnostic equipment in Tajikistan. The site features a product catalog, brand pages, news section, admin panel, and company information.
+Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading supplier of automotive parts and diagnostic equipment in Tajikistan. The site features a product catalog, brand pages, news section, admin panel, and company information. Russian-only site.
 
 ## Recent Changes
-- 2026-02-24: Full i18n (Russian/English) — I18nProvider context, language switcher in header (Globe icon), all UI strings translated, page titles/meta bilingual, currency formatting (сом./TJS), date locale switching, "Amir Tech Group" text mobile-only
+- 2026-02-24: Removed English/i18n language switching — site is now Russian-only, Globe button removed from header, all translations simplified to Russian strings only
+- 2026-02-24: Restored desktop news card design — image, title, 2 lines of content with proper font sizes
 - 2026-02-24: Comprehensive mobile optimization — all pages, components, header, footer, catalog filters (bottom sheet), hero slider (4:3 mobile, prev/next buttons), product cards (compact), floating contact, splash screen (min() sizing), consistent responsive breakpoints across all pages
 - 2026-02-24: Added favorites/wishlist feature — heart button on product cards, favorites counter in header, dedicated /favorites page, localStorage-based (no auth required)
 - 2026-02-24: Fixed production session management — manual session table creation, fallback SESSION_SECRET, removed dependency on connect-pg-simple's table.sql file
@@ -42,13 +43,12 @@ Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading sup
 - Neutral grays for backgrounds
 - Dark mode supported via CSS variables
 
-## i18n
-- System: React Context (`client/src/lib/i18n.tsx`) with `useI18n()` hook
-- Languages: Russian (default) / English, saved to localStorage key "atg-lang"
+## UI Text System
+- React Context (`client/src/lib/i18n.tsx`) with `useI18n()` hook — Russian-only
 - `t("section.key")` for strings, `ta("section.arrayKey")` for string arrays
-- Page titles: key-based bilingual meta in `client/src/hooks/use-page-title.ts`
-- Product content (names, descriptions) from DB in Russian; only UI strings are translated
+- Page titles: key-based meta in `client/src/hooks/use-page-title.ts`
+- Product content (names, descriptions) from DB in Russian
 
 ## User Preferences
-- Language: Russian/English (switchable via header Globe button)
+- Language: Russian (only)
 - Font: Inter

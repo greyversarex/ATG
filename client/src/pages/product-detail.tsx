@@ -13,7 +13,7 @@ import type { Product, Brand, Category } from "@shared/schema";
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { toggle, isFavorite } = useFavorites();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["/api/products", id],
@@ -31,7 +31,7 @@ export default function ProductDetail() {
 
   useProductPageTitle(product?.name || "Товар", brand?.name);
 
-  const locale = lang === "ru" ? "ru-RU" : "en-US";
+  const locale = "ru-RU";
 
   if (isLoading) {
     return (

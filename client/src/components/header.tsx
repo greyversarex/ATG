@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, Search, Heart, Globe } from "lucide-react";
+import { Menu, X, Phone, Search, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
@@ -10,7 +10,7 @@ import type { Product } from "@shared/schema";
 
 function SearchDropdown({ query, onClose }: { query: string; onClose: () => void }) {
   const [, setLocation] = useLocation();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const { data: results, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/search", query],
     queryFn: async () => {
@@ -46,7 +46,7 @@ function SearchDropdown({ query, onClose }: { query: string; onClose: () => void
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{product.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {product.price.toLocaleString(lang === "ru" ? "ru-RU" : "en-US")} {t("currency")}
+                  {product.price.toLocaleString("ru-RU")} {t("currency")}
                 </p>
               </div>
             </button>
@@ -77,7 +77,7 @@ export function Header() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [, setLoc] = useLocation();
   const { count } = useFavorites();
-  const { t, lang, setLang } = useI18n();
+  const { t } = useI18n();
 
   const navItems = [
     { label: t("nav.catalog"), href: "/catalog" },
@@ -117,10 +117,6 @@ export function Header() {
       setSearchOpen(false);
       setSearchQuery("");
     }
-  };
-
-  const toggleLang = () => {
-    setLang(lang === "ru" ? "en" : "ru");
   };
 
   return (
@@ -187,16 +183,6 @@ export function Header() {
                 />
               )}
             </div>
-
-            <button
-              onClick={toggleLang}
-              className="flex items-center justify-center gap-1 h-8 px-1.5 sm:px-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-              data-testid="button-lang-toggle"
-              aria-label="Switch language"
-            >
-              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-xs font-semibold uppercase">{lang === "ru" ? "EN" : "RU"}</span>
-            </button>
 
             <Link href="/favorites">
               <button

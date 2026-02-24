@@ -13,12 +13,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { toggle, isFavorite } = useFavorites();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const liked = isFavorite(product.id);
   const discountedPrice = product.discountPercent
     ? product.price * (1 - product.discountPercent / 100)
     : null;
-  const locale = lang === "ru" ? "ru-RU" : "en-US";
+  const locale = "ru-RU";
 
   return (
     <Card className="overflow-visible group flex flex-col h-full" data-testid={`card-product-${product.id}`}>

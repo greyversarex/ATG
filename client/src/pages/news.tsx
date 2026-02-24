@@ -7,7 +7,7 @@ import type { News } from "@shared/schema";
 
 export default function NewsPage() {
   usePageTitle("news");
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const { data: newsList, isLoading } = useQuery<News[]>({
     queryKey: ["/api/news"],
@@ -41,18 +41,18 @@ export default function NewsPage() {
                   loading="lazy"
                 />
               </div>
-              <div className="p-3 sm:p-4">
+              <div className="p-3 sm:p-5">
                 <time className="text-[10px] sm:text-xs text-muted-foreground" data-testid={`text-news-date-${item.id}`}>
-                  {new Date(item.date).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
+                  {new Date(item.date).toLocaleDateString("ru-RU", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
                 </time>
-                <h3 className="font-semibold text-xs sm:text-sm mt-1 sm:mt-1.5 mb-1.5 sm:mb-2" data-testid={`text-news-title-${item.id}`}>
+                <h3 className="font-semibold text-xs sm:text-base mt-1 sm:mt-2 mb-1 sm:mb-2" data-testid={`text-news-title-${item.id}`}>
                   {item.title}
                 </h3>
-                <p className="text-[10px] sm:text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                <p className="text-[10px] sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
                   {item.content}
                 </p>
               </div>

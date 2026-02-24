@@ -43,7 +43,7 @@ function FilterCheckbox({
 
 export default function Catalog() {
   usePageTitle("catalog");
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const search = useSearch();
   const params = new URLSearchParams(search);
@@ -99,7 +99,7 @@ export default function Catalog() {
   };
 
   const hasFilters = selectedCategory || selectedBrand || searchText.trim().length >= 2 || priceRange[0] > 0 || priceRange[1] < maxPrice;
-  const locale = lang === "ru" ? "ru-RU" : "en-US";
+  const locale = "ru-RU";
 
   const filterContent = (
     <div className="space-y-5">

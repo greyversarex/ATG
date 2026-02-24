@@ -1,157 +1,131 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-
-export type Lang = "ru" | "en";
+import { createContext, useContext, useCallback, type ReactNode } from "react";
 
 const translations = {
   nav: {
-    catalog: { ru: "Каталог", en: "Catalog" },
-    brands: { ru: "Бренды", en: "Brands" },
-    discounts: { ru: "Скидки", en: "Discounts" },
-    news: { ru: "Новости", en: "News" },
-    about: { ru: "О компании", en: "About" },
-    favorites: { ru: "Избранное", en: "Favorites" },
+    catalog: "Каталог",
+    brands: "Бренды",
+    discounts: "Скидки",
+    news: "Новости",
+    about: "О компании",
+    favorites: "Избранное",
   },
   search: {
-    placeholder: { ru: "Поиск товаров...", en: "Search products..." },
-    searching: { ru: "Поиск...", en: "Searching..." },
-    noResults: { ru: "Ничего не найдено", en: "Nothing found" },
-    showAll: { ru: "Показать все", en: "Show all" },
+    placeholder: "Поиск товаров...",
+    searching: "Поиск...",
+    noResults: "Ничего не найдено",
+    showAll: "Показать все",
   },
   home: {
-    bestsellers: { ru: "Хиты продаж", en: "Bestsellers" },
-    viewAll: { ru: "Смотреть все", en: "View all" },
-    discounts: { ru: "Скидки", en: "Discounts" },
-    ctaTitle: { ru: "Открой или модернизируй автосервис вместе с ATG", en: "Open or upgrade your auto service with ATG" },
-    ctaButton: { ru: "Получить бесплатный расчёт", en: "Get a free estimate" },
-    services: { ru: "Наши услуги", en: "Our services" },
-    news: { ru: "Новости", en: "News" },
-    categories: { ru: "Категории товаров", en: "Product categories" },
+    bestsellers: "Хиты продаж",
+    viewAll: "Смотреть все",
+    discounts: "Скидки",
+    ctaTitle: "Открой или модернизируй автосервис вместе с ATG",
+    ctaButton: "Получить бесплатный расчёт",
+    services: "Наши услуги",
+    news: "Новости",
+    categories: "Категории товаров",
   },
   catalog: {
-    title: { ru: "Каталог", en: "Catalog" },
-    filters: { ru: "Фильтры", en: "Filters" },
-    categories: { ru: "Категории", en: "Categories" },
-    brands: { ru: "Бренды", en: "Brands" },
-    price: { ru: "Цена", en: "Price" },
-    clearFilters: { ru: "Сбросить фильтры", en: "Clear filters" },
-    results: { ru: "Результаты:", en: "Results:" },
-    found: { ru: "Найдено:", en: "Found:" },
-    noProducts: { ru: "Товары не найдены", en: "No products found" },
+    title: "Каталог",
+    filters: "Фильтры",
+    categories: "Категории",
+    brands: "Бренды",
+    price: "Цена",
+    clearFilters: "Сбросить фильтры",
+    results: "Результаты:",
+    found: "Найдено:",
+    noProducts: "Товары не найдены",
   },
   brands: {
-    title: { ru: "Бренды", en: "Brands" },
-    empty: { ru: "Бренды не найдены", en: "No brands found" },
+    title: "Бренды",
+    empty: "Бренды не найдены",
   },
   news: {
-    title: { ru: "Новости", en: "News" },
-    empty: { ru: "Новостей пока нет", en: "No news yet" },
+    title: "Новости",
+    empty: "Новостей пока нет",
   },
   discounts: {
-    title: { ru: "Скидки", en: "Discounts" },
-    subtitle: { ru: "Специальные предложения на избранные товары", en: "Special offers on selected products" },
-    empty: { ru: "Сейчас нет товаров со скидкой", en: "No discounted products at the moment" },
+    title: "Скидки",
+    subtitle: "Специальные предложения на избранные товары",
+    empty: "Сейчас нет товаров со скидкой",
   },
   favorites: {
-    title: { ru: "Избранное", en: "Favorites" },
-    emptyTitle: { ru: "В избранном пока пусто", en: "Your favorites list is empty" },
-    emptyText: { ru: "Нажмите на сердечко на карточке товара, чтобы добавить его в избранное", en: "Tap the heart icon on a product card to add it to favorites" },
-    goToCatalog: { ru: "Перейти в каталог", en: "Go to catalog" },
+    title: "Избранное",
+    emptyTitle: "В избранном пока пусто",
+    emptyText: "Нажмите на сердечко на карточке товара, чтобы добавить его в избранное",
+    goToCatalog: "Перейти в каталог",
   },
   product: {
-    backToCatalog: { ru: "Каталог", en: "Catalog" },
-    notFound: { ru: "Товар не найден", en: "Product not found" },
-    backToCatalogBtn: { ru: "Вернуться в каталог", en: "Back to catalog" },
-    specs: { ru: "Характеристики", en: "Specifications" },
-    description: { ru: "Описание", en: "Description" },
-    orderContact: { ru: "Для заказа свяжитесь с нами:", en: "Contact us to order:" },
-    details: { ru: "Подробнее", en: "Details" },
-    addToFavorites: { ru: "Добавить в избранное", en: "Add to favorites" },
-    removeFromFavorites: { ru: "Удалить из избранного", en: "Remove from favorites" },
+    backToCatalog: "Каталог",
+    notFound: "Товар не найден",
+    backToCatalogBtn: "Вернуться в каталог",
+    specs: "Характеристики",
+    description: "Описание",
+    orderContact: "Для заказа свяжитесь с нами:",
+    details: "Подробнее",
+    addToFavorites: "Добавить в избранное",
+    removeFromFavorites: "Удалить из избранного",
   },
   about: {
-    title: { ru: "О компании", en: "About us" },
-    subtitle: { ru: "AMIR TECH GROUP (ATG) — ведущий поставщик комплексных решений для автомобильной отрасли в Таджикистане.", en: "AMIR TECH GROUP (ATG) — a leading supplier of comprehensive solutions for the automotive industry in Tajikistan." },
-    specialization: { ru: "Специализация", en: "Specialization" },
-    specText1: { ru: "Компания специализируется на дистрибуции автозапчастей, поставке профессионального оборудования для СТО, диагностических сканерах и компонентах пневмоподвески.", en: "The company specializes in distribution of auto parts, supply of professional equipment for service stations, diagnostic scanners and air suspension components." },
-    specText2: { ru: "С более чем 10-летним опытом успешной работы мы обеспечиваем высококачественные решения для автомобильной индустрии Таджикистана.", en: "With more than 10 years of successful experience, we provide high-quality solutions for the automotive industry of Tajikistan." },
-    keyDirections: { ru: "Ключевые направления", en: "Key directions" },
-    advantages: { ru: "Преимущества", en: "Advantages" },
-    contacts: { ru: "Контакты", en: "Contacts" },
-    company: { ru: "Компания:", en: "Company:" },
-    ceo: { ru: "Генеральный директор:", en: "CEO:" },
-    postalCode: { ru: "Почтовый индекс:", en: "Postal code:" },
-    location: { ru: "Наше расположение", en: "Our location" },
-    getDirections: { ru: "Построить маршрут", en: "Get directions" },
-    yearsOnMarket: { ru: "лет на рынке", en: "years on market" },
-    employees: { ru: "сотрудников", en: "employees" },
-    trainingCenter: { ru: "учебный центр", en: "training center" },
-    clients: { ru: "клиентов", en: "clients" },
-    successfulWork: { ru: "Успешной работы", en: "Successful work" },
-    qualified: { ru: "Квалифицированных", en: "Qualified" },
-    own: { ru: "Собственный", en: "Own" },
-    trustUs: { ru: "Доверяют нам", en: "Trust us" },
-    directions: {
-      ru: [
-        "Продажа диагностического оборудования (Thinkcar, Autel, OBDStar, Xhorse и др.)",
-        "Поставка автозапчастей и систем",
-        "Сервис и поддержка",
-        "Обучение специалистов",
-      ],
-      en: [
-        "Diagnostic equipment sales (Thinkcar, Autel, OBDStar, Xhorse, etc.)",
-        "Auto parts and systems supply",
-        "Service and support",
-        "Specialist training",
-      ],
-    },
-    advantagesList: {
-      ru: [
-        "Глубокая экспертиза в автомобильной отрасли",
-        "Собственный автосервис и учебный центр",
-        "Профессиональная диагностика, сход-развал, балансировка",
-        "Обучение специалистов автосервисов",
-      ],
-      en: [
-        "Deep expertise in the automotive industry",
-        "Own auto service and training center",
-        "Professional diagnostics, wheel alignment, balancing",
-        "Training of auto service specialists",
-      ],
-    },
+    title: "О компании",
+    subtitle: "AMIR TECH GROUP (ATG) — ведущий поставщик комплексных решений для автомобильной отрасли в Таджикистане.",
+    specialization: "Специализация",
+    specText1: "Компания специализируется на дистрибуции автозапчастей, поставке профессионального оборудования для СТО, диагностических сканерах и компонентах пневмоподвески.",
+    specText2: "С более чем 10-летним опытом успешной работы мы обеспечиваем высококачественные решения для автомобильной индустрии Таджикистана.",
+    keyDirections: "Ключевые направления",
+    advantages: "Преимущества",
+    contacts: "Контакты",
+    company: "Компания:",
+    ceo: "Генеральный директор:",
+    postalCode: "Почтовый индекс:",
+    location: "Наше расположение",
+    getDirections: "Построить маршрут",
+    yearsOnMarket: "лет на рынке",
+    employees: "сотрудников",
+    trainingCenter: "учебный центр",
+    clients: "клиентов",
+    successfulWork: "Успешной работы",
+    qualified: "Квалифицированных",
+    own: "Собственный",
+    trustUs: "Доверяют нам",
+    directions: [
+      "Продажа диагностического оборудования (Thinkcar, Autel, OBDStar, Xhorse и др.)",
+      "Поставка автозапчастей и систем",
+      "Сервис и поддержка",
+      "Обучение специалистов",
+    ],
+    advantagesList: [
+      "Глубокая экспертиза в автомобильной отрасли",
+      "Собственный автосервис и учебный центр",
+      "Профессиональная диагностика, сход-развал, балансировка",
+      "Обучение специалистов автосервисов",
+    ],
   },
   footer: {
-    description: { ru: "Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.", en: "Leading supplier of auto parts and diagnostic equipment in Tajikistan." },
-    description2: { ru: "№1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.", en: "#1 supplier of auto diagnostic equipment. Official dealer of Autel, Thinkcar, Xtool, Sivik." },
-    catalog: { ru: "Каталог", en: "Catalog" },
-    estimate: { ru: "Расчёт", en: "Estimate" },
-    navigation: { ru: "Навигация", en: "Navigation" },
-    contacts: { ru: "Контакты", en: "Contacts" },
-    location: { ru: "Наше расположение", en: "Our location" },
-    getDirections: { ru: "Построить маршрут", en: "Get directions" },
-    copyright: { ru: "Все права защищены.", en: "All rights reserved." },
-    yearsOnMarket: { ru: "лет на рынке", en: "years on market" },
-    clients: { ru: "клиентов", en: "clients" },
-    specialists: { ru: "специалистов", en: "specialists" },
-    dealerships: { ru: "дилерств", en: "dealerships" },
-    delivery: { ru: "доставка", en: "delivery" },
+    description: "Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.",
+    description2: "№1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.",
+    catalog: "Каталог",
+    estimate: "Расчёт",
+    navigation: "Навигация",
+    contacts: "Контакты",
+    location: "Наше расположение",
+    getDirections: "Построить маршрут",
+    copyright: "Все права защищены.",
+    yearsOnMarket: "лет на рынке",
+    clients: "клиентов",
+    specialists: "специалистов",
+    dealerships: "дилерств",
+    delivery: "доставка",
   },
   floating: {
-    call: { ru: "Позвонить", en: "Call" },
+    call: "Позвонить",
   },
-  currency: { ru: "сом.", en: "TJS" },
-  currencyShort: { ru: "с.", en: "TJS" },
+  currency: "сом.",
+  currencyShort: "с.",
 } as const;
 
-type Translations = typeof translations;
-type TranslationPath = {
-  [K in keyof Translations]: {
-    [K2 in keyof Translations[K]]: Translations[K][K2] extends Record<Lang, string> ? `${K & string}.${K2 & string}` : never;
-  }[keyof Translations[K]];
-}[keyof Translations];
-
 interface I18nContextValue {
-  lang: Lang;
-  setLang: (lang: Lang) => void;
+  lang: "ru";
   t: (path: string) => string;
   ta: (path: string) => string[];
 }
@@ -159,35 +133,15 @@ interface I18nContextValue {
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("atg-lang");
-      if (saved === "en" || saved === "ru") return saved;
-    }
-    return "ru";
-  });
-
-  const setLang = useCallback((newLang: Lang) => {
-    setLangState(newLang);
-    localStorage.setItem("atg-lang", newLang);
-    document.documentElement.lang = newLang;
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
-
   const t = useCallback((path: string): string => {
     const parts = path.split(".");
     let current: any = translations;
     for (const part of parts) {
       current = current?.[part];
     }
-    if (current && typeof current === "object" && lang in current) {
-      return current[lang];
-    }
+    if (typeof current === "string") return current;
     return path;
-  }, [lang]);
+  }, []);
 
   const ta = useCallback((path: string): string[] => {
     const parts = path.split(".");
@@ -195,14 +149,12 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     for (const part of parts) {
       current = current?.[part];
     }
-    if (current && typeof current === "object" && lang in current) {
-      return current[lang];
-    }
+    if (Array.isArray(current)) return current;
     return [];
-  }, [lang]);
+  }, []);
 
   return (
-    <I18nContext.Provider value={{ lang, setLang, t, ta }}>
+    <I18nContext.Provider value={{ lang: "ru", t, ta }}>
       {children}
     </I18nContext.Provider>
   );

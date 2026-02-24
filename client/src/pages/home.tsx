@@ -47,7 +47,7 @@ const serviceIconAnimations: Record<string, string> = {
 
 export default function Home() {
   usePageTitle("");
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const { data: heroBanners, isLoading: loadingBanners } = useQuery<Banner[]>({
     queryKey: ["/api/banners", "hero"],
@@ -241,7 +241,7 @@ export default function Home() {
                     </div>
                     <div className="p-2.5 sm:p-4 flex flex-col flex-1">
                       <time className="text-[10px] sm:text-xs text-muted-foreground">
-                        {new Date(item.date).toLocaleDateString(lang === "ru" ? "ru-RU" : "en-US", {
+                        {new Date(item.date).toLocaleDateString("ru-RU", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",

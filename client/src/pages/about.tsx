@@ -56,7 +56,7 @@ export default function About() {
   const advantageTexts = ta("about.advantagesList");
 
   const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${ATG_LAT},${ATG_LNG}&travelmode=driving`;
-  const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${ATG_LAT},${ATG_LNG}&z=16&output=embed&hl=${lang}`;
+  const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${ATG_LAT},${ATG_LNG}&z=16&output=embed&hl=ru`;
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
