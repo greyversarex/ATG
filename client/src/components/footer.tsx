@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Phone, MapPin, Mail } from "lucide-react";
+import { Phone, MapPin, Mail, Navigation } from "lucide-react";
 
 export function Footer() {
   return (
@@ -71,7 +71,7 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-4 text-white">Наше расположение</h4>
             <div className="rounded-md overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3068.8!2d68.7864!3d38.5598!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0JTRg9GI0LDQvdCx0LUsINGA0LDQudC-0L0g0KHQuNC90L4!5e0!3m2!1sru!2s!4v1700000000000"
+                src="https://maps.google.com/maps?q=38.5437,68.8068&z=16&output=embed&hl=ru"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -82,6 +82,16 @@ export function Footer() {
                 data-testid="map-footer"
               />
             </div>
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=38.5437,68.8068&travelmode=driving"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex items-center justify-center gap-1.5 text-xs font-medium bg-white/15 hover:bg-white/25 transition-colors rounded-md py-2 px-3"
+              data-testid="button-footer-directions"
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              Построить маршрут
+            </a>
           </div>
         </div>
 
