@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Phone, MapPin, Mail, Navigation, MessageCircle } from "lucide-react";
+import { Phone, MapPin, Mail, Navigation } from "lucide-react";
 
 export function Footer() {
   return (
@@ -8,28 +8,6 @@ export function Footer() {
       color: "hsl(0 0% 95%)"
     }}>
       <div className="max-w-7xl mx-auto px-4 pt-8 pb-6">
-        <div className="text-center mb-8 pb-6 border-b border-white/10">
-          <h3 className="text-lg sm:text-xl font-bold text-white leading-snug" data-testid="text-footer-headline">
-            ATG — №1 поставщик автодиагностического оборудования в Таджикистане
-          </h3>
-          <p className="text-xs sm:text-sm opacity-70 mt-1.5">
-            Официальный дилер Autel, Thinkcar, Xtool, Sivik. Поставка, обучение и сервисная поддержка.
-          </p>
-          <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-            <Link href="/catalog">
-              <span className="inline-flex items-center px-5 py-2 rounded-md text-sm font-semibold bg-white text-red-700 hover:bg-white/90 transition-colors cursor-pointer shadow" data-testid="button-footer-catalog">
-                Смотреть каталог
-              </span>
-            </Link>
-            <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E" target="_blank" rel="noopener noreferrer">
-              <span className="inline-flex items-center gap-1.5 px-5 py-2 rounded-md text-sm font-semibold border border-white/30 hover:bg-white/10 transition-colors cursor-pointer" data-testid="button-footer-consult">
-                <MessageCircle className="w-4 h-4" />
-                Получить консультацию
-              </span>
-            </a>
-          </div>
-        </div>
-
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mb-6 pb-6 border-b border-white/10 text-center">
           {[
             { num: "7+", label: "лет на рынке" },
@@ -52,6 +30,9 @@ export function Footer() {
             </div>
             <p className="text-sm opacity-80 leading-relaxed">
               Ведущий поставщик автозапчастей и диагностического оборудования в Таджикистане.
+            </p>
+            <p className="text-xs opacity-60 leading-relaxed mt-1.5">
+              №1 поставщик автодиагностического оборудования. Официальный дилер Autel, Thinkcar, Xtool, Sivik.
             </p>
           </div>
 
