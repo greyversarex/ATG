@@ -7,47 +7,10 @@ import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin } from "lucide-react";
+import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin, MessageCircle } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
-
-function AnimatedCounter({ value, suffix = "", prefix = "" }: { value: number; suffix?: string; prefix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          setCount(0);
-          const duration = 1500;
-          const steps = 40;
-          const increment = value / steps;
-          let current = 0;
-          timerRef.current = setInterval(() => {
-            current += increment;
-            if (current >= value) {
-              setCount(value);
-              if (timerRef.current) clearInterval(timerRef.current);
-            } else {
-              setCount(Math.floor(current));
-            }
-          }, duration / steps);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(el);
-    return () => { observer.disconnect(); if (timerRef.current) clearInterval(timerRef.current); };
-  }, [value]);
-
-  return <span ref={ref}>{prefix}{count}{suffix}</span>;
-}
 
 function HeroSkeleton() {
   return <Skeleton className="w-full aspect-[16/6] rounded-xl" />;
@@ -128,6 +91,28 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-10">
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
+        <section data-testid="section-hero-intro" className="text-center py-4">
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-extrabold leading-tight" data-testid="text-hero-title">
+            ATG — №1 поставщик автодиагностического оборудования в Таджикистане
+          </h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1.5 max-w-xl mx-auto" data-testid="text-hero-subtitle">
+            Официальный дилер Autel, Thinkcar, Xtool, Sivik. Поставка, обучение и сервисная поддержка.
+          </p>
+          <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
+            <Link href="/catalog">
+              <Button size="sm" className="font-semibold shadow-sm" data-testid="button-hero-catalog">
+                Смотреть каталог
+              </Button>
+            </Link>
+            <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E" target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline" className="font-semibold border bg-white text-black hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100" data-testid="button-hero-consult">
+                <MessageCircle className="w-3.5 h-3.5 mr-1.5" />
+                Получить консультацию
+              </Button>
+            </a>
+          </div>
+        </section>
+
         {loadingBrands ? (
           <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -137,36 +122,6 @@ export default function Home() {
         ) : (
           <BrandsRibbon brands={brands || []} />
         )}
-
-        <section data-testid="section-trust" className="rounded-2xl py-10 px-6 sm:px-10 text-white overflow-hidden relative" style={{
-          background: "linear-gradient(135deg, hsl(0 84% 35%) 0%, hsl(0 70% 25%) 50%, hsl(0 84% 30%) 100%)"
-        }}>
-          <div className="absolute inset-0 opacity-[0.07]" style={{
-            backgroundImage: "radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)",
-            backgroundSize: "60px 60px, 80px 80px"
-          }} />
-          <div className="relative z-10">
-            <h2 className="text-xl sm:text-2xl font-bold text-center mb-8" data-testid="text-trust-title">
-              Нам доверяют по всей Республике Таджикистан
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
-              {[
-                { num: 7, suffix: "+", label: "лет на рынке" },
-                { num: 1000, suffix: "+", label: "клиентов" },
-                { num: 300, suffix: "+", label: "обученных специалистов" },
-                { num: 5, suffix: "+", label: "официальных дилерств" },
-                { num: 0, suffix: " с.", label: "доставка по Душанбе" },
-              ].map((item) => (
-                <div key={item.label} className="flex flex-col items-center text-center gap-1" data-testid={`stat-trust-${item.label}`}>
-                  <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                    <AnimatedCounter value={item.num} suffix={item.suffix} />
-                  </span>
-                  <span className="text-xs sm:text-sm text-white/80 leading-tight">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {loadingCategories ? <ProductsSkeleton /> : <CategoriesGrid categories={(categories || []).filter(c => !c.parentId)} />}
 
