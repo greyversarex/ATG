@@ -1,0 +1,45 @@
+root@6740927-ow033686:~/ATG# pm2 logs
+[TAILING] Tailing last 15 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 15 lines:
+PM2        | 2026-02-24T17:28:08: PM2 log: SIGTERM timeout      : 1600
+PM2        | 2026-02-24T17:28:08: PM2 log: Runtime Binary       : /usr/bin/node
+PM2        | 2026-02-24T17:28:08: PM2 log: ===============================================================================
+PM2        | 2026-02-24T17:28:08: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-02-24T17:28:08: PM2 log: App [atg:0] online
+PM2        | 2026-02-24T17:36:57: PM2 log: Stopping app:atg id:0
+PM2        | 2026-02-24T17:36:57: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-02-24T17:36:57: PM2 log: pid=17641 msg=process killed
+PM2        | 2026-02-24T17:36:57: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-02-24T17:36:57: PM2 log: App [atg:0] online
+PM2        | 2026-02-24T17:37:19: PM2 log: Stopping app:atg id:0
+PM2        | 2026-02-24T17:37:19: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-02-24T17:37:19: PM2 log: pid=18014 msg=process killed
+PM2        | 2026-02-24T17:37:19: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-02-24T17:37:19: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-error.log last 15 lines:
+0|atg      | Internal Server Error: Error: ENOENT: no such file or directory, open '/root/ATG/dist/table.sql'
+0|atg      |     at async open (node:internal/fs/promises:634:25)
+0|atg      |     at async Object.readFile (node:internal/fs/promises:1236:14)
+0|atg      |     at async n._rawEnsureSessionStoreTable (/root/ATG/dist/index.cjs:82:7198)
+0|atg      |     at async n._asyncQuery (/root/ATG/dist/index.cjs:82:8283) {
+0|atg      |   errno: -2,
+0|atg      |   code: 'ENOENT',
+0|atg      |   syscall: 'open',
+0|atg      |   path: '/root/ATG/dist/table.sql'
+0|atg      | }
+0|atg      | Error: ENOENT: no such file or directory, open '/root/ATG/dist/table.sql'
+0|atg      |     at async open (node:internal/fs/promises:634:25)
+0|atg      |     at async Object.readFile (node:internal/fs/promises:1236:14)
+0|atg      |     at async n._rawEnsureSessionStoreTable (/root/ATG/dist/index.cjs:82:7198)
+0|atg      |     at async n._asyncQuery (/root/ATG/dist/index.cjs:82:8283)
+
+/root/.pm2/logs/atg-out.log last 15 lines:
+0|atg      | очные станки, шиномонтажное и компрессорное оборудование. Все товары поставляются напрямую от производителя с официальной гарантией.","image":"/images/news-1.png","date":"2026-02-20T00:00:00.000Z"},{"id":"c77eacb5-6ee3-4dc4-b73b-cb50c54b95ae","title":"Открытие нового учебного центра ATG","content":"AMIR TECH GROUP открывает новый учебный центр для подготовки специалистов автомобильной диагностики в Душанбе. Центр оснащён современным оборудованием и позволяет проводить практические занятия на реальных автомобилях. Курсы доступны для специалистов всех уровней подготовки.","image":"/images/news-1.png","date":"2026-02-10T00:00:00.000Z"},{"id":"c7f573c3-054b-4b60-83b2-2936234711e9","title":"Участие в международной выставке автооборудования","content":"Компания ATG приняла участие в международной выставке автомобильного оборудования, где были представлены новейшие диагностические сканеры и системы для автосервисов. Наши специалисты провели демонстрации работы оборудования Thinkcar и Autel.","image":"/images/news-2.png","date":"2026-01-25T00:00:00.000Z"},{"id":"e2765d33-28ac-425e-9cfa-5fd6a83cd30c","title":"Новые поступления пневмоподвески","content":"В наш каталог добавлены компоненты пневматической подвески для BMW, Mercedes-Benz и Audi. Все детали имеют OEM качество и гарантию 12 месяцев. Доступны компрессоры, пневмобаллоны и блоки клапанов.","image":"/images/cat-workwear.png","date":"2026-01-15T00:00:00.000Z"}]
+0|atg      | 5:52:09 PM [express] GET /api/auth/me 401 in 0ms :: {"message":"Не авторизован"}
+0|atg      | 5:52:14 PM [express] POST /api/auth/login 200 in 104ms :: {"id":"57be6f6e-5144-4f6a-98d7-ea3a1918f2b5","username":"admin","role":"admin"}
+0|atg      | 5:52:14 PM [express] GET /api/auth/me 401 in 0ms :: {"message":"Не авторизован"}
+0|atg      | 5:52:16 PM [express] POST /api/auth/login 200 in 93ms :: {"id":"57be6f6e-5144-4f6a-98d7-ea3a1918f2b5","username":"admin","role":"admin"}
+0|atg      | 5:52:16 PM [express] GET /api/auth/me 401 in 1ms :: {"message":"Не авторизован"}
+0|atg      | 5:52:24 PM [express] POST /api/auth/login 200 in 91ms :: {"id":"57be6f6e-5144-4f6a-98d7-ea3a1918f2b5","username":"admin","role":"admin"}
+0|atg      | 5:52:24 PM [express] GET /api/auth/me 401 in 1ms :: {"message":"Не авторизован"}
