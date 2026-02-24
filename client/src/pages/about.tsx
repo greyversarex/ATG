@@ -63,7 +63,7 @@ export default function About() {
   usePageTitle("О компании");
 
   const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${ATG_LAT},${ATG_LNG}&travelmode=driving`;
-  const googleMapsEmbedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3069.5!2d${ATG_LNG}!3d${ATG_LAT}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38b5d17b0bbfffff%3A0x1!2z0JDQvNC40YAg0KLQtdGFINCT0YDRg9C_0L8!5e0!3m2!1sru!2s!4v1700000000000!5m2!1sru!2s`;
+  const googleMapsEmbedUrl = `https://maps.google.com/maps?q=${ATG_LAT},${ATG_LNG}&z=16&output=embed&hl=ru`;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
