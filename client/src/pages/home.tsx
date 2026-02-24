@@ -7,7 +7,7 @@ import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin, MessageCircle } from "lucide-react";
+import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin } from "lucide-react";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { Card } from "@/components/ui/card";
 import type { Banner, Brand, Category, Product, Service, News } from "@shared/schema";
@@ -90,28 +90,6 @@ export default function Home() {
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-10">
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
-
-        <section data-testid="section-hero-intro" className="text-center py-4">
-          <h1 className="text-lg sm:text-xl lg:text-2xl font-extrabold leading-tight" data-testid="text-hero-title">
-            ATG — №1 поставщик автодиагностического оборудования в Таджикистане
-          </h1>
-          <p className="text-muted-foreground text-xs sm:text-sm mt-1.5 max-w-xl mx-auto" data-testid="text-hero-subtitle">
-            Официальный дилер Autel, Thinkcar, Xtool, Sivik. Поставка, обучение и сервисная поддержка.
-          </p>
-          <div className="flex items-center justify-center gap-3 mt-3 flex-wrap">
-            <Link href="/catalog">
-              <Button size="sm" className="font-semibold shadow-sm" data-testid="button-hero-catalog">
-                Смотреть каталог
-              </Button>
-            </Link>
-            <a href="https://wa.me/992907109014?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BA%D0%BE%D0%BD%D1%81%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%86%D0%B8%D1%8E" target="_blank" rel="noopener noreferrer">
-              <Button size="sm" variant="outline" className="font-semibold border bg-white text-black hover:bg-gray-100 dark:bg-white dark:text-black dark:hover:bg-gray-100" data-testid="button-hero-consult">
-                <MessageCircle className="w-3.5 h-3.5 mr-1.5" />
-                Получить консультацию
-              </Button>
-            </a>
-          </div>
-        </section>
 
         {loadingBrands ? (
           <div className="flex gap-4 overflow-hidden">
