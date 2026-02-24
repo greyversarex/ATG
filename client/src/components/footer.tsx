@@ -45,7 +45,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
+          <div className="ml-[69px] mr-[69px]">
             <h4 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4 text-white">{t("footer.navigation")}</h4>
             <ul className="space-y-1.5 sm:space-y-2">
               {navItems.map((item) => (
