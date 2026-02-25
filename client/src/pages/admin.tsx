@@ -124,16 +124,6 @@ function OrdersAdmin() {
 
   const productMap = new Map(allProducts?.map(p => [p.id, p]) || []);
 
-  const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string; status: string }) =>
-      apiRequest("PATCH", `/api/admin/orders/${id}/status`, { status }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
-      toast({ title: "Статус обновлён" });
-    },
-    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
-  });
-
   const deleteMutation = useMutation({
     mutationFn: (id: string) => apiRequest("DELETE", `/api/admin/orders/${id}`),
     onSuccess: () => {
@@ -192,7 +182,7 @@ function OrdersAdmin() {
                 </Button>
               </div>
 
-              <div className="bg-muted/50 rounded-lg p-3 mb-3">
+              <div className="bg-muted/50 rounded-lg p-3">
                 <p className="text-xs font-medium mb-1.5">Товары ({(order.productIds as string[]).length}):</p>
                 <ul className="space-y-1">
                   {(order.productIds as string[]).map((pid) => {
@@ -200,11 +190,11 @@ function OrdersAdmin() {
                     return (
                       <li key={pid} className="flex items-center gap-2 text-sm">
                         {product ? (
-                          <>
+                          <a href={`/product/${pid}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 min-w-0 flex-1 hover:text-primary transition-colors" data-testid={`link-order-product-${pid}`}>
                             {product.image && <img src={product.image} alt="" className="w-8 h-8 object-cover rounded shrink-0" />}
-                            <span className="truncate">{product.name}</span>
+                            <span className="truncate hover:underline">{product.name}</span>
                             <span className="text-muted-foreground ml-auto shrink-0">{product.price.toLocaleString("ru-RU")} сом.</span>
-                          </>
+                          </a>
                         ) : (
                           <span className="text-muted-foreground">Товар удалён ({pid})</span>
                         )}
@@ -212,24 +202,6 @@ function OrdersAdmin() {
                     );
                   })}
                 </ul>
-              </div>
-
-              <div className="flex gap-2 flex-wrap">
-                {order.status !== "processing" && (
-                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "processing" })} data-testid={`button-status-processing-${order.id}`}>
-                    В обработку
-                  </Button>
-                )}
-                {order.status !== "completed" && (
-                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "completed" })} data-testid={`button-status-completed-${order.id}`}>
-                    Завершить
-                  </Button>
-                )}
-                {order.status !== "cancelled" && (
-                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "cancelled" })} data-testid={`button-status-cancelled-${order.id}`}>
-                    Отменить
-                  </Button>
-                )}
               </div>
             </Card>
           ))}
