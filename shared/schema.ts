@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, doublePrecision, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -66,6 +66,15 @@ export const services = pgTable("services", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const orders = pgTable("orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  phone: text("phone").notNull(),
+  comment: text("comment"),
+  productIds: jsonb("product_ids").notNull().$type<string[]>(),
+  status: text("status").notNull().default("new"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertBrandSchema = createInsertSchema(brands).omit({ id: true });
@@ -74,6 +83,7 @@ export const insertProductSchema = createInsertSchema(products).omit({ id: true 
 export const insertBannerSchema = createInsertSchema(banners).omit({ id: true });
 export const insertNewsSchema = createInsertSchema(news).omit({ id: true });
 export const insertServiceSchema = createInsertSchema(services).omit({ id: true });
+export const insertOrderSchema = createInsertSchema(orders).omit({ id: true, createdAt: true, status: true });
 
 // Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -90,3 +100,5 @@ export type InsertNews = z.infer<typeof insertNewsSchema>;
 export type News = typeof news.$inferSelect;
 export type InsertService = z.infer<typeof insertServiceSchema>;
 export type Service = typeof services.$inferSelect;
+export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type Order = typeof orders.$inferSelect;

@@ -11,12 +11,14 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown } from "lucide-react";
-import type { Product, Brand, Category, Banner, News, Service } from "@shared/schema";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import type { Product, Brand, Category, Banner, News, Service, Order } from "@shared/schema";
 
-type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services";
+type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services" | "orders";
 
 const tabs: { id: Tab; label: string; icon: typeof Package }[] = [
+  { id: "orders", label: "Заявки", icon: ClipboardList },
   { id: "products", label: "Товары", icon: Package },
   { id: "brands", label: "Бренды", icon: Tag },
   { id: "categories", label: "Категории", icon: Settings },
@@ -90,12 +92,149 @@ export default function Admin() {
         ))}
       </div>
 
+      {activeTab === "orders" && <OrdersAdmin />}
       {activeTab === "products" && <ProductsAdmin />}
       {activeTab === "brands" && <BrandsAdmin />}
       {activeTab === "categories" && <CategoriesAdmin />}
       {activeTab === "banners" && <BannersAdmin />}
       {activeTab === "news" && <NewsAdmin />}
       {activeTab === "services" && <ServicesAdmin />}
+    </div>
+  );
+}
+
+const statusLabels: Record<string, string> = {
+  new: "Новая",
+  processing: "В обработке",
+  completed: "Завершена",
+  cancelled: "Отменена",
+};
+
+const statusColors: Record<string, string> = {
+  new: "destructive",
+  processing: "default",
+  completed: "secondary",
+  cancelled: "outline",
+};
+
+function OrdersAdmin() {
+  const { toast } = useToast();
+  const { data: orders } = useQuery<Order[]>({ queryKey: ["/api/admin/orders"] });
+  const { data: allProducts } = useQuery<Product[]>({ queryKey: ["/api/products"] });
+
+  const productMap = new Map(allProducts?.map(p => [p.id, p]) || []);
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      apiRequest("PATCH", `/api/admin/orders/${id}/status`, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
+      toast({ title: "Статус обновлён" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => apiRequest("DELETE", `/api/admin/orders/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
+      toast({ title: "Заявка удалена" });
+    },
+  });
+
+  const newOrdersCount = orders?.filter(o => o.status === "new").length || 0;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 mb-2">
+        <h3 className="font-semibold text-lg">Заявки</h3>
+        {newOrdersCount > 0 && (
+          <Badge variant="destructive" data-testid="badge-new-orders-count">
+            {newOrdersCount} новых
+          </Badge>
+        )}
+      </div>
+
+      {!orders || orders.length === 0 ? (
+        <Card className="p-8 text-center">
+          <ClipboardList className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-muted-foreground">Заявок пока нет</p>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {orders.map((order) => (
+            <Card key={order.id} className="p-4" data-testid={`admin-order-${order.id}`}>
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge variant={statusColors[order.status] as any} data-testid={`badge-order-status-${order.id}`}>
+                      {statusLabels[order.status] || order.status}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(order.createdAt).toLocaleString("ru-RU")}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <a href={`tel:${order.phone}`} className="text-sm font-medium hover:underline" data-testid={`text-order-phone-${order.id}`}>
+                      {order.phone}
+                    </a>
+                  </div>
+                  {order.comment && (
+                    <div className="flex items-start gap-2">
+                      <MessageSquare className="w-4 h-4 text-muted-foreground mt-0.5" />
+                      <p className="text-sm text-muted-foreground" data-testid={`text-order-comment-${order.id}`}>{order.comment}</p>
+                    </div>
+                  )}
+                </div>
+                <Button size="icon" variant="ghost" onClick={() => deleteMutation.mutate(order.id)} data-testid={`button-delete-order-${order.id}`}>
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </Button>
+              </div>
+
+              <div className="bg-muted/50 rounded-lg p-3 mb-3">
+                <p className="text-xs font-medium mb-1.5">Товары ({(order.productIds as string[]).length}):</p>
+                <ul className="space-y-1">
+                  {(order.productIds as string[]).map((pid) => {
+                    const product = productMap.get(pid);
+                    return (
+                      <li key={pid} className="flex items-center gap-2 text-sm">
+                        {product ? (
+                          <>
+                            {product.image && <img src={product.image} alt="" className="w-8 h-8 object-cover rounded shrink-0" />}
+                            <span className="truncate">{product.name}</span>
+                            <span className="text-muted-foreground ml-auto shrink-0">{product.price.toLocaleString("ru-RU")} сом.</span>
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground">Товар удалён ({pid})</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                {order.status !== "processing" && (
+                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "processing" })} data-testid={`button-status-processing-${order.id}`}>
+                    В обработку
+                  </Button>
+                )}
+                {order.status !== "completed" && (
+                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "completed" })} data-testid={`button-status-completed-${order.id}`}>
+                    Завершить
+                  </Button>
+                )}
+                {order.status !== "cancelled" && (
+                  <Button size="sm" variant="outline" onClick={() => updateStatusMutation.mutate({ id: order.id, status: "cancelled" })} data-testid={`button-status-cancelled-${order.id}`}>
+                    Отменить
+                  </Button>
+                )}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

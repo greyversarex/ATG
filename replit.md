@@ -4,6 +4,7 @@
 Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading supplier of automotive parts and diagnostic equipment in Tajikistan. The site features a product catalog, brand pages, news section, admin panel, and company information. Russian-only site.
 
 ## Recent Changes
+- 2026-02-25: Added order request system — "Купить" button on product detail page (after description) and "Купить все" on favorites page, opens modal with phone + comment fields, orders saved to DB, admin panel has "Заявки" tab with order management (status: new/processing/completed/cancelled, product details, delete)
 - 2026-02-24: Removed English/i18n language switching — site is now Russian-only, Globe button removed from header, all translations simplified to Russian strings only
 - 2026-02-24: Restored desktop news card design — image, title, 2 lines of content with proper font sizes
 - 2026-02-24: Comprehensive mobile optimization — all pages, components, header, footer, catalog filters (bottom sheet), hero slider (4:3 mobile, prev/next buttons), product cards (compact), floating contact, splash screen (min() sizing), consistent responsive breakpoints across all pages
@@ -32,10 +33,10 @@ Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading sup
 - `/admin` - Admin panel for managing all content
 
 ## Data Models
-- Users, Brands, Categories, Products, Banners (hero/promo), News, Services
+- Users, Brands, Categories, Products, Banners (hero/promo), News, Services, Orders
 
 ## Admin Panel
-- Manages: products, brands, categories, banners, news, services
+- Manages: orders (заявки), products, brands, categories, banners, news, services
 - Available at `/admin` route
 
 ## Color Theme

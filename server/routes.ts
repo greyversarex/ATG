@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import {
   insertBrandSchema, insertCategorySchema, insertProductSchema,
-  insertBannerSchema, insertNewsSchema, insertServiceSchema
+  insertBannerSchema, insertNewsSchema, insertServiceSchema, insertOrderSchema
 } from "@shared/schema";
 import { ZodError } from "zod";
 import multer from "multer";
@@ -210,6 +210,16 @@ export async function registerRoutes(
     res.json(data);
   });
 
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const validated = insertOrderSchema.parse(req.body);
+      const order = await storage.createOrder(validated);
+      res.json(order);
+    } catch (e) {
+      handleZodError(res, e);
+    }
+  });
+
   // Admin routes — protected by auth
   app.use("/api/admin", requireAuth);
 
@@ -390,6 +400,27 @@ export async function registerRoutes(
 
   app.delete("/api/admin/services/:id", async (req, res) => {
     await storage.deleteService(req.params.id);
+    res.json({ ok: true });
+  });
+
+  app.get("/api/admin/orders", async (_req, res) => {
+    const data = await storage.getOrders();
+    res.json(data);
+  });
+
+  app.patch("/api/admin/orders/:id/status", async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) return res.status(400).json({ message: "Статус обязателен" });
+      const updated = await storage.updateOrderStatus(req.params.id, status);
+      res.json(updated);
+    } catch (e) {
+      res.status(400).json({ message: (e as Error).message });
+    }
+  });
+
+  app.delete("/api/admin/orders/:id", async (req, res) => {
+    await storage.deleteOrder(req.params.id);
     res.json({ ok: true });
   });
 

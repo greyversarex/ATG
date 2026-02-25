@@ -1,19 +1,22 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Phone, Heart } from "lucide-react";
+import { ArrowLeft, Phone, Heart, ShoppingCart } from "lucide-react";
 import { useProductPageTitle } from "@/hooks/use-page-title";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useI18n } from "@/lib/i18n";
+import { OrderModal } from "@/components/order-modal";
 import type { Product, Brand, Category } from "@shared/schema";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const { toggle, isFavorite } = useFavorites();
   const { t } = useI18n();
+  const [orderOpen, setOrderOpen] = useState(false);
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["/api/products", id],
@@ -151,6 +154,16 @@ export default function ProductDetail() {
               </div>
             )}
 
+            <Button
+              size="lg"
+              className="w-full text-sm sm:text-base font-semibold shadow-md"
+              onClick={() => setOrderOpen(true)}
+              data-testid="button-buy"
+            >
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              Купить
+            </Button>
+
             <div className="pt-3 sm:pt-4 border-t border-border/50">
               <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">{t("product.orderContact")}</p>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -175,6 +188,13 @@ export default function ProductDetail() {
           </div>
         </div>
       </Card>
+
+      <OrderModal
+        open={orderOpen}
+        onOpenChange={setOrderOpen}
+        productIds={[product.id]}
+        productNames={[product.name]}
+      />
     </div>
   );
 }

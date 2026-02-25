@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useFavorites } from "@/hooks/use-favorites";
 import { ProductCard } from "@/components/product-card";
-import { Heart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useI18n } from "@/lib/i18n";
+import { OrderModal } from "@/components/order-modal";
 import type { Product } from "@shared/schema";
 
 export default function Favorites() {
   usePageTitle("favorites");
   const { favorites } = useFavorites();
   const { t } = useI18n();
+  const [orderOpen, setOrderOpen] = useState(false);
 
   const { data: allProducts, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -32,6 +35,20 @@ export default function Favorites() {
           </span>
         )}
       </div>
+
+      {favoriteProducts.length > 0 && (
+        <div className="mb-4 sm:mb-6">
+          <Button
+            size="lg"
+            className="w-full sm:w-auto text-sm sm:text-base font-semibold shadow-md"
+            onClick={() => setOrderOpen(true)}
+            data-testid="button-buy-favorites"
+          >
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            Купить все ({favoriteProducts.length})
+          </Button>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -59,6 +76,13 @@ export default function Favorites() {
           ))}
         </div>
       )}
+
+      <OrderModal
+        open={orderOpen}
+        onOpenChange={setOrderOpen}
+        productIds={favoriteProducts.map(p => p.id)}
+        productNames={favoriteProducts.map(p => p.name)}
+      />
     </div>
   );
 }

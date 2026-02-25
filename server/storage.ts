@@ -6,7 +6,8 @@ import {
   type Banner, type InsertBanner,
   type News, type InsertNews,
   type Service, type InsertService,
-  users, brands, categories, products, banners, news, services
+  type Order, type InsertOrder,
+  users, brands, categories, products, banners, news, services, orders
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gt, desc, asc, or, ilike } from "drizzle-orm";
@@ -51,6 +52,12 @@ export interface IStorage {
   createService(service: InsertService): Promise<Service>;
   updateService(id: string, service: Partial<InsertService>): Promise<Service>;
   deleteService(id: string): Promise<void>;
+
+  getOrders(): Promise<Order[]>;
+  getOrder(id: string): Promise<Order | undefined>;
+  createOrder(order: InsertOrder): Promise<Order>;
+  updateOrderStatus(id: string, status: string): Promise<Order>;
+  deleteOrder(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -211,6 +218,29 @@ export class DatabaseStorage implements IStorage {
 
   async deleteService(id: string): Promise<void> {
     await db.delete(services).where(eq(services.id, id));
+  }
+
+  async getOrders(): Promise<Order[]> {
+    return db.select().from(orders).orderBy(desc(orders.createdAt));
+  }
+
+  async getOrder(id: string): Promise<Order | undefined> {
+    const [order] = await db.select().from(orders).where(eq(orders.id, id));
+    return order;
+  }
+
+  async createOrder(order: InsertOrder): Promise<Order> {
+    const [created] = await db.insert(orders).values(order).returning();
+    return created;
+  }
+
+  async updateOrderStatus(id: string, status: string): Promise<Order> {
+    const [updated] = await db.update(orders).set({ status }).where(eq(orders.id, id)).returning();
+    return updated;
+  }
+
+  async deleteOrder(id: string): Promise<void> {
+    await db.delete(orders).where(eq(orders.id, id));
   }
 }
 
