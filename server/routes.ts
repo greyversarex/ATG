@@ -419,6 +419,17 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/admin/orders/:id/comment", async (req, res) => {
+    try {
+      const { adminComment } = req.body;
+      if (adminComment === undefined) return res.status(400).json({ message: "Комментарий обязателен" });
+      const updated = await storage.updateOrderAdminComment(req.params.id, adminComment);
+      res.json(updated);
+    } catch (e) {
+      res.status(400).json({ message: (e as Error).message });
+    }
+  });
+
   app.delete("/api/admin/orders/:id", async (req, res) => {
     await storage.deleteOrder(req.params.id);
     res.json({ ok: true });

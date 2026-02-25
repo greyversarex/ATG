@@ -70,6 +70,7 @@ export const orders = pgTable("orders", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   phone: text("phone").notNull(),
   comment: text("comment"),
+  adminComment: text("admin_comment"),
   productIds: jsonb("product_ids").notNull().$type<string[]>(),
   status: text("status").notNull().default("new"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

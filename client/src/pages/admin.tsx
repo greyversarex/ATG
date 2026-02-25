@@ -11,7 +11,7 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Product, Brand, Category, Banner, News, Service, Order } from "@shared/schema";
 
@@ -132,6 +132,21 @@ function OrdersAdmin() {
     },
   });
 
+  const commentMutation = useMutation({
+    mutationFn: ({ id, adminComment }: { id: string; adminComment: string }) =>
+      apiRequest("PATCH", `/api/admin/orders/${id}/comment`, { adminComment }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
+      toast({ title: "Комментарий сохранён" });
+      setEditingCommentId(null);
+      setCommentText("");
+    },
+    onError: () => toast({ title: "Ошибка сохранения", variant: "destructive" }),
+  });
+
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState("");
+
   const newOrdersCount = orders?.filter(o => o.status === "new").length || 0;
 
   return (
@@ -202,6 +217,62 @@ function OrdersAdmin() {
                     );
                   })}
                 </ul>
+              </div>
+
+              <div className="mt-3">
+                {order.adminComment && editingCommentId !== order.id && (
+                  <div className="flex items-start gap-2 mb-2 bg-blue-50 dark:bg-blue-950/30 rounded-lg p-2.5">
+                    <MessageCirclePlus className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+                    <p className="text-sm text-blue-800 dark:text-blue-300 flex-1" data-testid={`text-admin-comment-${order.id}`}>{order.adminComment}</p>
+                  </div>
+                )}
+
+                {editingCommentId === order.id ? (
+                  <div className="flex gap-2 items-start">
+                    <Textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Комментарий администратора..."
+                      className="text-sm min-h-[60px] flex-1"
+                      data-testid={`input-admin-comment-${order.id}`}
+                    />
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        size="icon"
+                        variant="default"
+                        className="h-8 w-8"
+                        disabled={commentMutation.isPending}
+                        onClick={() => commentMutation.mutate({ id: order.id, adminComment: commentText })}
+                        data-testid={`button-save-comment-${order.id}`}
+                      >
+                        {commentMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8"
+                        onClick={() => { setEditingCommentId(null); setCommentText(""); }}
+                        data-testid={`button-cancel-comment-${order.id}`}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => {
+                      setEditingCommentId(order.id);
+                      setCommentText(order.adminComment || "");
+                    }}
+                    data-testid={`button-add-comment-${order.id}`}
+                  >
+                    <MessageCirclePlus className="w-3.5 h-3.5 mr-1.5" />
+                    {order.adminComment ? "Редактировать комментарий" : "Добавить комментарий"}
+                  </Button>
+                )}
               </div>
             </Card>
           ))}
