@@ -95,19 +95,19 @@ export default function Home() {
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
         <div className="flex items-center justify-center gap-5" data-testid="social-links">
-          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+          <Button variant="outline" size="icon" className="rounded-full h-[72px] w-[72px]" asChild>
             <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok">
-              <SiTiktok className="w-7 h-7" />
+              <SiTiktok className="w-9 h-9" />
             </a>
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+          <Button variant="outline" size="icon" className="rounded-full h-[72px] w-[72px]" asChild>
             <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube">
-              <SiYoutube className="w-7 h-7" />
+              <SiYoutube className="w-9 h-9" />
             </a>
           </Button>
-          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+          <Button variant="outline" size="icon" className="rounded-full h-[72px] w-[72px]" asChild>
             <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook">
-              <SiFacebook className="w-7 h-7" />
+              <SiFacebook className="w-9 h-9" />
             </a>
           </Button>
         </div>
