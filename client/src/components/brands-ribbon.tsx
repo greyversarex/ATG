@@ -9,7 +9,7 @@ export function BrandsRibbon({ brands }: BrandsRibbonProps) {
   if (!brands.length) return null;
 
   return (
-    <section data-testid="section-brands-ribbon">
+    <section data-testid="section-brands-ribbon" className="mt-[-19px] mb-[-19px]">
       <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Бренды</h2>
       <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3">
         {brands.map((brand) => (
