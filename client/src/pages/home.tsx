@@ -97,14 +97,14 @@ export default function Home() {
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
         <div className="flex items-center justify-center gap-4" data-testid="social-links">
-          <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="transition-transform duration-200 hover:scale-110">
-            <img src={tiktokIcon} alt="TikTok" className="w-10 h-10 rounded-lg object-cover" />
+          <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
+            <img src={tiktokIcon} alt="TikTok" className="w-full h-full object-contain" />
           </a>
-          <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="transition-transform duration-200 hover:scale-110">
-            <img src={youtubeIcon} alt="YouTube" className="w-10 h-10 rounded-lg object-cover" />
+          <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
+            <img src={youtubeIcon} alt="YouTube" className="w-full h-full object-contain" />
           </a>
-          <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="transition-transform duration-200 hover:scale-110">
-            <img src={facebookIcon} alt="Facebook" className="w-10 h-10 rounded-full object-cover" />
+          <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
+            <img src={facebookIcon} alt="Facebook" className="w-full h-full object-contain" />
           </a>
         </div>
 
