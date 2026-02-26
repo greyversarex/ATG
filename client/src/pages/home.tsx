@@ -8,9 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin } from "lucide-react";
-import tiktokIcon from "@assets/image_1772108284115.png";
-import youtubeIcon from "@assets/image_1772108267291.png";
-import facebookIcon from "@assets/image_1772108319089.png";
+import { SiTiktok, SiFacebook, SiYoutube } from "react-icons/si";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useI18n } from "@/lib/i18n";
 import { Card } from "@/components/ui/card";
@@ -96,16 +94,22 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-10">
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
 
-        <div className="flex items-center justify-center gap-4" data-testid="social-links">
-          <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
-            <img src={tiktokIcon} alt="TikTok" className="w-full h-full object-contain" />
-          </a>
-          <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
-            <img src={youtubeIcon} alt="YouTube" className="w-full h-full object-contain" />
-          </a>
-          <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="w-10 h-10 shrink-0 transition-transform duration-200 hover:scale-110">
-            <img src={facebookIcon} alt="Facebook" className="w-full h-full object-contain" />
-          </a>
+        <div className="flex items-center justify-center gap-5" data-testid="social-links">
+          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+            <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok">
+              <SiTiktok className="w-7 h-7" />
+            </a>
+          </Button>
+          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+            <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube">
+              <SiYoutube className="w-7 h-7" />
+            </a>
+          </Button>
+          <Button variant="outline" size="icon" className="rounded-full h-14 w-14" asChild>
+            <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook">
+              <SiFacebook className="w-7 h-7" />
+            </a>
+          </Button>
         </div>
 
         {loadingBrands ? (
