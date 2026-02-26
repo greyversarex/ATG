@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Wrench, Shield, GraduationCap, Headphones, CheckCircle, Award, LifeBuoy, Truck, Calendar, Users, Globe, MapPin } from "lucide-react";
-import { SiTiktok, SiFacebook, SiYoutube } from "react-icons/si";
+
 import { usePageTitle } from "@/hooks/use-page-title";
 import { useI18n } from "@/lib/i18n";
 import { Card } from "@/components/ui/card";
@@ -93,18 +93,6 @@ export default function Home() {
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-10">
         {loadingBanners ? <HeroSkeleton /> : <HeroSlider banners={heroBanners || []} />}
-
-        <div className="flex items-center justify-center gap-6" data-testid="social-links">
-          <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="text-foreground/70 hover:text-foreground transition-colors duration-200">
-            <SiTiktok className="w-10 h-10" />
-          </a>
-          <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="text-red-600 hover:text-red-700 transition-colors duration-200">
-            <SiYoutube className="w-12 h-12" />
-          </a>
-          <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="text-blue-600 hover:text-blue-700 transition-colors duration-200">
-            <SiFacebook className="w-10 h-10" />
-          </a>
-        </div>
 
         {loadingBrands ? (
           <div className="flex gap-3 sm:gap-4 overflow-hidden">
