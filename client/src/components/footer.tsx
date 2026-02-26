@@ -87,6 +87,20 @@ export function Footer() {
                 </span>
               </li>
             </ul>
+            <div className="flex items-center gap-4 mt-3 sm:mt-4" data-testid="social-links">
+              <a href="https://www.instagram.com/doujinbuu?igsh=MWM4eHM2cnRveXQyZg==" target="_blank" rel="noopener noreferrer" data-testid="link-instagram" aria-label="Instagram" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
+                <SiInstagram className="w-5 h-5" />
+              </a>
+              <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
+                <SiTiktok className="w-5 h-5" />
+              </a>
+              <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
+                <SiYoutube className="w-6 h-6" />
+              </a>
+              <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
+                <SiFacebook className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           <div className="col-span-2 sm:col-span-2 lg:col-span-1">
@@ -130,21 +144,6 @@ export function Footer() {
               <span className="text-[9px] sm:text-[10px] opacity-60">{s.label}</span>
             </div>
           ))}
-        </div>
-
-        <div className="flex items-center justify-center gap-5 mt-4 sm:mt-6" data-testid="social-links">
-          <a href="https://www.instagram.com/doujinbuu?igsh=MWM4eHM2cnRveXQyZg==" target="_blank" rel="noopener noreferrer" data-testid="link-instagram" aria-label="Instagram" className="opacity-80 hover:opacity-100 transition-opacity duration-200">
-            <SiInstagram className="w-6 h-6" />
-          </a>
-          <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="opacity-80 hover:opacity-100 transition-opacity duration-200">
-            <SiTiktok className="w-6 h-6" />
-          </a>
-          <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="opacity-80 hover:opacity-100 transition-opacity duration-200">
-            <SiYoutube className="w-7 h-7" />
-          </a>
-          <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="opacity-80 hover:opacity-100 transition-opacity duration-200">
-            <SiFacebook className="w-6 h-6" />
-          </a>
         </div>
 
         <div className="border-t border-white/10 mt-4 sm:mt-6 pt-3 sm:pt-4">
