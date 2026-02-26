@@ -99,7 +99,7 @@ export default function Home() {
             <SiTiktok className="w-10 h-10" />
           </a>
           <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="text-red-600 hover:text-red-700 transition-colors duration-200">
-            <SiYoutube className="w-10 h-10" />
+            <SiYoutube className="w-12 h-12" />
           </a>
           <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="text-blue-600 hover:text-blue-700 transition-colors duration-200">
             <SiFacebook className="w-10 h-10" />
