@@ -88,7 +88,7 @@ export function Footer() {
               </li>
             </ul>
             <div className="flex items-center gap-4 mt-3 sm:mt-4" data-testid="social-links">
-              <a href="https://www.instagram.com/doujinbuu?igsh=MWM4eHM2cnRveXQyZg==" target="_blank" rel="noopener noreferrer" data-testid="link-instagram" aria-label="Instagram" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
+              <a href="https://www.instagram.com/amir_tech_group__atg?igsh=Z2RvcGQ2OGZ5NXpl" target="_blank" rel="noopener noreferrer" data-testid="link-instagram" aria-label="Instagram" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
                 <SiInstagram className="w-5 h-5" />
               </a>
               <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
