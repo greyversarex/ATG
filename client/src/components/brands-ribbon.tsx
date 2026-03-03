@@ -15,7 +15,7 @@ export function BrandsRibbon({ brands }: BrandsRibbonProps) {
         {brands.map((brand) => (
           <Link key={brand.id} href={`/catalog?brand=${brand.id}`}>
             <div
-              className="bg-white rounded-lg overflow-hidden aspect-[3/2] cursor-pointer hover-elevate"
+              className="bg-white rounded-lg overflow-hidden aspect-[5/2] cursor-pointer hover-elevate"
               data-testid={`card-brand-${brand.id}`}
             >
               <img
