@@ -13,6 +13,7 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Product, Brand, Category, Banner, News, Service, Order } from "@shared/schema";
 
 type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services" | "orders";
@@ -293,8 +294,11 @@ function ProductsAdmin() {
   const { data: brands } = useQuery<Brand[]>({ queryKey: ["/api/brands"] });
   const { data: categories } = useQuery<Category[]>({ queryKey: ["/api/categories"] });
 
-  const [form, setForm] = useState(emptyProductForm);
+  const [addForm, setAddForm] = useState(emptyProductForm);
+  const [editForm, setEditForm] = useState(emptyProductForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
   const invalidateProducts = () => {
     queryClient.invalidateQueries({ queryKey: ["/api/products"] });
     queryClient.invalidateQueries({ queryKey: ["/api/products/bestsellers"] });
@@ -303,13 +307,13 @@ function ProductsAdmin() {
 
   const createMutation = useMutation({
     mutationFn: () => apiRequest("POST", "/api/admin/products", {
-      ...form,
-      price: parseFloat(form.price) || 0,
-      discountPercent: parseInt(form.discountPercent) || 0,
+      ...addForm,
+      price: parseFloat(addForm.price) || 0,
+      discountPercent: parseInt(addForm.discountPercent) || 0,
     }),
     onSuccess: () => {
       invalidateProducts();
-      setForm(emptyProductForm);
+      setAddForm(emptyProductForm);
       toast({ title: "Товар добавлен" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
@@ -317,14 +321,15 @@ function ProductsAdmin() {
 
   const updateMutation = useMutation({
     mutationFn: (id: string) => apiRequest("PATCH", `/api/admin/products/${id}`, {
-      ...form,
-      price: parseFloat(form.price) || 0,
-      discountPercent: parseInt(form.discountPercent) || 0,
+      ...editForm,
+      price: parseFloat(editForm.price) || 0,
+      discountPercent: parseInt(editForm.discountPercent) || 0,
     }),
     onSuccess: () => {
       invalidateProducts();
-      setForm(emptyProductForm);
+      setEditForm(emptyProductForm);
       setEditingId(null);
+      setEditModalOpen(false);
       toast({ title: "Товар обновлён" });
     },
     onError: () => toast({ title: "Ошибка", variant: "destructive" }),
@@ -340,7 +345,7 @@ function ProductsAdmin() {
 
   const startEdit = (p: Product) => {
     setEditingId(p.id);
-    setForm({
+    setEditForm({
       name: p.name,
       description: p.description || "",
       shortSpecs: p.shortSpecs || "",
@@ -351,59 +356,47 @@ function ProductsAdmin() {
       isBestseller: p.isBestseller || false,
       discountPercent: String(p.discountPercent || 0),
     });
+    setEditModalOpen(true);
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setForm(emptyProductForm);
-  };
-
-  const handleSubmit = () => {
-    if (editingId) {
-      updateMutation.mutate(editingId);
-    } else {
-      createMutation.mutate();
-    }
+    setEditForm(emptyProductForm);
+    setEditModalOpen(false);
   };
 
   return (
     <div className="space-y-6">
       <Card className="p-4 overflow-visible">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <h3 className="font-semibold">{editingId ? "Редактировать товар" : "Добавить товар"}</h3>
-          {editingId && (
-            <Button variant="ghost" size="sm" onClick={cancelEdit} data-testid="button-cancel-edit-product">
-              <X className="w-4 h-4 mr-1" />Отмена
-            </Button>
-          )}
-        </div>
+        <h3 className="font-semibold mb-3">Добавить товар</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Input placeholder="Название" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} data-testid="input-product-name" />
-          <Input placeholder="Цена" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} data-testid="input-product-price" />
-          <Input placeholder="Скидка %" type="number" value={form.discountPercent} onChange={(e) => setForm({ ...form, discountPercent: e.target.value })} data-testid="input-product-discount" />
-          <Select value={form.brandId} onValueChange={(v) => setForm({ ...form, brandId: v })}>
+          <Input placeholder="Название" value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} data-testid="input-product-name" />
+          <Input placeholder="Цена" type="number" value={addForm.price} onChange={(e) => setAddForm({ ...addForm, price: e.target.value })} data-testid="input-product-price" />
+          <Input placeholder="Скидка %" type="number" value={addForm.discountPercent} onChange={(e) => setAddForm({ ...addForm, discountPercent: e.target.value })} data-testid="input-product-discount" />
+          <Select value={addForm.brandId} onValueChange={(v) => setAddForm({ ...addForm, brandId: v })}>
             <SelectTrigger data-testid="select-product-brand"><SelectValue placeholder="Бренд" /></SelectTrigger>
             <SelectContent>{brands?.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
           </Select>
-          <Select value={form.categoryId} onValueChange={(v) => setForm({ ...form, categoryId: v })}>
+          <Select value={addForm.categoryId} onValueChange={(v) => setAddForm({ ...addForm, categoryId: v })}>
             <SelectTrigger data-testid="select-product-category"><SelectValue placeholder="Категория" /></SelectTrigger>
             <SelectContent>{categories?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
           </Select>
-          <Input placeholder="Краткие характеристики" value={form.shortSpecs} onChange={(e) => setForm({ ...form, shortSpecs: e.target.value })} data-testid="input-product-specs" />
+          <Input placeholder="Краткие характеристики" value={addForm.shortSpecs} onChange={(e) => setAddForm({ ...addForm, shortSpecs: e.target.value })} data-testid="input-product-specs" />
           <div className="flex items-center gap-2">
-            <Checkbox checked={form.isBestseller} onCheckedChange={(v) => setForm({ ...form, isBestseller: !!v })} data-testid="checkbox-bestseller" />
+            <Checkbox checked={addForm.isBestseller} onCheckedChange={(v) => setAddForm({ ...addForm, isBestseller: !!v })} data-testid="checkbox-bestseller" />
             <label className="text-sm">Хит продаж</label>
           </div>
         </div>
         <div className="mt-3">
           <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} testId="upload-product-image" shape="product" />
+          <ImageUpload value={addForm.image} onChange={(url) => setAddForm({ ...addForm, image: url })} testId="upload-product-image" shape="product" />
         </div>
-        <Textarea placeholder="Описание" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
-        <Button className="mt-3" onClick={handleSubmit} disabled={createMutation.isPending || updateMutation.isPending} data-testid="button-add-product">
-          {editingId ? <><Pencil className="w-4 h-4 mr-1" />Сохранить</> : <><Plus className="w-4 h-4 mr-1" />Добавить</>}
+        <Textarea placeholder="Описание" value={addForm.description} onChange={(e) => setAddForm({ ...addForm, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
+        <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-product">
+          <Plus className="w-4 h-4 mr-1" />Добавить
         </Button>
       </Card>
+
       <div className="space-y-2">
         {products?.map((p) => (
           <div key={p.id} className="flex items-center justify-between gap-3 p-3 rounded-md bg-card border border-card-border" data-testid={`admin-product-${p.id}`}>
@@ -425,6 +418,46 @@ function ProductsAdmin() {
           </div>
         ))}
       </div>
+
+      <Dialog open={editModalOpen} onOpenChange={(open) => { if (!open) cancelEdit(); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-edit-product">
+          <DialogHeader>
+            <DialogTitle>Редактировать товар</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            <Input placeholder="Название" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} data-testid="input-edit-product-name" />
+            <Input placeholder="Цена" type="number" value={editForm.price} onChange={(e) => setEditForm({ ...editForm, price: e.target.value })} data-testid="input-edit-product-price" />
+            <Input placeholder="Скидка %" type="number" value={editForm.discountPercent} onChange={(e) => setEditForm({ ...editForm, discountPercent: e.target.value })} data-testid="input-edit-product-discount" />
+            <Select value={editForm.brandId} onValueChange={(v) => setEditForm({ ...editForm, brandId: v })}>
+              <SelectTrigger data-testid="select-edit-product-brand"><SelectValue placeholder="Бренд" /></SelectTrigger>
+              <SelectContent>{brands?.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
+            </Select>
+            <Select value={editForm.categoryId} onValueChange={(v) => setEditForm({ ...editForm, categoryId: v })}>
+              <SelectTrigger data-testid="select-edit-product-category"><SelectValue placeholder="Категория" /></SelectTrigger>
+              <SelectContent>{categories?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
+            </Select>
+            <Input placeholder="Краткие характеристики" value={editForm.shortSpecs} onChange={(e) => setEditForm({ ...editForm, shortSpecs: e.target.value })} data-testid="input-edit-product-specs" />
+            <div className="flex items-center gap-2">
+              <Checkbox checked={editForm.isBestseller} onCheckedChange={(v) => setEditForm({ ...editForm, isBestseller: !!v })} data-testid="checkbox-edit-bestseller" />
+              <label className="text-sm">Хит продаж</label>
+            </div>
+          </div>
+          <div className="mt-3">
+            <label className="text-sm font-medium mb-1 block">Изображение</label>
+            <ImageUpload value={editForm.image} onChange={(url) => setEditForm({ ...editForm, image: url })} testId="upload-edit-product-image" shape="product" />
+          </div>
+          <Textarea placeholder="Описание" value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="mt-3" data-testid="input-edit-product-description" />
+          <div className="flex gap-2 mt-4">
+            <Button onClick={() => editingId && updateMutation.mutate(editingId)} disabled={updateMutation.isPending} data-testid="button-save-edit-product">
+              {updateMutation.isPending ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Pencil className="w-4 h-4 mr-1" />}
+              Сохранить
+            </Button>
+            <Button variant="outline" onClick={cancelEdit} data-testid="button-cancel-edit-product">
+              Отмена
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
