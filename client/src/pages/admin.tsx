@@ -509,10 +509,9 @@ function BrandsAdmin() {
     if (!brands) return;
     const swapIndex = direction === "up" ? index - 1 : index + 1;
     if (swapIndex < 0 || swapIndex >= brands.length) return;
-    const items = [
-      { id: brands[index].id, sortOrder: brands[swapIndex].sortOrder },
-      { id: brands[swapIndex].id, sortOrder: brands[index].sortOrder },
-    ];
+    const newOrder = [...brands];
+    [newOrder[index], newOrder[swapIndex]] = [newOrder[swapIndex], newOrder[index]];
+    const items = newOrder.map((b, i) => ({ id: b.id, sortOrder: i }));
     reorderMutation.mutate(items);
   };
 
