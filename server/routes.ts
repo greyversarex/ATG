@@ -299,6 +299,18 @@ export async function registerRoutes(
     res.json({ ok: true });
   });
 
+  app.patch("/api/admin/products/reorder", async (req, res) => {
+    try {
+      const items: { id: string; sortOrder: number }[] = req.body.items;
+      for (const item of items) {
+        await storage.updateProduct(item.id, { sortOrder: item.sortOrder });
+      }
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ message: "Ошибка при изменении порядка" });
+    }
+  });
+
   app.post("/api/admin/products", async (req, res) => {
     try {
       const validated = insertProductSchema.parse(req.body);

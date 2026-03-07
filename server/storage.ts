@@ -144,11 +144,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBestsellers(): Promise<Product[]> {
-    return db.select().from(products).where(eq(products.isBestseller, true));
+    return db.select().from(products).where(eq(products.isBestseller, true)).orderBy(asc(products.sortOrder));
   }
 
   async getDiscountedProducts(): Promise<Product[]> {
-    return db.select().from(products).where(gt(products.discountPercent, 0));
+    return db.select().from(products).where(gt(products.discountPercent, 0)).orderBy(asc(products.sortOrder));
   }
 
   async createProduct(product: InsertProduct): Promise<Product> {

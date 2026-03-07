@@ -11,16 +11,17 @@ import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check, ListOrdered } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Product, Brand, Category, Banner, News, Service, Order } from "@shared/schema";
 
-type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services" | "orders";
+type Tab = "products" | "brands" | "categories" | "banners" | "news" | "services" | "orders" | "ribbons";
 
 const tabs: { id: Tab; label: string; icon: typeof Package }[] = [
   { id: "orders", label: "Заявки", icon: ClipboardList },
   { id: "products", label: "Товары", icon: Package },
+  { id: "ribbons", label: "Ленты", icon: ListOrdered },
   { id: "brands", label: "Бренды", icon: Tag },
   { id: "categories", label: "Категории", icon: Settings },
   { id: "banners", label: "Баннеры", icon: Megaphone },
@@ -95,6 +96,7 @@ export default function Admin() {
 
       {activeTab === "orders" && <OrdersAdmin />}
       {activeTab === "products" && <ProductsAdmin />}
+      {activeTab === "ribbons" && <RibbonsAdmin />}
       {activeTab === "brands" && <BrandsAdmin />}
       {activeTab === "categories" && <CategoriesAdmin />}
       {activeTab === "banners" && <BannersAdmin />}
@@ -1123,6 +1125,82 @@ function ServicesAdmin() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function RibbonOrderList({ title, products, queryKeys }: { title: string; products: Product[]; queryKeys: string[][] }) {
+  const { toast } = useToast();
+  const [order, setOrder] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setOrder(products);
+  }, [products]);
+
+  const reorderMutation = useMutation({
+    mutationFn: (items: { id: string; sortOrder: number }[]) =>
+      apiRequest("PATCH", "/api/admin/products/reorder", { items }),
+    onSuccess: () => {
+      queryKeys.forEach((key) => queryClient.invalidateQueries({ queryKey: key }));
+      toast({ title: "Порядок сохранён" });
+    },
+    onError: () => toast({ title: "Ошибка", variant: "destructive" }),
+  });
+
+  const move = (index: number, dir: "up" | "down") => {
+    const swapIndex = dir === "up" ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= order.length) return;
+    const newOrder = [...order];
+    [newOrder[index], newOrder[swapIndex]] = [newOrder[swapIndex], newOrder[index]];
+    setOrder(newOrder);
+    const items = newOrder.map((p, i) => ({ id: p.id, sortOrder: i }));
+    reorderMutation.mutate(items);
+  };
+
+  return (
+    <Card className="p-4">
+      <h3 className="font-semibold mb-3">{title}</h3>
+      {order.length === 0 && <p className="text-sm text-muted-foreground">Нет товаров</p>}
+      <div className="space-y-2">
+        {order.map((p, i) => (
+          <div key={p.id} className="flex items-center justify-between gap-3 p-2 rounded-md bg-muted/40 border border-border" data-testid={`ribbon-item-${p.id}`}>
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-xs text-muted-foreground w-5 text-center shrink-0">{i + 1}</span>
+              {p.image && <img src={p.image} alt="" className="w-8 h-8 object-cover rounded shrink-0" />}
+              <p className="text-sm font-medium truncate">{p.name}</p>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <Button size="icon" variant="ghost" className="h-6 w-6" disabled={i === 0 || reorderMutation.isPending} onClick={() => move(i, "up")} data-testid={`button-ribbon-up-${p.id}`}>
+                <ArrowUp className="w-3 h-3" />
+              </Button>
+              <Button size="icon" variant="ghost" className="h-6 w-6" disabled={i === order.length - 1 || reorderMutation.isPending} onClick={() => move(i, "down")} data-testid={`button-ribbon-down-${p.id}`}>
+                <ArrowDown className="w-3 h-3" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+function RibbonsAdmin() {
+  const { data: bestsellers } = useQuery<Product[]>({ queryKey: ["/api/products/bestsellers"] });
+  const { data: discounted } = useQuery<Product[]>({ queryKey: ["/api/products/discounted"] });
+
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">Используйте стрелки, чтобы изменить порядок отображения товаров в лентах на главной странице.</p>
+      <RibbonOrderList
+        title="Хиты продаж"
+        products={bestsellers ?? []}
+        queryKeys={[["/api/products/bestsellers"]]}
+      />
+      <RibbonOrderList
+        title="Скидки"
+        products={discounted ?? []}
+        queryKeys={[["/api/products/discounted"]]}
+      />
     </div>
   );
 }

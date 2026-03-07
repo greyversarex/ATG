@@ -37,6 +37,7 @@ export const products = pgTable("products", {
   categoryId: varchar("category_id").notNull(),
   isBestseller: boolean("is_bestseller").notNull().default(false),
   discountPercent: integer("discount_percent").default(0),
+  sortOrder: integer("sort_order").notNull().default(0),
 });
 
 export const banners = pgTable("banners", {
