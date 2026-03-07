@@ -5,12 +5,77 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Phone, Heart, ShoppingCart } from "lucide-react";
+import { ArrowLeft, Phone, Heart, ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
 import { useProductPageTitle } from "@/hooks/use-page-title";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useI18n } from "@/lib/i18n";
 import { OrderModal } from "@/components/order-modal";
 import type { Product, Brand, Category } from "@shared/schema";
+
+function ProductGallery({ product }: { product: Product }) {
+  const allImages = product.images && product.images.length > 0
+    ? product.images
+    : product.image ? [product.image] : [];
+
+  const [selected, setSelected] = useState(0);
+
+  const prev = () => setSelected((i) => (i - 1 + allImages.length) % allImages.length);
+  const next = () => setSelected((i) => (i + 1) % allImages.length);
+
+  if (!allImages.length) return null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div
+        className="relative rounded-xl overflow-hidden"
+        style={{
+          background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)",
+          aspectRatio: "4/3",
+        }}
+      >
+        <img
+          src={allImages[selected]}
+          alt={product.name}
+          className="w-full h-full object-contain"
+          data-testid="img-product-main"
+        />
+        {allImages.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors cursor-pointer"
+              data-testid="button-gallery-prev"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors cursor-pointer"
+              data-testid="button-gallery-next"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {allImages.length > 1 && (
+        <div className="flex gap-2 flex-wrap">
+          {allImages.map((img, i) => (
+            <button
+              key={i}
+              onClick={() => setSelected(i)}
+              className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors shrink-0 cursor-pointer ${i === selected ? "border-primary" : "border-border hover:border-primary/50"}`}
+              data-testid={`button-thumbnail-${i}`}
+            >
+              <img src={img} alt="" className="w-full h-full object-contain bg-muted/30" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +106,7 @@ export default function ProductDetail() {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <Skeleton className="h-6 w-24 mb-4 sm:mb-6" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
-          <Skeleton className="aspect-square rounded-xl" />
+          <Skeleton className="aspect-[4/3] rounded-xl" />
           <div className="space-y-4">
             <Skeleton className="h-8 w-3/4" />
             <Skeleton className="h-4 w-1/4" />
@@ -81,16 +146,9 @@ export default function ProductDetail() {
 
       <Card className="overflow-visible p-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-          <div className="relative aspect-square sm:aspect-auto sm:min-h-[400px] overflow-hidden rounded-t-xl md:rounded-l-xl md:rounded-tr-none" style={{
-            background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
-          }}>
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
+          <div className="relative p-4 sm:p-6">
             {product.discountPercent && product.discountPercent > 0 ? (
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+              <div className="absolute top-6 left-6 z-10">
                 <Badge variant="destructive" className="text-xs sm:text-sm font-bold shadow-lg">
                   -{product.discountPercent}%
                 </Badge>
@@ -98,15 +156,16 @@ export default function ProductDetail() {
             ) : null}
             <button
               onClick={() => toggle(product.id)}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all hover:scale-110 hover:bg-white cursor-pointer active:scale-95"
+              className="absolute top-6 right-6 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-md transition-all hover:scale-110 hover:bg-white cursor-pointer active:scale-95"
               data-testid="button-favorite-detail"
               aria-label={liked ? t("product.removeFromFavorites") : t("product.addToFavorites")}
             >
-              <Heart className={`w-5 h-5 transition-colors ${liked ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+              <Heart className={`w-4 h-4 transition-colors ${liked ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
+            <ProductGallery product={product} />
           </div>
 
-          <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5">
+          <div className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-5 border-t md:border-t-0 md:border-l border-border/50">
             <div>
               <h1 className="text-lg sm:text-2xl font-bold mb-2" data-testid="text-product-title">{product.name}</h1>
               <div className="flex items-center gap-2 flex-wrap">

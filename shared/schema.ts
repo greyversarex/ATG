@@ -32,6 +32,7 @@ export const products = pgTable("products", {
   shortSpecs: text("short_specs"),
   price: doublePrecision("price").notNull(),
   image: text("image").notNull(),
+  images: text("images").array().notNull().default(sql`'{}'::text[]`),
   brandId: varchar("brand_id").notNull(),
   categoryId: varchar("category_id").notNull(),
   isBestseller: boolean("is_bestseller").notNull().default(false),

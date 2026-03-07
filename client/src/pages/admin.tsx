@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -285,8 +285,84 @@ function OrdersAdmin() {
 
 const emptyProductForm = {
   name: "", description: "", shortSpecs: "", price: "", image: "",
+  images: [] as string[],
   brandId: "", categoryId: "", isBestseller: false, discountPercent: "0",
 };
+
+function MultiImageUpload({
+  images, primaryImage, onImagesChange, onPrimaryChange,
+}: {
+  images: string[];
+  primaryImage: string;
+  onImagesChange: (imgs: string[]) => void;
+  onPrimaryChange: (img: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const uploadFile = async (file: File) => {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file, file.name);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Ошибка загрузки");
+      const data = await res.json();
+      return data.url as string;
+    } catch { return null; }
+    finally { setUploading(false); }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    for (const file of files) {
+      const url = await uploadFile(file);
+      if (url) {
+        onImagesChange([...images, url]);
+        if (!primaryImage) onPrimaryChange(url);
+      }
+    }
+  };
+
+  const removeImage = (url: string) => {
+    const next = images.filter((i) => i !== url);
+    onImagesChange(next);
+    if (primaryImage === url) onPrimaryChange(next[0] || "");
+  };
+
+  const setPrimary = (url: string) => onPrimaryChange(url);
+
+  return (
+    <div>
+      <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
+      <div className="flex flex-wrap gap-2">
+        {images.map((url) => (
+          <div key={url} className={`relative w-24 h-24 rounded-lg overflow-hidden border-2 transition-colors ${primaryImage === url ? "border-primary" : "border-border"}`}>
+            <img src={url} alt="" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+              {primaryImage !== url && (
+                <button onClick={() => setPrimary(url)} className="text-[10px] bg-white/90 text-black px-1.5 py-0.5 rounded font-medium cursor-pointer" title="Сделать главной">Главная</button>
+              )}
+              <button onClick={() => removeImage(url)} className="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded cursor-pointer">Удалить</button>
+            </div>
+            {primaryImage === url && (
+              <div className="absolute top-1 left-1 bg-primary text-white text-[9px] px-1 py-0.5 rounded font-bold">Главная</div>
+            )}
+          </div>
+        ))}
+        <button
+          onClick={() => inputRef.current?.click()}
+          disabled={uploading}
+          className="w-24 h-24 rounded-lg border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground cursor-pointer transition-colors disabled:opacity-50"
+        >
+          {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+          <span className="text-[10px]">{uploading ? "Загрузка..." : "Добавить"}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ProductsAdmin() {
   const { toast } = useToast();
@@ -345,12 +421,14 @@ function ProductsAdmin() {
 
   const startEdit = (p: Product) => {
     setEditingId(p.id);
+    const imgs = (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : []);
     setEditForm({
       name: p.name,
       description: p.description || "",
       shortSpecs: p.shortSpecs || "",
       price: String(p.price),
       image: p.image || "",
+      images: imgs,
       brandId: p.brandId || "",
       categoryId: p.categoryId || "",
       isBestseller: p.isBestseller || false,
@@ -388,8 +466,13 @@ function ProductsAdmin() {
           </div>
         </div>
         <div className="mt-3">
-          <label className="text-sm font-medium mb-1 block">Изображение</label>
-          <ImageUpload value={addForm.image} onChange={(url) => setAddForm({ ...addForm, image: url })} testId="upload-product-image" shape="product" />
+          <label className="text-sm font-medium mb-1 block">Фотографии</label>
+          <MultiImageUpload
+            images={addForm.images}
+            primaryImage={addForm.image}
+            onImagesChange={(imgs) => setAddForm({ ...addForm, images: imgs, image: addForm.image && imgs.includes(addForm.image) ? addForm.image : (imgs[0] || "") })}
+            onPrimaryChange={(img) => setAddForm({ ...addForm, image: img })}
+          />
         </div>
         <Textarea placeholder="Описание" value={addForm.description} onChange={(e) => setAddForm({ ...addForm, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
         <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-product">
@@ -443,8 +526,13 @@ function ProductsAdmin() {
             </div>
           </div>
           <div className="mt-3">
-            <label className="text-sm font-medium mb-1 block">Изображение</label>
-            <ImageUpload value={editForm.image} onChange={(url) => setEditForm({ ...editForm, image: url })} testId="upload-edit-product-image" shape="product" />
+            <label className="text-sm font-medium mb-1 block">Фотографии</label>
+            <MultiImageUpload
+              images={editForm.images}
+              primaryImage={editForm.image}
+              onImagesChange={(imgs) => setEditForm({ ...editForm, images: imgs, image: editForm.image && imgs.includes(editForm.image) ? editForm.image : (imgs[0] || "") })}
+              onPrimaryChange={(img) => setEditForm({ ...editForm, image: img })}
+            />
           </div>
           <Textarea placeholder="Описание" value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="mt-3" data-testid="input-edit-product-description" />
           <div className="flex gap-2 mt-4">
