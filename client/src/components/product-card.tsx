@@ -32,13 +32,18 @@ export function ProductCard({ product }: ProductCardProps) {
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          {product.discountPercent && product.discountPercent > 0 ? (
-            <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5">
+          <div className="absolute top-1.5 left-1.5 sm:top-2.5 sm:left-2.5 flex flex-col gap-1">
+            {product.discountPercent && product.discountPercent > 0 ? (
               <Badge variant="destructive" className="text-[10px] sm:text-xs font-bold shadow-md px-1.5 sm:px-2" data-testid={`badge-discount-${product.id}`}>
                 -{product.discountPercent}%
               </Badge>
-            </div>
-          ) : null}
+            ) : null}
+            {product.inStock === false && (
+              <Badge variant="secondary" className="text-[10px] sm:text-xs shadow-md px-1.5 sm:px-2 bg-gray-400 text-white" data-testid={`badge-out-of-stock-${product.id}`}>
+                Нет в наличии
+              </Badge>
+            )}
+          </div>
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -68,7 +73,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="mt-auto pt-1 flex items-end justify-between gap-1.5 sm:gap-2">
             <div className="flex flex-col min-w-0">
-              {discountedPrice ? (
+              {product.priceNegotiable ? (
+                <span className="font-bold text-xs sm:text-sm text-muted-foreground whitespace-nowrap" data-testid={`text-price-${product.id}`}>
+                  Цена: договорная
+                </span>
+              ) : discountedPrice ? (
                 <>
                   <span className="text-[10px] sm:text-xs text-muted-foreground line-through whitespace-nowrap">
                     {product.price.toLocaleString(locale)} {t("currencyShort")}

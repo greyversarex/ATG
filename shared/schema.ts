@@ -38,6 +38,8 @@ export const products = pgTable("products", {
   isBestseller: boolean("is_bestseller").notNull().default(false),
   discountPercent: integer("discount_percent").default(0),
   sortOrder: integer("sort_order").notNull().default(0),
+  priceNegotiable: boolean("price_negotiable").notNull().default(false),
+  inStock: boolean("in_stock").notNull().default(true),
 });
 
 export const banners = pgTable("banners", {

@@ -178,8 +178,12 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div>
-              {discountedPrice ? (
+            <div className="space-y-1.5">
+              {product.priceNegotiable ? (
+                <span className="text-xl sm:text-2xl font-bold text-muted-foreground" data-testid="text-product-price">
+                  Цена: договорная
+                </span>
+              ) : discountedPrice ? (
                 <div className="flex items-baseline gap-2 sm:gap-3">
                   <span className="text-2xl sm:text-3xl font-bold text-primary" data-testid="text-discounted-price">
                     {discountedPrice.toLocaleString(locale)} {t("currencyShort")}
@@ -193,6 +197,19 @@ export default function ProductDetail() {
                   {product.price.toLocaleString(locale)} {t("currencyShort")}
                 </span>
               )}
+              <div data-testid="badge-stock-status">
+                {product.inStock !== false ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                    В наличии
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-400 inline-block"></span>
+                    Нет в наличии
+                  </span>
+                )}
+              </div>
             </div>
 
             {product.shortSpecs && (

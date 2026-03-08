@@ -289,6 +289,7 @@ const emptyProductForm = {
   name: "", description: "", shortSpecs: "", price: "", image: "",
   images: [] as string[],
   brandId: "", categoryId: "", isBestseller: false, discountPercent: "0",
+  priceNegotiable: false, inStock: true,
 };
 
 function MultiImageUpload({
@@ -435,6 +436,8 @@ function ProductsAdmin() {
       categoryId: p.categoryId || "",
       isBestseller: p.isBestseller || false,
       discountPercent: String(p.discountPercent || 0),
+      priceNegotiable: p.priceNegotiable || false,
+      inStock: p.inStock !== false,
     });
     setEditModalOpen(true);
   };
@@ -451,7 +454,13 @@ function ProductsAdmin() {
         <h3 className="font-semibold mb-3">Добавить товар</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input placeholder="Название" value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} data-testid="input-product-name" />
-          <Input placeholder="Цена" type="number" value={addForm.price} onChange={(e) => setAddForm({ ...addForm, price: e.target.value })} data-testid="input-product-price" />
+          <div className="flex gap-2 items-center">
+            <Input placeholder="Цена" type="number" value={addForm.price} onChange={(e) => setAddForm({ ...addForm, price: e.target.value })} disabled={addForm.priceNegotiable} className="flex-1" data-testid="input-product-price" />
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Checkbox checked={addForm.priceNegotiable} onCheckedChange={(v) => setAddForm({ ...addForm, priceNegotiable: !!v })} id="add-negotiable" data-testid="checkbox-price-negotiable" />
+              <label htmlFor="add-negotiable" className="text-xs whitespace-nowrap cursor-pointer">Договорная</label>
+            </div>
+          </div>
           <Input placeholder="Скидка %" type="number" value={addForm.discountPercent} onChange={(e) => setAddForm({ ...addForm, discountPercent: e.target.value })} data-testid="input-product-discount" />
           <Select value={addForm.brandId} onValueChange={(v) => setAddForm({ ...addForm, brandId: v })}>
             <SelectTrigger data-testid="select-product-brand"><SelectValue placeholder="Бренд" /></SelectTrigger>
@@ -462,9 +471,15 @@ function ProductsAdmin() {
             <SelectContent>{categories?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
           </Select>
           <Input placeholder="Краткие характеристики" value={addForm.shortSpecs} onChange={(e) => setAddForm({ ...addForm, shortSpecs: e.target.value })} data-testid="input-product-specs" />
-          <div className="flex items-center gap-2">
-            <Checkbox checked={addForm.isBestseller} onCheckedChange={(v) => setAddForm({ ...addForm, isBestseller: !!v })} data-testid="checkbox-bestseller" />
-            <label className="text-sm">Хит продаж</label>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Checkbox checked={addForm.isBestseller} onCheckedChange={(v) => setAddForm({ ...addForm, isBestseller: !!v })} data-testid="checkbox-bestseller" />
+              <label className="text-sm">Хит продаж</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox checked={addForm.inStock} onCheckedChange={(v) => setAddForm({ ...addForm, inStock: !!v })} id="add-instock" data-testid="checkbox-in-stock" />
+              <label htmlFor="add-instock" className="text-sm cursor-pointer">В наличии</label>
+            </div>
           </div>
         </div>
         <div className="mt-3">
@@ -489,7 +504,14 @@ function ProductsAdmin() {
               {p.image && <img src={p.image} alt="" className="w-10 h-10 object-cover rounded-md shrink-0" />}
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{p.name}</p>
-                <p className="text-xs text-muted-foreground">{p.price.toLocaleString("ru-RU")} сом.</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-xs text-muted-foreground">
+                    {p.priceNegotiable ? "Договорная" : `${p.price.toLocaleString("ru-RU")} сом.`}
+                  </p>
+                  <span className={`text-[10px] font-medium ${p.inStock !== false ? "text-emerald-600" : "text-gray-400"}`}>
+                    {p.inStock !== false ? "В наличии" : "Нет в наличии"}
+                  </span>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -511,7 +533,13 @@ function ProductsAdmin() {
           </DialogHeader>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
             <Input placeholder="Название" value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} data-testid="input-edit-product-name" />
-            <Input placeholder="Цена" type="number" value={editForm.price} onChange={(e) => setEditForm({ ...editForm, price: e.target.value })} data-testid="input-edit-product-price" />
+            <div className="flex gap-2 items-center">
+              <Input placeholder="Цена" type="number" value={editForm.price} onChange={(e) => setEditForm({ ...editForm, price: e.target.value })} disabled={editForm.priceNegotiable} className="flex-1" data-testid="input-edit-product-price" />
+              <div className="flex items-center gap-1.5 shrink-0">
+                <Checkbox checked={editForm.priceNegotiable} onCheckedChange={(v) => setEditForm({ ...editForm, priceNegotiable: !!v })} id="edit-negotiable" data-testid="checkbox-edit-price-negotiable" />
+                <label htmlFor="edit-negotiable" className="text-xs whitespace-nowrap cursor-pointer">Договорная</label>
+              </div>
+            </div>
             <Input placeholder="Скидка %" type="number" value={editForm.discountPercent} onChange={(e) => setEditForm({ ...editForm, discountPercent: e.target.value })} data-testid="input-edit-product-discount" />
             <Select value={editForm.brandId} onValueChange={(v) => setEditForm({ ...editForm, brandId: v })}>
               <SelectTrigger data-testid="select-edit-product-brand"><SelectValue placeholder="Бренд" /></SelectTrigger>
@@ -522,9 +550,15 @@ function ProductsAdmin() {
               <SelectContent>{categories?.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
             </Select>
             <Input placeholder="Краткие характеристики" value={editForm.shortSpecs} onChange={(e) => setEditForm({ ...editForm, shortSpecs: e.target.value })} data-testid="input-edit-product-specs" />
-            <div className="flex items-center gap-2">
-              <Checkbox checked={editForm.isBestseller} onCheckedChange={(v) => setEditForm({ ...editForm, isBestseller: !!v })} data-testid="checkbox-edit-bestseller" />
-              <label className="text-sm">Хит продаж</label>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Checkbox checked={editForm.isBestseller} onCheckedChange={(v) => setEditForm({ ...editForm, isBestseller: !!v })} data-testid="checkbox-edit-bestseller" />
+                <label className="text-sm">Хит продаж</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox checked={editForm.inStock} onCheckedChange={(v) => setEditForm({ ...editForm, inStock: !!v })} id="edit-instock" data-testid="checkbox-edit-in-stock" />
+                <label htmlFor="edit-instock" className="text-sm cursor-pointer">В наличии</label>
+              </div>
             </div>
           </div>
           <div className="mt-3">
