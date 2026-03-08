@@ -29,7 +29,7 @@ function ProductGallery({ product }: { product: Product }) {
       <div
         className="relative rounded-xl overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)",
+          background: "#ffffff",
           aspectRatio: "4/3",
         }}
       >
@@ -68,7 +68,7 @@ function ProductGallery({ product }: { product: Product }) {
               className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors shrink-0 cursor-pointer ${i === selected ? "border-primary" : "border-border hover:border-primary/50"}`}
               data-testid={`button-thumbnail-${i}`}
             >
-              <img src={img} alt="" className="w-full h-full object-contain bg-muted/30" />
+              <img src={img} alt="" className="w-full h-full object-contain bg-white" />
             </button>
           ))}
         </div>

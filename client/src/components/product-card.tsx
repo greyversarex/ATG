@@ -24,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link href={`/product/${product.id}`} className="block h-full">
       <Card className="overflow-visible group flex flex-col h-full cursor-pointer" data-testid={`card-product-${product.id}`}>
         <div className="relative aspect-square overflow-hidden rounded-t-md" style={{
-          background: "linear-gradient(180deg, hsl(220 10% 96%) 0%, hsl(220 10% 92%) 100%)"
+          background: "#ffffff"
         }}>
           <img
             src={product.image}
