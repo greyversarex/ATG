@@ -10,7 +10,7 @@ echo "==> npm install"
 npm install
 
 echo "==> db:push"
-npx drizzle-kit push --force
+./node_modules/.bin/drizzle-kit push --force
 
 echo "==> npm run build"
 npm run build
