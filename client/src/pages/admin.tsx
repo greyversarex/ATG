@@ -8,10 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ImageUpload } from "@/components/image-upload";
+import { ImageCropModal } from "@/components/image-crop-modal";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check, ListOrdered } from "lucide-react";
+import { Trash2, Plus, Package, Newspaper, Settings, Tag, Megaphone, LogOut, Loader2, Pencil, X, ArrowUp, ArrowDown, ClipboardList, Phone, MessageSquare, MessageCirclePlus, Check, ListOrdered, Crop } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Product, Brand, Category, Banner, News, Service, Order } from "@shared/schema";
@@ -301,13 +302,15 @@ function MultiImageUpload({
   onPrimaryChange: (img: string) => void;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [cropUrl, setCropUrl] = useState<string | null>(null);
+  const [cropIndex, setCropIndex] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File | Blob, filename?: string) => {
     setUploading(true);
     try {
       const formData = new FormData();
-      formData.append("file", file, file.name);
+      formData.append("file", file, filename || "image.png");
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Ошибка загрузки");
       const data = await res.json();
@@ -320,12 +323,38 @@ function MultiImageUpload({
     const files = Array.from(e.target.files || []);
     e.target.value = "";
     for (const file of files) {
-      const url = await uploadFile(file);
+      const url = await uploadFile(file, file.name);
       if (url) {
-        onImagesChange([...images, url]);
+        const next = [...images, url];
+        onImagesChange(next);
         if (!primaryImage) onPrimaryChange(url);
+        setCropIndex(next.length - 1);
+        setCropUrl(url);
       }
     }
+  };
+
+  const handleCropSave = async (blob: Blob) => {
+    const url = await uploadFile(blob, "cropped.png");
+    if (url !== null && cropIndex !== null) {
+      const next = [...images];
+      const old = next[cropIndex];
+      next[cropIndex] = url;
+      onImagesChange(next);
+      if (primaryImage === old) onPrimaryChange(url);
+    }
+    setCropUrl(null);
+    setCropIndex(null);
+  };
+
+  const handleCropCancel = () => {
+    setCropUrl(null);
+    setCropIndex(null);
+  };
+
+  const openCrop = (url: string, idx: number) => {
+    setCropIndex(idx);
+    setCropUrl(url);
   };
 
   const removeImage = (url: string) => {
@@ -340,14 +369,21 @@ function MultiImageUpload({
     <div>
       <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
       <div className="flex flex-wrap gap-2">
-        {images.map((url) => (
+        {images.map((url, idx) => (
           <div key={url} className={`relative w-24 h-24 rounded-lg overflow-hidden border-2 transition-colors ${primaryImage === url ? "border-primary" : "border-border"}`}>
             <img src={url} alt="" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+            <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
+              <button
+                onClick={() => openCrop(url, idx)}
+                className="w-full flex items-center justify-center gap-1 text-[10px] bg-white/90 text-black px-1.5 py-0.5 rounded font-medium cursor-pointer hover:bg-white"
+                title="Корректировать"
+              >
+                <Crop className="w-2.5 h-2.5" /> Изменить
+              </button>
               {primaryImage !== url && (
-                <button onClick={() => setPrimary(url)} className="text-[10px] bg-white/90 text-black px-1.5 py-0.5 rounded font-medium cursor-pointer" title="Сделать главной">Главная</button>
+                <button onClick={() => setPrimary(url)} className="w-full text-[10px] bg-white/90 text-black px-1.5 py-0.5 rounded font-medium cursor-pointer hover:bg-white text-center">Главная</button>
               )}
-              <button onClick={() => removeImage(url)} className="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded cursor-pointer">Удалить</button>
+              <button onClick={() => removeImage(url)} className="w-full text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded cursor-pointer hover:bg-red-600 text-center">Удалить</button>
             </div>
             {primaryImage === url && (
               <div className="absolute top-1 left-1 bg-primary text-white text-[9px] px-1 py-0.5 rounded font-bold">Главная</div>
@@ -363,6 +399,16 @@ function MultiImageUpload({
           <span className="text-[10px]">{uploading ? "Загрузка..." : "Добавить"}</span>
         </button>
       </div>
+
+      {cropUrl && (
+        <ImageCropModal
+          open={!!cropUrl}
+          imageUrl={cropUrl}
+          onClose={handleCropCancel}
+          onSave={handleCropSave}
+          shape="product"
+        />
+      )}
     </div>
   );
 }
