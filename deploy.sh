@@ -13,7 +13,7 @@ echo "==> db:push"
 ./node_modules/.bin/drizzle-kit push --force
 
 echo "==> npm run build"
-npm run build
+./node_modules/.bin/tsx script/build.ts
 
 echo "==> pm2 restart"
 pm2 restart atg
