@@ -7,7 +7,7 @@ echo "==> git pull"
 git pull origin main
 
 echo "==> npm install"
-npm install
+npm install --include=dev
 
 echo "==> db:push"
 ./node_modules/.bin/drizzle-kit push --force
