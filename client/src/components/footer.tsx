@@ -146,10 +146,13 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-white/10 mt-4 sm:mt-6 pt-3 sm:pt-4">
+        <div className="border-t border-white/10 mt-4 sm:mt-6 pt-3 sm:pt-4 flex flex-col items-center gap-1">
           <p className="text-center text-[10px] sm:text-xs opacity-60" data-testid="text-copyright">
             &copy; {new Date().getFullYear()} AMIR TECH GROUP (ATG). {t("footer.copyright")}
           </p>
+          <Link href="/login" data-testid="link-admin-login" className="text-[9px] opacity-20 hover:opacity-50 transition-opacity duration-200 cursor-pointer select-none">
+            Вход
+          </Link>
         </div>
       </div>
     </footer>
