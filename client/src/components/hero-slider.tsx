@@ -41,6 +41,7 @@ export function HeroSlider({ banners }: HeroSliderProps) {
               src={b.image}
               alt={b.title || ""}
               className="w-full h-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
           </div>

@@ -4,6 +4,8 @@
 Corporate website with product catalog for AMIR TECH GROUP (ATG) - a leading supplier of automotive parts and diagnostic equipment in Tajikistan. The site features a product catalog, brand pages, news section, admin panel, and company information. Russian-only site.
 
 ## Recent Changes
+- 2026-03-11: Performance optimizations — Sharp WebP image compression on upload (max 1920px, q82), long-term cache headers for /uploads, React.lazy code-splitting for Admin/Login pages, lazy loading for non-first hero slider images
+- 2026-03-11: Rich text editor (Tiptap v3) — toolbar with Bold/Italic/Strike/H2/H3/Lists integrated into admin product forms; product detail page renders HTML with plain-text backward compatibility; infinite-loop protection via isProgrammaticUpdate ref
 - 2026-03-07: Added ribbon ordering — products table now has `sortOrder` field; new "Ленты" tab in admin panel allows reordering of "Хиты продаж" and "Скидки" sections independently via up/down arrow buttons; both ribbon API endpoints now return products sorted by sortOrder
 - 2026-03-07: Multi-image product support — added `images` text-array column to products; `MultiImageUpload` component in admin (add + edit forms); product-detail gallery with thumbnails and prev/next arrows
 - 2026-02-25: Added order request system — "Купить" button on product detail page (after description) and "Купить все" on favorites page, opens modal with phone + comment fields, orders saved to DB, admin panel has "Заявки" tab with order management (status: new/processing/completed/cancelled, product details, delete)

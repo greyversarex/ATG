@@ -224,9 +224,20 @@ export default function ProductDetail() {
             {product.description && (
               <div>
                 <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">{t("product.description")}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed" data-testid="text-description">
-                  {product.description}
-                </p>
+                {product.description.trimStart().startsWith("<") ? (
+                  <div
+                    className="rich-content text-xs sm:text-sm text-muted-foreground leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    data-testid="text-description"
+                  />
+                ) : (
+                  <p
+                    className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line"
+                    data-testid="text-description"
+                  >
+                    {product.description}
+                  </p>
+                )}
               </div>
             )}
 

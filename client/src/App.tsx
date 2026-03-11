@@ -8,7 +8,8 @@ import { Footer } from "@/components/footer";
 import { FloatingContact } from "@/components/floating-contact";
 import { SplashScreen } from "@/components/splash-screen";
 import { I18nProvider } from "@/lib/i18n";
-import { useState, useCallback } from "react";
+import { useState, useCallback, lazy, Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
 import ProductDetail from "@/pages/product-detail";
@@ -16,10 +17,20 @@ import Brands from "@/pages/brands";
 import NewsPage from "@/pages/news";
 import About from "@/pages/about";
 import Discounts from "@/pages/discounts";
-import Admin from "@/pages/admin";
-import Login from "@/pages/login";
 import Favorites from "@/pages/favorites";
 import NotFound from "@/pages/not-found";
+
+const Admin = lazy(() => import("@/pages/admin"));
+const Login = lazy(() => import("@/pages/login"));
+
+function PageFallback() {
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-4">
+      <Skeleton className="h-8 w-48" />
+      <Skeleton className="h-64 w-full" />
+    </div>
+  );
+}
 
 function Router() {
   return (
@@ -32,8 +43,20 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/discounts" component={Discounts} />
       <Route path="/favorites" component={Favorites} />
-      <Route path="/login" component={Login} />
-      <Route path="/admin" component={Admin} />
+      <Route path="/login">
+        {() => (
+          <Suspense fallback={<PageFallback />}>
+            <Login />
+          </Suspense>
+        )}
+      </Route>
+      <Route path="/admin">
+        {() => (
+          <Suspense fallback={<PageFallback />}>
+            <Admin />
+          </Suspense>
+        )}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

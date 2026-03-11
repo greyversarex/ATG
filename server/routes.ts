@@ -13,21 +13,15 @@ import { randomUUID } from "crypto";
 import express from "express";
 import bcrypt from "bcryptjs";
 import type { Request, Response, NextFunction } from "express";
+import sharp from "sharp";
 
 if (!fs.existsSync("uploads")) {
   fs.mkdirSync("uploads", { recursive: true });
 }
 
-const uploadStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, "uploads"),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname) || ".jpg";
-    cb(null, `${randomUUID()}${ext}`);
-  },
-});
 const upload = multer({
-  storage: uploadStorage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     const allowed = /\.(jpg|jpeg|png|gif|webp|svg|avif)$/i;
     if (allowed.test(path.extname(file.originalname))) {
@@ -58,15 +52,37 @@ export async function registerRoutes(
 ): Promise<Server> {
   app.use("/uploads", (_req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
     next();
   }, express.static("uploads"));
 
-  app.post("/api/upload", requireAuth, upload.single("file"), (req, res) => {
+  app.post("/api/upload", requireAuth, upload.single("file"), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "Файл не загружен" });
     }
-    res.json({ url: `/uploads/${req.file.filename}` });
+    try {
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      const isSvg = ext === ".svg";
+
+      if (isSvg) {
+        const filename = `${randomUUID()}.svg`;
+        const filePath = path.join("uploads", filename);
+        fs.writeFileSync(filePath, req.file.buffer);
+        return res.json({ url: `/uploads/${filename}` });
+      }
+
+      const filename = `${randomUUID()}.webp`;
+      const filePath = path.join("uploads", filename);
+      await sharp(req.file.buffer)
+        .resize({ width: 1920, height: 1920, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 82, effort: 4 })
+        .toFile(filePath);
+
+      return res.json({ url: `/uploads/${filename}` });
+    } catch (e) {
+      console.error("Upload error:", e);
+      return res.status(500).json({ message: "Ошибка обработки изображения" });
+    }
   });
 
   app.get("/api/uploads", requireAuth, (_req, res) => {

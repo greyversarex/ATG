@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ImageUpload } from "@/components/image-upload";
 import { ImageCropModal } from "@/components/image-crop-modal";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/use-page-title";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -537,7 +538,15 @@ function ProductsAdmin() {
             onPrimaryChange={(img) => setAddForm({ ...addForm, image: img })}
           />
         </div>
-        <Textarea placeholder="Описание" value={addForm.description} onChange={(e) => setAddForm({ ...addForm, description: e.target.value })} className="mt-3" data-testid="input-product-description" />
+        <div className="mt-3">
+          <label className="text-sm font-medium mb-1.5 block">Описание</label>
+          <RichTextEditor
+            value={addForm.description}
+            onChange={(val) => setAddForm({ ...addForm, description: val })}
+            placeholder="Введите описание товара. Используйте форматирование для структурирования текста..."
+            data-testid="input-product-description"
+          />
+        </div>
         <Button className="mt-3" onClick={() => createMutation.mutate()} disabled={createMutation.isPending} data-testid="button-add-product">
           <Plus className="w-4 h-4 mr-1" />Добавить
         </Button>
@@ -616,7 +625,15 @@ function ProductsAdmin() {
               onPrimaryChange={(img) => setEditForm({ ...editForm, image: img })}
             />
           </div>
-          <Textarea placeholder="Описание" value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} className="mt-3" data-testid="input-edit-product-description" />
+          <div className="mt-3">
+            <label className="text-sm font-medium mb-1.5 block">Описание</label>
+            <RichTextEditor
+              value={editForm.description}
+              onChange={(val) => setEditForm({ ...editForm, description: val })}
+              placeholder="Введите описание товара. Используйте форматирование для структурирования текста..."
+              data-testid="input-edit-product-description"
+            />
+          </div>
           <div className="flex gap-2 mt-4">
             <Button onClick={() => editingId && updateMutation.mutate(editingId)} disabled={updateMutation.isPending} data-testid="button-save-edit-product">
               {updateMutation.isPending ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Pencil className="w-4 h-4 mr-1" />}
