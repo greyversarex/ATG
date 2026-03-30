@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Banner } from "@shared/schema";
@@ -9,14 +9,29 @@ interface HeroSliderProps {
 
 export function HeroSlider({ banners }: HeroSliderProps) {
   const [current, setCurrent] = useState(0);
+  // Track which slides have been visited so their images stay loaded (for smooth fade-back)
+  const loadedRef = useRef<Set<number>>(new Set([0]));
 
   const next = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % banners.length);
+    setCurrent((prev) => {
+      const n = (prev + 1) % banners.length;
+      loadedRef.current.add(n);
+      return n;
+    });
   }, [banners.length]);
 
   const prev = useCallback(() => {
-    setCurrent((p) => (p - 1 + banners.length) % banners.length);
+    setCurrent((p) => {
+      const n = (p - 1 + banners.length) % banners.length;
+      loadedRef.current.add(n);
+      return n;
+    });
   }, [banners.length]);
+
+  const goTo = useCallback((i: number) => {
+    loadedRef.current.add(i);
+    setCurrent(i);
+  }, []);
 
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -27,25 +42,33 @@ export function HeroSlider({ banners }: HeroSliderProps) {
   if (!banners.length) return null;
 
   const banner = banners[current];
+  // Pre-load next slide index so it's ready before autoplay fires
+  const nextIdx = (current + 1) % banners.length;
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl" data-testid="hero-slider">
       <div className="relative aspect-[20/9] sm:aspect-[40/9] w-full">
-        {banners.map((b, i) => (
+        {banners.map((b, i) => {
+          const shouldRenderImg = loadedRef.current.has(i) || i === nextIdx;
+          return (
           <div
             key={b.id}
             className="absolute inset-0 transition-opacity duration-700"
-            style={{ opacity: i === current ? 1 : 0 }}
+            style={{ opacity: i === current ? 1 : 0, pointerEvents: i === current ? "auto" : "none" }}
           >
-            <img
-              src={b.image}
-              alt={b.title || ""}
-              className="w-full h-full object-cover"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
+            {shouldRenderImg && (
+              <img
+                src={b.image}
+                alt={b.title || ""}
+                className="w-full h-full object-cover"
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : "low"}
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
           </div>
-        ))}
+          );
+        })}
 
         <div className="absolute inset-0 flex items-center">
           <div className="max-w-xl px-5 sm:px-10 md:px-16">
@@ -95,7 +118,7 @@ export function HeroSlider({ banners }: HeroSliderProps) {
                   className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 cursor-pointer ${
                     i === current ? "bg-white w-6 sm:w-8 shadow-md" : "bg-white/40 w-1.5 sm:w-2"
                   }`}
-                  onClick={() => setCurrent(i)}
+                  onClick={() => goTo(i)}
                   data-testid={`button-slider-dot-${i}`}
                 />
               ))}

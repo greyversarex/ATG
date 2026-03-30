@@ -5,6 +5,7 @@ import { createServer } from "http";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
+import compression from "compression";
 
 const app = express();
 const httpServer = createServer(app);
@@ -20,6 +21,8 @@ declare module "express-session" {
     userId?: string;
   }
 }
+
+app.use(compression());
 
 app.use(
   express.json({

@@ -74,8 +74,8 @@ export async function registerRoutes(
       const filename = `${randomUUID()}.webp`;
       const filePath = path.join("uploads", filename);
       await sharp(req.file.buffer)
-        .resize({ width: 1920, height: 1920, fit: "inside", withoutEnlargement: true })
-        .webp({ quality: 82, effort: 4 })
+        .resize({ width: 1200, height: 1200, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 78, effort: 4 })
         .toFile(filePath);
 
       return res.json({ url: `/uploads/${filename}` });
