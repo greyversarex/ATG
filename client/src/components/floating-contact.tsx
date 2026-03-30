@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MessageCircle, Phone, X } from "lucide-react";
-import { SiTelegram, SiWhatsapp } from "react-icons/si";
+import { TelegramIcon, WhatsappIcon } from "@/components/social-icons";
 import { useI18n } from "@/lib/i18n";
 
 const PHONE_NUMBER = "+992000000000";
@@ -24,7 +24,7 @@ export function FloatingContact() {
             data-testid="link-telegram"
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#229ED9] flex items-center justify-center shrink-0">
-              <SiTelegram className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <TelegramIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <span className="text-xs sm:text-sm font-medium whitespace-nowrap">Telegram</span>
           </a>
@@ -37,7 +37,7 @@ export function FloatingContact() {
             data-testid="link-whatsapp"
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
-              <SiWhatsapp className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <WhatsappIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <span className="text-xs sm:text-sm font-medium whitespace-nowrap">WhatsApp</span>
           </a>

@@ -1,0 +1,84 @@
+root@6740927-ow033686:~# npm run build
+npm error code ENOENT
+npm error syscall open
+npm error path /root/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/root/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /root/.npm/_logs/2026-03-30T18_39_56_123Z-debug-0.log
+root@6740927-ow033686:~# pm2 logs
+[TAILING] Tailing last 15 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 15 lines:
+PM2        | 2026-03-09T07:36:53: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T07:36:53: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T07:36:54: PM2 log: pid=150502 msg=process killed
+PM2        | 2026-03-09T07:36:54: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T07:36:54: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T07:41:19: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T07:41:19: PM2 log: pid=151386 msg=process killed
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] online
+PM2        | 2026-03-11T16:29:37: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-11T16:29:37: PM2 log: pid=151614 msg=process killed
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-out.log last 15 lines:
+0|atg      | 74-4b9d-bbdb-07027eadacce","categoryId":"c0897389-aa75-4278-ae4f-c50aa44b4331","isBestseller":false,"discountPercent":0,"sortOrder":0,"priceNegotiable":true,"inStock":true}]
+0|atg      | 5:42:36 AM [express] GET /api/products/dc85f49e-da68-4396-850f-020c7cd2dd0c 200 in 12ms :: {"id":"dc85f49e-da68-4396-850f-020c7cd2dd0c","name":"THINKTOOL MASTER CV","description":"<ul><li><p>Позволяет работать с широким спектром коммерческой техники ведущих производителей европейского, американского и азиатского рынков.</p></li><li><p>Также поддерживаются различные производители, такие как Allison, Haldex, Wabco, Cummins и другие.</p></li><li><p>Данный сканер станет Вашим помощником при ремонте и диагностике коммерческих автомобилей.</p></li><li><p>2 года обновлений в комплекте</p></li><li><p>Работает после окончания подписки</p></li></ul><p></p><p><strong>Функциональность</strong></p><ul><li><p>Чтение/удаление ошибок по всем системам автомобиля</p></li><li><p>Чтение текущих данных автомобиля/поток данных</p></li><li><p>Активация исполнительных механизмов</p></li><li><p>13 спецфункций</p></li><li><p>Калибровки параметров</p></li></ul><p></p>","shortSpecs":"Сканер грузовых автомобилей от компании THINKCAR. Позволяет работать с различной коммерческой техникой: грузовиками, автобусами, спецтехникой, а также различными производителями (Cammins, Alison и т.д.) Обновления ПО 24 месяцев","price":21588,"image":"/uploads/e438c861-e00c-428f-8585-cdc351b35486.webp","images":["/uploads/e438c861-e00c-428f-8585-cdc351b35486.webp","/uploads/8b563cae-d60a-49be-b087-3f7b7228792f.webp","/uploads/80c775d8-216e-4783-ad16-a73b5bcff7a5.webp","/uploads/99fb07ce-69fd-4e8b-8310-eeb652c8dbba.webp"],"brandId":"b0bf1625-f90d-4b4f-b7ad-746fa5f9ce76","categoryId":"bb6fa3fb-ec1e-47e7-a465-e09a87989ff3","isBestseller":true,"discountPercent":10,"sortOrder":0,"priceNegotiable":false,"inStock":true}
+0|atg      | 5:42:37 AM [express] GET /api/brands/b0bf1625-f90d-4b4f-b7ad-746fa5f9ce76 200 in 2ms :: {"id":"b0bf1625-f90d-4b4f-b7ad-746fa5f9ce76","name":"THINKCAR","image":"/uploads/dc5787ad-64ae-430a-a750-527b1c0f1336.png","sortOrder":1}
+0|atg      | 5:42:37 AM [express] GET /api/categories/bb6fa3fb-ec1e-47e7-a465-e09a87989ff3 200 in 3ms :: {"id":"bb6fa3fb-ec1e-47e7-a465-e09a87989ff3","name":"Диагностическое оборудование","image":"/images/cat-diagnostics.png","parentId":null,"sortOrder":0}
+
+/root/.pm2/logs/atg-error.log last 15 lines:
+0|atg      |     at g (/root/ATG/dist/index.cjs:43:5723)
+0|atg      |     at Ne.<anonymous> (/root/ATG/dist/index.cjs:57:10086)
+0|atg      |     at Ne.emit (node:events:524:28)
+0|atg      | URIError: Failed to decode param '%c0'
+0|atg      |     at decodeURIComponent (<anonymous>)
+0|atg      |     at ow (/root/ATG/dist/index.cjs:43:2021)
+0|atg      |     at Array.map (<anonymous>)
+0|atg      |     at /root/ATG/dist/index.cjs:39:21278
+0|atg      |     at Array.<anonymous> (/root/ATG/dist/index.cjs:39:21455)
+0|atg      |     at Tr.match (/root/ATG/dist/index.cjs:43:1816)
+0|atg      |     at A5 (/root/ATG/dist/index.cjs:43:7741)
+0|atg      |     at g (/root/ATG/dist/index.cjs:43:5723)
+0|atg      |     at Ne.<anonymous> (/root/ATG/dist/index.cjs:57:10086)
+0|atg      |     at Ne.emit (node:events:524:28)
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+
+0|atg  | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg  | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+^C
+root@6740927-ow033686:~# chmod +x /root/ATG/deploy.sh && /root/ATG/deploy.sh
+==> git pull
+From https://github.com/greyversarex/ATG
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+==> npm install
+
+up to date, audited 577 packages in 3s
+
+114 packages are looking for funding
+  run `npm fund` for details
+
+9 vulnerabilities (1 low, 3 moderate, 5 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+==> db:push
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/root/ATG/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+[✓] Changes applied
+==> npm run build
+building client...
+vite v7.3.0 building client environment for production...
+transforming (4) src/App.tsx
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+root@6740927-ow033686:~#

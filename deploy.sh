@@ -13,7 +13,7 @@ echo "==> db:push"
 ./node_modules/.bin/drizzle-kit push --force
 
 echo "==> npm run build"
-./node_modules/.bin/tsx script/build.ts
+NODE_OPTIONS="--max-old-space-size=1024" ./node_modules/.bin/tsx script/build.ts
 
 echo "==> pm2 restart"
 pm2 restart atg

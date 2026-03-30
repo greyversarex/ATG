@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Phone, MapPin, Mail, Navigation, MessageCircle } from "lucide-react";
-import { SiTiktok, SiFacebook, SiYoutube, SiInstagram } from "react-icons/si";
+import { InstagramIcon, TiktokIcon, YoutubeIcon, FacebookIcon } from "@/components/social-icons";
 import { useI18n } from "@/lib/i18n";
 
 export function Footer() {
@@ -89,16 +89,16 @@ export function Footer() {
             </ul>
             <div className="flex items-center gap-4 mt-3 sm:mt-4" data-testid="social-links">
               <a href="https://www.instagram.com/amir_tech_group__atg?igsh=Z2RvcGQ2OGZ5NXpl" target="_blank" rel="noopener noreferrer" data-testid="link-instagram" aria-label="Instagram" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
-                <SiInstagram className="w-5 h-5" />
+                <InstagramIcon className="w-5 h-5" />
               </a>
               <a href="https://www.tiktok.com/@atg.tj?_r=1&_t=ZS-94EyDcsmUc8" target="_blank" rel="noopener noreferrer" data-testid="link-tiktok" aria-label="TikTok" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
-                <SiTiktok className="w-5 h-5" />
+                <TiktokIcon className="w-5 h-5" />
               </a>
               <a href="https://youtube.com/@atg-tj?si=A3YuP0vsmbPl4jpS" target="_blank" rel="noopener noreferrer" data-testid="link-youtube" aria-label="YouTube" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
-                <SiYoutube className="w-6 h-6" />
+                <YoutubeIcon className="w-6 h-6" />
               </a>
               <a href="https://www.facebook.com/share/18BttMYQhh/" target="_blank" rel="noopener noreferrer" data-testid="link-facebook" aria-label="Facebook" className="opacity-70 hover:opacity-100 transition-opacity duration-200">
-                <SiFacebook className="w-5 h-5" />
+                <FacebookIcon className="w-5 h-5" />
               </a>
             </div>
           </div>
