@@ -1,0 +1,50 @@
+root@6740927-ow033686:~# /root/ATG/deploy.sh                                    ==> git pull
+remote: Enumerating objects: 29, done.
+remote: Counting objects: 100% (29/29), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 16 (delta 14), reused 16 (delta 14), pack-reused 0 (from 0)
+Unpacking objects: 100% (16/16), 3.54 KiB | 145.00 KiB/s, done.
+From https://github.com/greyversarex/ATG
+ * branch            main       -> FETCH_HEAD
+   e400ced..58fabb9  main       -> origin/main
+Updating e400ced..58fabb9
+Fast-forward
+ .replit                               |  3 ++
+ client/src/components/hero-slider.tsx | 49 +++++++++++++++++++-------
+ package-lock.json                     | 66 +++++++++++++++++++++++++++++++++++
+ package.json                          |  2 ++
+ replit.md                             |  1 +
+ server/index.ts                       |  3 ++
+ server/routes.ts                      |  4 +--
+ server/static.ts                      | 19 +++++++++-
+ 8 files changed, 131 insertions(+), 16 deletions(-)
+==> npm install
+
+added 6 packages, and audited 577 packages in 6s
+
+114 packages are looking for funding
+  run `npm fund` for details
+
+9 vulnerabilities (1 low, 3 moderate, 5 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.12.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.1
+npm notice To update run: npm install -g npm@11.12.1
+npm notice
+==> db:push
+No config path provided, using default 'drizzle.config.ts'
+Reading config file '/root/ATG/drizzle.config.ts'
+Using 'pg' driver for database querying
+[✓] Pulling schema from database...
+[✓] Changes applied
+==> npm run build
+building client...
+vite v7.3.0 building client environment for production...
+transforming (11) src/components/ui/skeleton.tsx
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+transforming (1106) ../node_modules/react-icons/si/index.mjsroot@6740927-ow03368root@6740927-ow033686:~#
