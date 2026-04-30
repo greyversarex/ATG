@@ -1,17 +1,29 @@
 #!/bin/bash
 set -e
 
-DOMAIN=${1:-"atg.tj"}
+# Скрипт быстрой оптимизации Nginx на продакшене
+# Запускать: bash /root/ATG/deploy/fix-nginx-performance.sh
+
+DOMAIN=${1:-""}
+APP_DIR="/root/ATG"
 
 echo "============================================"
-echo "  Установка SSL для $DOMAIN"
+echo "  Оптимизация Nginx + PM2"
 echo "============================================"
+
+# Определяем server_name
+if [ -z "$DOMAIN" ]; then
+    SERVER_NAME="_"
+    echo "Домен не указан, используется wildcard. Для домена запусти:"
+    echo "  bash fix-nginx-performance.sh atg.tj"
+else
+    SERVER_NAME="$DOMAIN www.$DOMAIN"
+    echo "Домен: $SERVER_NAME"
+fi
+
 echo ""
+echo "[1/3] Обновление конфигурации Nginx..."
 
-# Установка Certbot
-apt install -y certbot python3-certbot-nginx
-
-# Обновление конфигурации Nginx с доменом + оптимизации
 cat > /etc/nginx/sites-available/atg << NGINX
 # Gzip сжатие
 gzip on;
@@ -36,36 +48,38 @@ gzip_types
 
 server {
     listen 80;
-    server_name $DOMAIN www.$DOMAIN;
+    server_name $SERVER_NAME;
 
     client_max_body_size 20M;
 
-    # Прямая отдача загруженных картинок (без Node.js)
+    # === ПРЯМАЯ ОТДАЧА СТАТИКИ (без Node.js) ===
+
+    # Загруженные картинки через админку
     location /uploads/ {
-        alias /root/ATG/uploads/;
+        alias $APP_DIR/uploads/;
         expires 1y;
         add_header Cache-Control "public, max-age=31536000, immutable";
         add_header Access-Control-Allow-Origin "*";
         access_log off;
     }
 
-    # Прямая отдача статики сборки (JS/CSS/assets)
+    # Хэшированные JS/CSS бандлы
     location /assets/ {
-        alias /root/ATG/dist/public/assets/;
+        alias $APP_DIR/dist/public/assets/;
         expires 1y;
         add_header Cache-Control "public, max-age=31536000, immutable";
         access_log off;
     }
 
-    # Прямая отдача статичных картинок из public
+    # Статичные картинки (из public/)
     location /images/ {
-        alias /root/ATG/dist/public/images/;
+        alias $APP_DIR/dist/public/images/;
         expires 1y;
         add_header Cache-Control "public, max-age=31536000, immutable";
         access_log off;
     }
 
-    # Всё остальное — через Node.js
+    # === ВСЁ ОСТАЛЬНОЕ → Node.js ===
     location / {
         proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
@@ -76,7 +90,6 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
         proxy_cache_bypass \$http_upgrade;
-
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
@@ -84,15 +97,23 @@ server {
 }
 NGINX
 
-nginx -t
-systemctl reload nginx
+echo "[2/3] Проверка и перезапуск Nginx..."
+nginx -t && systemctl reload nginx
+echo "Nginx обновлён ✓"
 
-# Получение SSL сертификата
-certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" --non-interactive --agree-tos --email admin@$DOMAIN --redirect
+echo "[3/3] Перезапуск PM2 в cluster mode..."
+cd $APP_DIR
+pm2 stop atg 2>/dev/null || true
+pm2 delete atg 2>/dev/null || true
+pm2 start dist/index.cjs --name atg -i max --env production
+pm2 save
+echo "PM2 запущен в cluster mode ✓"
 
 echo ""
 echo "============================================"
-echo "  SSL установлен!"
+echo "  Готово! Что изменилось:"
+echo "  ✓ Картинки теперь отдаются Nginx напрямую"
+echo "  ✓ Gzip сжатие включено"
+echo "  ✓ PM2 использует все ядра CPU"
 echo "============================================"
-echo "Сайт доступен по адресу: https://$DOMAIN"
-echo ""
+pm2 list

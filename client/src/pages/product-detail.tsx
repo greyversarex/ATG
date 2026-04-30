@@ -38,6 +38,8 @@ function ProductGallery({ product }: { product: Product }) {
           alt={product.name}
           className="w-full h-full object-contain"
           data-testid="img-product-main"
+          loading="eager"
+          decoding="async"
         />
         {allImages.length > 1 && (
           <>
@@ -68,7 +70,7 @@ function ProductGallery({ product }: { product: Product }) {
               className={`w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors shrink-0 cursor-pointer ${i === selected ? "border-primary" : "border-border hover:border-primary/50"}`}
               data-testid={`button-thumbnail-${i}`}
             >
-              <img src={img} alt="" className="w-full h-full object-contain bg-white" />
+              <img src={img} alt="" className="w-full h-full object-contain bg-white" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>

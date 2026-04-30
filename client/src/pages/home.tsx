@@ -135,6 +135,8 @@ export default function Home() {
                 src={promoBanner.image}
                 alt={promoBanner.title || ""}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
               <div className="absolute inset-0 flex items-center px-4 sm:px-10 md:px-16">
@@ -265,6 +267,8 @@ export default function Home() {
                 src={bottomBanner.image}
                 alt={bottomBanner.title || ""}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
               <div className="absolute inset-0 flex items-center px-4 sm:px-10 md:px-16">

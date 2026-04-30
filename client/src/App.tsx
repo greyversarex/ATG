@@ -10,16 +10,16 @@ import { SplashScreen } from "@/components/splash-screen";
 import { I18nProvider } from "@/lib/i18n";
 import { useState, useCallback, lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import Home from "@/pages/home";
-import Catalog from "@/pages/catalog";
-import ProductDetail from "@/pages/product-detail";
-import Brands from "@/pages/brands";
-import NewsPage from "@/pages/news";
-import About from "@/pages/about";
-import Discounts from "@/pages/discounts";
-import Favorites from "@/pages/favorites";
 import NotFound from "@/pages/not-found";
 
+const Home = lazy(() => import("@/pages/home"));
+const Catalog = lazy(() => import("@/pages/catalog"));
+const ProductDetail = lazy(() => import("@/pages/product-detail"));
+const Brands = lazy(() => import("@/pages/brands"));
+const NewsPage = lazy(() => import("@/pages/news"));
+const About = lazy(() => import("@/pages/about"));
+const Discounts = lazy(() => import("@/pages/discounts"));
+const Favorites = lazy(() => import("@/pages/favorites"));
 const Admin = lazy(() => import("@/pages/admin"));
 const Login = lazy(() => import("@/pages/login"));
 
@@ -35,28 +35,16 @@ function PageFallback() {
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/catalog" component={Catalog} />
-      <Route path="/product/:id" component={ProductDetail} />
-      <Route path="/brands" component={Brands} />
-      <Route path="/news" component={NewsPage} />
-      <Route path="/about" component={About} />
-      <Route path="/discounts" component={Discounts} />
-      <Route path="/favorites" component={Favorites} />
-      <Route path="/login">
-        {() => (
-          <Suspense fallback={<PageFallback />}>
-            <Login />
-          </Suspense>
-        )}
-      </Route>
-      <Route path="/admin">
-        {() => (
-          <Suspense fallback={<PageFallback />}>
-            <Admin />
-          </Suspense>
-        )}
-      </Route>
+      <Route path="/">{() => <Suspense fallback={<PageFallback />}><Home /></Suspense>}</Route>
+      <Route path="/catalog">{() => <Suspense fallback={<PageFallback />}><Catalog /></Suspense>}</Route>
+      <Route path="/product/:id">{() => <Suspense fallback={<PageFallback />}><ProductDetail /></Suspense>}</Route>
+      <Route path="/brands">{() => <Suspense fallback={<PageFallback />}><Brands /></Suspense>}</Route>
+      <Route path="/news">{() => <Suspense fallback={<PageFallback />}><NewsPage /></Suspense>}</Route>
+      <Route path="/about">{() => <Suspense fallback={<PageFallback />}><About /></Suspense>}</Route>
+      <Route path="/discounts">{() => <Suspense fallback={<PageFallback />}><Discounts /></Suspense>}</Route>
+      <Route path="/favorites">{() => <Suspense fallback={<PageFallback />}><Favorites /></Suspense>}</Route>
+      <Route path="/login">{() => <Suspense fallback={<PageFallback />}><Login /></Suspense>}</Route>
+      <Route path="/admin">{() => <Suspense fallback={<PageFallback />}><Admin /></Suspense>}</Route>
       <Route component={NotFound} />
     </Switch>
   );

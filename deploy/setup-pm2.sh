@@ -10,30 +10,78 @@ echo ""
 echo "[1/4] Установка PM2..."
 npm install -g pm2
 
-# --- 2. Запуск приложения через PM2 ---
+# --- 2. Запуск приложения через PM2 (cluster mode) ---
 echo "[2/4] Запуск приложения..."
 cd /root/ATG
 
 pm2 stop atg 2>/dev/null || true
 pm2 delete atg 2>/dev/null || true
 
-pm2 start dist/index.cjs --name atg --env production
+# -i max = cluster mode, использует все ядра CPU
+pm2 start dist/index.cjs --name atg -i max --env production
 pm2 save
 pm2 startup systemd -u root --hp /root
 
-echo "Приложение запущено на порту 5000"
+echo "Приложение запущено на порту 5000 (cluster mode)"
 
 # --- 3. Установка и настройка Nginx ---
 echo "[3/4] Установка Nginx..."
 apt install -y nginx
 
 cat > /etc/nginx/sites-available/atg << 'NGINX'
+# Gzip сжатие
+gzip on;
+gzip_vary on;
+gzip_min_length 1024;
+gzip_comp_level 6;
+gzip_types
+    text/plain
+    text/css
+    text/javascript
+    application/javascript
+    application/json
+    application/x-javascript
+    text/xml
+    application/xml
+    application/xml+rss
+    image/svg+xml
+    font/woff
+    font/woff2
+    application/font-woff
+    application/font-woff2;
+
 server {
     listen 80;
     server_name _;
 
     client_max_body_size 20M;
 
+    # Прямая отдача загруженных картинок (без Node.js)
+    location /uploads/ {
+        alias /root/ATG/uploads/;
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header Access-Control-Allow-Origin "*";
+        access_log off;
+    }
+
+    # Прямая отдача статики сборки (JS/CSS/assets)
+    location /assets/ {
+        alias /root/ATG/dist/public/assets/;
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    # Прямая отдача статичных картинок из public
+    location /images/ {
+        alias /root/ATG/dist/public/images/;
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    # Всё остальное — через Node.js
     location / {
         proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
@@ -44,6 +92,11 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
+
+        # Таймауты
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
     }
 }
 NGINX
