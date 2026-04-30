@@ -463,7 +463,7 @@ export async function registerRoutes(
     res.json({ ok: true });
   });
 
-  app.all("/api/*", (_req, res) => {
+  app.all(/^\/api\//, (_req, res) => {
     res.status(404).json({ message: "Not found" });
   });
 

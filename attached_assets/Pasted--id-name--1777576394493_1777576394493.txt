@@ -1,0 +1,57 @@
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ atg                │ fork     │ 15   │ online    │ 0%       │ 19.0mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@6740927-ow033686:~/ATG# pm2 logs
+[TAILING] Tailing last 15 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 15 lines:
+PM2        | 2026-04-30T19:12:09: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:12:21: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:12:21: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:12:21: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:12:33: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:12:33: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:12:33: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:12:45: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:12:45: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:12:45: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:12:51: PM2 log: Stopping app:atg id:0
+PM2        | 2026-04-30T19:12:51: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:12:51: PM2 log: pid=1180626 msg=process killed
+PM2        | 2026-04-30T19:12:51: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:12:51: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-out.log last 15 lines:
+0|atg      | 6:14:50 PM [express] HEAD /api/.env 200 in 1ms
+0|atg      | 6:14:50 PM [express] GET /api/.env 200 in 3ms
+0|atg      | 6:14:59 PM [express] HEAD /api/test 200 in 1ms
+0|atg      | 6:14:59 PM [express] GET /api/test 200 in 2ms
+0|atg      | 7:10:57 PM [express] Database already seeded, skipping
+0|atg      | 7:11:09 PM [express] Database already seeded, skipping
+0|atg      | 7:11:21 PM [express] Database already seeded, skipping
+0|atg      | 7:11:33 PM [express] Database already seeded, skipping
+0|atg      | 7:11:45 PM [express] Database already seeded, skipping
+0|atg      | 7:11:57 PM [express] Database already seeded, skipping
+0|atg      | 7:12:09 PM [express] Database already seeded, skipping
+0|atg      | 7:12:21 PM [express] Database already seeded, skipping
+0|atg      | 7:12:34 PM [express] Database already seeded, skipping
+0|atg      | 7:12:46 PM [express] Database already seeded, skipping
+0|atg      | 7:12:52 PM [express] Database already seeded, skipping
+
+/root/.pm2/logs/atg-error.log last 15 lines:
+0|atg      |   originalPath: '/api/*'
+0|atg      | }
+0|atg      | Tn [TypeError]: Missing parameter name at index 6: /api/*; visit https://git.new/pathToRegexpError for info
+0|atg      |     at o (/root/ATG/dist/index.cjs:39:19271)
+0|atg      |     at nd (/root/ATG/dist/index.cjs:39:19558)
+0|atg      |     at ew (/root/ATG/dist/index.cjs:39:21639)
+0|atg      |     at Object.Wj [as match] (/root/ATG/dist/index.cjs:39:21216)
+0|atg      |     at r (/root/ATG/dist/index.cjs:43:925)
+0|atg      |     at new Tr (/root/ATG/dist/index.cjs:43:1053)
+0|atg      |     at Ei.route (/root/ATG/dist/index.cjs:43:7097)
+0|atg      |     at Ze.route (/root/ATG/dist/index.cjs:43:11944)
+0|atg      |     at Ze.all (/root/ATG/dist/index.cjs:43:13058)
+0|atg      |     at $3 (/root/ATG/dist/index.cjs:76:84115) {
+0|atg      |   originalPath: '/api/*'
+0|atg      | }
