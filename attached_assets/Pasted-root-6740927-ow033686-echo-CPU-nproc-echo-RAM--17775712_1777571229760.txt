@@ -1,0 +1,191 @@
+root@6740927-ow033686:~# # Общая инфо о системе
+echo "=== CPU ===" && nproc && echo "=== RAM ===" && free -h && echo "=== DISK ===" && df -h && echo "=== UPTIME ===" && uptime
+=== CPU ===
+1
+=== RAM ===
+               total        used        free      shared  buff/cache   available
+Mem:           961Mi       467Mi       185Mi        17Mi       484Mi       494Mi
+Swap:             0B          0B          0B
+=== DISK ===
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs            97M  748K   96M   1% /run
+/dev/sda1        14G  6.1G  7.4G  46% /
+tmpfs           481M  1.1M  480M   1% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda16      881M  117M  703M  15% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs            97M  8.0K   97M   1% /run/user/0
+=== UPTIME ===
+ 17:04:42 up 59 days, 10 min,  1 user,  load average: 0.06, 0.03, 0.00
+root@6740927-ow033686:~# # Как запущено приложение?
+pm2 list 2>/dev/null || echo "PM2 не используется" && ps aux | grep node | grep -v grep
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ atg                │ fork     │ 4    │ online    │ 0%       │ 120.4mb  │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root      498240  0.2 12.5 11800316 123444 ?     Ssl  Mar30 123:04 node /root/ATG/dist/index.cjs
+root@6740927-ow033686:~# cat /etc/nginx/sites-enabled/* 2>/dev/null || cat /etc/nginx/conf.d/*.conf 2>/dev/null || cat /etc/nginx/nginx.conf
+server {
+    listen 80;
+    server_name atg.tj www.atg.tj;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name atg.tj www.atg.tj;
+
+    ssl_certificate /etc/letsencrypt/live/atg.tj/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/atg.tj/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+root@6740927-ow033686:~# # Папка с загруженными фотками
+du -sh /путь/к/проекту/uploads/ && ls /путь/к/проекту/uploads/ | wc -l
+# если не знаешь путь:
+find / -name "uploads" -type d 2>/dev/null | head -5
+du: cannot access '/путь/к/проекту/uploads/': No such file or directory
+/root/ATG/uploads
+/var/www/html/uploads
+root@6740927-ow033686:~# pm2 logs --lines 50 2>/dev/null || journalctl -u nginx --since "1 hour ago" -n 50
+[TAILING] Tailing last 50 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 50 lines:
+PM2        | 2026-03-03T21:01:12: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-03T21:01:12: PM2 log: App [atg:0] online
+PM2        | 2026-03-03T21:13:57: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-03T21:13:57: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-03T21:13:57: PM2 log: pid=41491 msg=process killed
+PM2        | 2026-03-03T21:13:57: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-03T21:13:57: PM2 log: App [atg:0] online
+PM2        | 2026-03-04T17:13:10: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-04T17:13:10: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-04T17:13:10: PM2 log: pid=41664 msg=process killed
+PM2        | 2026-03-04T17:13:10: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-04T17:13:10: PM2 log: App [atg:0] online
+PM2        | 2026-03-08T19:53:02: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-08T19:53:02: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-08T19:53:02: PM2 log: pid=64172 msg=process killed
+PM2        | 2026-03-08T19:53:02: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-08T19:53:02: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T06:44:05: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T06:44:05: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T06:44:05: PM2 log: pid=142103 msg=process killed
+PM2        | 2026-03-09T06:44:05: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T06:44:05: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T06:47:27: PM2 log: App [atg:0] exited with code [0] via signal [SIGTERM]
+PM2        | 2026-03-09T06:47:27: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T06:47:27: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T06:53:14: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T06:53:14: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T06:53:14: PM2 log: pid=150365 msg=process killed
+PM2        | 2026-03-09T06:53:14: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T06:53:14: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T07:36:53: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T07:36:53: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T07:36:54: PM2 log: pid=150502 msg=process killed
+PM2        | 2026-03-09T07:36:54: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T07:36:54: PM2 log: App [atg:0] online
+PM2        | 2026-03-09T07:41:19: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-09T07:41:19: PM2 log: pid=151386 msg=process killed
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-09T07:41:19: PM2 log: App [atg:0] online
+PM2        | 2026-03-11T16:29:37: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-11T16:29:37: PM2 log: pid=151614 msg=process killed
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-11T16:29:37: PM2 log: App [atg:0] online
+PM2        | 2026-03-30T19:10:05: PM2 log: Stopping app:atg id:0
+PM2        | 2026-03-30T19:10:05: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-03-30T19:10:05: PM2 log: pid=194581 msg=process killed
+PM2        | 2026-03-30T19:10:05: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-03-30T19:10:05: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-error.log last 50 lines:
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg      | Failed to prune sessions: error: relation "session" does not exist
+0|atg      |     at /root/ATG/dist/index.cjs:74:13330
+0|atg      |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|atg      |     at async n._asyncQuery (/root/ATG/dist/index.cjs:82:8458) {
+0|atg      |   length: 106,
+0|atg      |   severity: 'ERROR',
+0|atg      |   code: '42P01',
+0|atg      |   detail: undefined,
+0|atg      |   hint: undefined,
+0|atg      |   position: '13',
+0|atg      |   internalPosition: undefined,
+0|atg      |   internalQuery: undefined,
+0|atg      |   where: undefined,
+0|atg      |   schema: undefined,
+0|atg      |   table: undefined,
+0|atg      |   column: undefined,
+0|atg      |   dataType: undefined,
+0|atg      |   constraint: undefined,
+0|atg      |   file: 'parse_relation.c',
+0|atg      |   line: '1449',
+0|atg      |   routine: 'parserOpenTable'
+0|atg      | }
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg      | Failed to prune sessions: error: relation "session" does not exist
+0|atg      |     at /root/ATG/dist/index.cjs:74:13330
+0|atg      |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|atg      |     at async n._asyncQuery (/root/ATG/dist/index.cjs:82:8458) {
+0|atg      |   length: 106,
+0|atg      |   severity: 'ERROR',
+0|atg      |   code: '42P01',
+0|atg      |   detail: undefined,
+0|atg      |   hint: undefined,
+0|atg      |   position: '13',
+0|atg      |   internalPosition: undefined,
+0|atg      |   internalQuery: undefined,
+0|atg      |   where: undefined,
+0|atg      |   schema: undefined,
+0|atg      |   table: undefined,
+0|atg      |   column: undefined,
+0|atg      |   dataType: undefined,
+0|atg      |   constraint: undefined,
+0|atg      |   file: 'parse_relation.c',
+0|atg      |   line: '1449',
+0|atg      |   routine: 'parserOpenTable'
+0|atg      | }
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+0|atg      | Error: ENOENT: no such file or directory, stat '/root/ATG/dist/public/index.html'
+
+/root/.pm2/logs/atg-out.log last 50 lines:
+0|atg      | ы</strong>Чтение и запись большинства данных с 8-контактных микросхем осуществляется напрямую через их 3-контактные разъемы без использования адаптеров.Необходим адаптер, и вам придётся потратить немало денег на покупку всех типов адаптеров.<strong>Чтение</strong>Поддерживается чтение и запись нескольких модулей, таких как EEPROM, ЭБУ и т. д. С помощью этого устройства вы сможете решить большинство проблем, с которыми сталкиваетесь на работе.Поддерживается чтение и запись лишь нескольких модулей. Для удовлетворения потребностей работы вам потребуется приобрести множество устройств.<strong>Данные</strong>Поддерживается локальное и облачное хранение данных, что предотвращает потерю данных из-за неправильной эксплуатации.Потеря данных может произойти из-за недостатка облачного хранилища.<br>&nbsp;<strong>Батарея</strong>Встроенный аккумулятор позволяет работать без USB-кабелей, что значительно упрощает работу на открытом воздухе.Неудобно работать на улице с USB-кабелем.<strong>Резервная копия</strong>Обеспечьте профессиональную техническую поддержку. Проблемы могут быть решены непосредственно в приложении Xhorse техническими специалистами Xhorse.Обратиться за помощью можно только к продавцу товара.</p><p><br><strong>Комплект поставки Xhorse Mini Prog Test Head и кабеля/адаптера:</strong><br><br>1 шт. x кабель DB15<br>, 1 шт. x адаптер EEPROM,<br>3 шт. x штыревые разъемы.<br>Штыревой разъем 1 поддерживает чтение микросхем DIP8,<br>штыревой разъем 2 поддерживает чтение микросхем в корпусе SOP8,<br>штыревой разъем 3 поддерживает чтение микросхем в стандартном корпусе SOP8.<br><strong>м.&nbsp;</strong><br></p>","shortSpecs":"Xhorse VVDI MINI Prog — мощный программатор микросхем, работающий в приложении Xhorse.","price":0,"image":"/uploads/b3f8c3da-9475-42e4-965d-3df89c58f4ac.webp","images":["/uploads/b3f8c3da-9475-42e4-965d-3df89c58f4ac.webp","/uploads/3e7900ff-042c-4c57-a3f5-1da157fd9f4e.webp","/uploads/943afbad-edf1-4180-86ea-c4d5cd5163e6.webp","/uploads/4426bf2b-a0a5-4f34-aec6-ece8a63bc157.webp","/uploads/af87d33d-076c-4f34-873d-bb17003ad8f0.webp"],"brandId":"3715ceed-2b74-4b9d-bbdb-07027eadacce","categoryId":"c0897389-aa75-4278-ae4f-c50aa44b4331","isBestseller":false,"discountPercent":0,"sortOrder":0,"priceNegotiable":true,"inStock":true},{"id":"b3693e93-40a7-4eee-839f-f143ca30d558","name":"Xhorse Key Tool MIDI Advanced Version","description":"<p><strong>Мощное автомобильное решение «два в одном». Это</strong><br><br><strong>сравнение расширенной версии KEY TOOL MIDI.</strong></p><p>Функция ИММОБазовыйПередовойУлучшенныйПримечанияVolkswagen/Audi/Skoda 4 -го &nbsp;поколения√√√Для некоторых моделей требуется программист.Volkswagen/Audi/Skoda MQB×√√Для некоторых моделей требуется <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://программист.Audi\">программист.Audi</a> 5 -го &nbsp;поколения×√√Для некоторых моделей требуется <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://программист.Audi/Porsche\">программист.Audi/Porsche</a>, MLB и др.√√√Требуется MLB-TOOLBMW CAS1-3√√√Для некоторых моделей требуется <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://программист.BMW\">программист.BMW</a> CAS4/ FEM/BDC×√√Для некоторых моделей требуется программист.Mercedes-Benz FBS3××√Требуется адаптер материнской платы.Порше√√√Требуется <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://программист.Land\">программист.Land</a> Rover/Jaguar 15-18√√√Для некоторых моделей требуется <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"http://программист.Land\">программист.Land</a> Rover/Jaguar 2018-√√√Для некоторых моделей требуется инициализация микросхемы.Другие распространенные модели√√√Для некоторых моделей требуется программатор или адаптер.Режим диагностики облачных вычислений - C√√√&nbsp;</p><p><br><strong>Список функций MIDI Key Tool:</strong><br><br>Авторизация мотоциклов BMW и шасси BMW G являются платными для активации. Вот ссылка:<br><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.xhorsetool.com/wholesale/xhorse-bmw-motorcycle-authorization.html\"><strong>Авторизация мотоциклов BMW,</strong></a><strong><br></strong><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.xhorsetool.com/wholesale/xhorse-bmw-g-bdc2-immo-license.html\"><strong>Функции шасси BMW G.</strong></a><br><br><strong>Характеристики продукта:</strong><br>Поддержка программирования IMMO для более чем 90% моделей автомобилей.<br>Поддержка генерации, программирования и клонирования датчиков давления в шинах для более чем 98% моделей автомобилей.<br>Оснащен функцией программирования, поддерживающей распространенную 8-контактную память.<br>Поддержка генерации и клонирования транспондеров.<br>Поддержка диагностики автомобиля, чтения и удаления кодов неисправностей.<br>Поддержка удаленной генерации и клонирования.<br>Полный сп��ктр услуг удаленной диагностики в качестве инструмента для работы с данными IMMO Mode-C<br>для Jaguar/Land Rover/Porsche/Volvo/Mitsubishi и других распространенных моделей автомобилей.<br>Встроенная функция чтения и записи 22k, поддерживающая беспроводное распознавание ключей MLB.<br>Поддержка добавления ключей для новых моделей MLB (работает с <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.xhorsetool.com/wholesale/xhorse-mlb-tool.html\">MLB-TOOL</a> ).<br><br><strong>Основные характеристики продукта:</strong><br>программирование IMMO, программирование<br>функций TPMS<br>, программирование пульта<br>дистанционного управления,<br>клонирование транспондера,<br>диагностика,<br>облачная диагностика, режим C,<br>инструмент для работы с данными IMMO<br>, считыватель 22K,<br>добавление ключей MLB.<br><br>&nbsp;<br><strong>В комплект входит:</strong><br>1 шт. x XHORSE XDKMD0EN KEY TOOL MIDI Advanced Version<br></p>","shortSpecs":"Xhorse Key Tool MIDI Advanced Version — универсальный инструмент для IMMO/TPMS/программирования/диагностики","price":0,"image":"/uploads/7191beba-1494-4425-9170-c19ad1444af3.webp","images":["/uploads/7191beba-1494-4425-9170-c19ad1444af3.webp","/uploads/80b1ecd1-4fe2-4132-829e-c3ebd3a08234.webp","/uploads/aa530a83-2990-4ef2-869a-3bb009e64b81.webp","/uploads/3f00db0f-1075-4ddd-8c7e-a95cc63ec79b.webp","/uploads/17d5ef91-18aa-429f-971a-0ed0965a76fd.webp","/uploads/b88abac8-59f6-4de9-ac7b-cc9e7dcacc1f.webp","/uploads/99e601b6-c9da-4c31-9276-e418fe108842.webp"],"brandId":"3715ceed-2b74-4b9d-bbdb-07027eadacce","categoryId":"c0897389-aa75-4278-ae4f-c50aa44b4331","isBestseller":false,"discountPercent":0,"sortOrder":0,"priceNegotiable":true,"inStock":true}]
+0|atg      | 1:23:54 PM [express] HEAD /api/.env 200 in 2ms
+0|atg      | 1:23:54 PM [express] GET /api/.env 200 in 2ms
+0|atg      | 1:24:02 PM [express] HEAD /api/test 200 in 1ms
+0|atg      | 1:24:02 PM [express] GET /api/test 200 in 2ms
+0|atg      | 3:04:04 PM [express] HEAD /api/.env 200 in 1ms
+0|atg      | 3:04:06 PM [express] GET /api/.env 200 in 3ms
+0|atg      | 3:04:15 PM [express] HEAD /api/test 200 in 1ms
+0|atg      | 3:04:15 PM [express] GET /api/test 200 in 2ms
+
+^C
+root@6740927-ow033686:~# ss -s && echo "---" && netstat -an | grep ESTABLISHED | wc -l
+Total: 156
+TCP:   13 (estab 1, closed 2, orphaned 0, timewait 2)
+
+Transport Total     IP        IPv6
+RAW       0         0         0
+UDP       3         3         0
+TCP       11        9         2
+INET      14        12        2
+FRAG      0         0         0
+
+---
+Command 'netstat' not found, but can be installed with:
+apt install net-tools
+0
+root@6740927-ow033686:~#
