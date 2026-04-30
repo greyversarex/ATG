@@ -1,0 +1,36 @@
+[TAILING] Tailing last 10 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 10 lines:
+PM2        | 2026-04-30T19:14:55: PM2 log: Stopping app:atg id:0
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:14:55: PM2 log: pid=1180839 msg=process killed
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:19:15: PM2 log: Stopping app:atg id:0
+PM2        | 2026-04-30T19:19:15: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:19:15: PM2 log: pid=1180865 msg=process killed
+PM2        | 2026-04-30T19:19:15: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:19:15: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-error.log last 10 lines:
+0|atg      |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+0|atg      |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+0|atg      |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+0|atg      |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+0|atg      |     at ModuleLoader.import (node:internal/modules/esm/loader:605:34)
+0|atg      |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:234:31)
+0|atg      |     at importModuleDynamicallyCallback (node:internal/modules/esm/utils:256:12) {
+0|atg      |   code: 'ERR_MODULE_NOT_FOUND',
+0|atg      |   url: 'file:///root/ATG/dist/index.cjs'
+0|atg      | }
+
+/root/.pm2/logs/atg-out.log last 10 lines:
+0|atg      | 7:13:28 PM [express] Database already seeded, skipping
+0|atg      | 7:13:40 PM [express] Database already seeded, skipping
+0|atg      | 7:13:52 PM [express] Database already seeded, skipping
+0|atg      | 7:14:05 PM [express] Database already seeded, skipping
+0|atg      | 7:14:17 PM [express] Database already seeded, skipping
+0|atg      | 7:14:29 PM [express] Database already seeded, skipping
+0|atg      | 7:14:56 PM [express] Database already seeded, skipping
+0|atg      | 7:14:56 PM [express] serving on port 5000
+0|atg      | 7:19:16 PM [express] Database already seeded, skipping
+0|atg      | 7:19:16 PM [express] serving on port 5000
