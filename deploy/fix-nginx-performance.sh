@@ -1,35 +1,26 @@
 #!/bin/bash
 set -e
 
-# Скрипт быстрой оптимизации Nginx на продакшене
-# Запускать: bash /root/ATG/deploy/fix-nginx-performance.sh
+# Скрипт быстрой оптимизации Nginx для продакшена с SSL
+# Запускать: bash /root/ATG/deploy/fix-nginx-performance.sh atg.tj
 
-DOMAIN=${1:-""}
+DOMAIN=${1:-"atg.tj"}
 APP_DIR="/root/ATG"
 
 echo "============================================"
-echo "  Оптимизация Nginx + PM2"
+echo "  Оптимизация Nginx (домен: $DOMAIN)"
 echo "============================================"
-
-# Определяем server_name
-if [ -z "$DOMAIN" ]; then
-    SERVER_NAME="_"
-    echo "Домен не указан, используется wildcard. Для домена запусти:"
-    echo "  bash fix-nginx-performance.sh atg.tj"
-else
-    SERVER_NAME="$DOMAIN www.$DOMAIN"
-    echo "Домен: $SERVER_NAME"
-fi
-
 echo ""
-echo "[1/3] Обновление конфигурации Nginx..."
+
+echo "[1/2] Запись новой конфигурации Nginx..."
 
 cat > /etc/nginx/sites-available/atg << NGINX
-# Gzip сжатие
+# ── Gzip сжатие ──────────────────────────────────────────
 gzip on;
 gzip_vary on;
 gzip_min_length 1024;
 gzip_comp_level 6;
+gzip_proxied any;
 gzip_types
     text/plain
     text/css
@@ -39,22 +30,35 @@ gzip_types
     application/x-javascript
     text/xml
     application/xml
-    application/xml+rss
     image/svg+xml
     font/woff
     font/woff2
     application/font-woff
     application/font-woff2;
 
+# ── HTTP → HTTPS редирект ─────────────────────────────────
 server {
     listen 80;
-    server_name $SERVER_NAME;
+    server_name $DOMAIN www.$DOMAIN;
+    return 301 https://\$host\$request_uri;
+}
 
-    client_max_body_size 20M;
+# ── HTTPS основной сервер ─────────────────────────────────
+server {
+    listen 443 ssl http2;
+    server_name $DOMAIN www.$DOMAIN;
 
-    # === ПРЯМАЯ ОТДАЧА СТАТИКИ (без Node.js) ===
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
-    # Загруженные картинки через админку
+    client_max_body_size 50M;
+
+    # Блокировка сканеров
+    location ~* ^/api/(\.env|\.git|config|wp-|phpmyadmin|admin\.php|test) {
+        return 444;
+    }
+
+    # ── Статика: загруженные картинки (без Node.js!) ──────
     location /uploads/ {
         alias $APP_DIR/uploads/;
         expires 1y;
@@ -63,7 +67,7 @@ server {
         access_log off;
     }
 
-    # Хэшированные JS/CSS бандлы
+    # ── Статика: JS/CSS бандлы ────────────────────────────
     location /assets/ {
         alias $APP_DIR/dist/public/assets/;
         expires 1y;
@@ -71,7 +75,7 @@ server {
         access_log off;
     }
 
-    # Статичные картинки (из public/)
+    # ── Статика: картинки из public/ ─────────────────────
     location /images/ {
         alias $APP_DIR/dist/public/images/;
         expires 1y;
@@ -79,7 +83,7 @@ server {
         access_log off;
     }
 
-    # === ВСЁ ОСТАЛЬНОЕ → Node.js ===
+    # ── Всё остальное → Node.js ───────────────────────────
     location / {
         proxy_pass http://127.0.0.1:5000;
         proxy_http_version 1.1;
@@ -97,23 +101,18 @@ server {
 }
 NGINX
 
-echo "[2/3] Проверка и перезапуск Nginx..."
+echo "[2/2] Проверка и перезагрузка Nginx..."
 nginx -t && systemctl reload nginx
-echo "Nginx обновлён ✓"
-
-echo "[3/3] Перезапуск PM2 в cluster mode..."
-cd $APP_DIR
-pm2 stop atg 2>/dev/null || true
-pm2 delete atg 2>/dev/null || true
-pm2 start dist/index.cjs --name atg -i max --env production
-pm2 save
-echo "PM2 запущен в cluster mode ✓"
 
 echo ""
 echo "============================================"
-echo "  Готово! Что изменилось:"
-echo "  ✓ Картинки теперь отдаются Nginx напрямую"
-echo "  ✓ Gzip сжатие включено"
-echo "  ✓ PM2 использует все ядра CPU"
+echo "  Готово! Что теперь работает:"
+echo "  ✓ Gzip сжатие включено (JS/CSS/JSON ~70% меньше)"
+echo "  ✓ Картинки /uploads/ отдаются Nginx напрямую"
+echo "  ✓ Статика /assets/ и /images/ — тоже напрямую"
+echo "  ✓ Боты на /api/.env заблокированы (444)"
+echo "  ✓ SSL сохранён"
 echo "============================================"
-pm2 list
+echo ""
+echo "Проверь сжатие:"
+echo "  curl -I -H 'Accept-Encoding: gzip' https://$DOMAIN/assets/ 2>/dev/null | grep -i content-encoding"
