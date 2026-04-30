@@ -1,0 +1,80 @@
+root@6740927-ow033686:~# cd /root/ATG && git pull && npm run build && pm2 restart atg
+remote: Enumerating objects: 26, done.
+remote: Counting objects: 100% (26/26), done.
+remote: Compressing objects: 100% (5/5), done.
+remote: Total 26 (delta 21), reused 26 (delta 21), pack-reused 0 (from 0)
+Unpacking objects: 100% (26/26), 12.82 KiB | 546.00 KiB/s, done.
+From https://github.com/greyversarex/ATG
+   49dc0e5..5803867  main       -> origin/main
+Updating 49dc0e5..5803867
+Fast-forward
+ .replit                                            |   1 +
+ ...-CPU-nproc-echo-RAM--17775689_1777568925304.txt | 191 +++++++++++++++++++++
+ ...-CPU-nproc-echo-RAM--17775712_1777571229760.txt | 191 +++++++++++++++++++++
+ client/src/App.tsx                                 |  48 ++----
+ client/src/pages/home.tsx                          |   4 +
+ client/src/pages/product-detail.tsx                |   4 +-
+ deploy/fix-nginx-performance.sh                    | 118 +++++++++++++
+ deploy/setup-pm2.sh                                |  59 ++++++-
+ deploy/setup-ssl.sh                                |  53 +++++-
+ server/routes.ts                                   |   4 +
+ 10 files changed, 638 insertions(+), 35 deletions(-)
+ create mode 100644 attached_assets/Pasted-root-6740927-ow033686-echo-CPU-nproc-echo-RAM--17775689_1777568925304.txt
+ create mode 100644 attached_assets/Pasted-root-6740927-ow033686-echo-CPU-nproc-echo-RAM--17775712_1777571229760.txt
+ create mode 100644 deploy/fix-nginx-performance.sh
+
+> rest-express@1.0.0 build
+> tsx script/build.ts
+
+building client...
+vite v7.3.0 building client environment for production...
+transforming (1) src/main.tsxBrowserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+transforming (6) ../node_modules/wouter/esm/index.js
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+✓ 2128 modules transformed.
+../dist/public/index.html                          10.77 kB │ gzip:   2.61 kB
+../dist/public/assets/index-C2B2Ji4A.css           92.50 kB │ gzip:  15.46 kB
+../dist/public/assets/loader-circle-Mv8KjSWl.js     0.14 kB │ gzip:   0.15 kB
+../dist/public/assets/chevron-up-Craa8AMN.js        0.20 kB │ gzip:   0.17 kB
+../dist/public/assets/chevron-right-D6-lcLix.js     0.20 kB │ gzip:   0.17 kB
+../dist/public/assets/badge-DzJ2Jeu8.js             0.73 kB │ gzip:   0.40 kB
+../dist/public/assets/wrench-Dxb5xcPj.js            0.76 kB │ gzip:   0.43 kB
+../dist/public/assets/brands-BjK9oypK.js            1.15 kB │ gzip:   0.59 kB
+../dist/public/assets/discounts-CvRaDEum.js         1.25 kB │ gzip:   0.59 kB
+../dist/public/assets/news-BtgcxNP5.js              1.85 kB │ gzip:   0.82 kB
+../dist/public/assets/favorites-CVCD6vXZ.js         2.31 kB │ gzip:   1.03 kB
+../dist/public/assets/login-Cu3luoel.js             2.34 kB │ gzip:   1.22 kB
+../dist/public/assets/use-page-title-Cm0tb6zS.js    3.04 kB │ gzip:   1.09 kB
+../dist/public/assets/order-modal-BT1ExYY1.js       3.23 kB │ gzip:   1.55 kB
+../dist/public/assets/product-card-CbKdjPQf.js      3.37 kB │ gzip:   1.37 kB
+../dist/public/assets/catalog-B5AUqqRH.js           6.19 kB │ gzip:   2.25 kB
+../dist/public/assets/about-HqsVKDoG.js             7.26 kB │ gzip:   2.56 kB
+../dist/public/assets/product-detail-h4Lflk4_.js    8.38 kB │ gzip:   2.79 kB
+../dist/public/assets/slider-DBbN1bwi.js            8.45 kB │ gzip:   3.45 kB
+../dist/public/assets/home-BwjfRxtx.js             14.53 kB │ gzip:   4.03 kB
+../dist/public/assets/textarea-BFXmmccw.js         25.80 kB │ gzip:   9.36 kB
+../dist/public/assets/index-Bjav6wgE.js           415.28 kB │ gzip: 136.96 kB
+../dist/public/assets/admin-BwhBM4Yx.js           451.41 kB │ gzip: 139.08 kB
+✓ built in 18.33s
+building server...
+
+  dist/index.cjs  1.3mb ⚠️
+
+⚡ Done in 3610ms
+Build complete.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.13.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.13.0
+npm notice To update run: npm install -g npm@11.13.0
+npm notice
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [atg](ids: [ 0 ])
+[PM2] [atg](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ atg                │ fork     │ 5    │ online    │ 0%       │ 18.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@6740927-ow033686:~/ATG#
