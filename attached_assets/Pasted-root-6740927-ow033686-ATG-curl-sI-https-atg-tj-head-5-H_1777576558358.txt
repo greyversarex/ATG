@@ -1,0 +1,59 @@
+root@6740927-ow033686:~/ATG# curl -sI https://atg.tj | head -5
+HTTP/2 200
+server: nginx/1.24.0 (Ubuntu)
+date: Thu, 30 Apr 2026 19:15:10 GMT
+content-type: text/html; charset=utf-8
+content-length: 10770
+root@6740927-ow033686:~/ATG# pm2 logs
+[TAILING] Tailing last 15 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 15 lines:
+PM2        | 2026-04-30T19:14:04: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:14:16: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:14:16: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:14:16: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:14:28: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:14:28: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:14:28: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:14:40: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:14:40: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:14:40: PM2 log: App [atg:0] online
+PM2        | 2026-04-30T19:14:55: PM2 log: Stopping app:atg id:0
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] exited with code [0] via signal [SIGINT]
+PM2        | 2026-04-30T19:14:55: PM2 log: pid=1180839 msg=process killed
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] starting in -fork mode-
+PM2        | 2026-04-30T19:14:55: PM2 log: App [atg:0] online
+
+/root/.pm2/logs/atg-error.log last 15 lines:
+0|atg      | }
+0|atg      | Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/root/ATG/dist/index.cjs' imported from /usr/lib/node_modules/pm2/lib/ProcessContainerFork.js
+0|atg      |     at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+0|atg      |     at moduleResolve (node:internal/modules/esm/resolve:952:10)
+0|atg      |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+0|atg      |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+0|atg      |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+0|atg      |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+0|atg      |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+0|atg      |     at ModuleLoader.import (node:internal/modules/esm/loader:605:34)
+0|atg      |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:234:31)
+0|atg      |     at importModuleDynamicallyCallback (node:internal/modules/esm/utils:256:12) {
+0|atg      |   code: 'ERR_MODULE_NOT_FOUND',
+0|atg      |   url: 'file:///root/ATG/dist/index.cjs'
+0|atg      | }
+
+/root/.pm2/logs/atg-out.log last 15 lines:
+0|atg      | 7:12:09 PM [express] Database already seeded, skipping
+0|atg      | 7:12:21 PM [express] Database already seeded, skipping
+0|atg      | 7:12:34 PM [express] Database already seeded, skipping
+0|atg      | 7:12:46 PM [express] Database already seeded, skipping
+0|atg      | 7:12:52 PM [express] Database already seeded, skipping
+0|atg      | 7:13:04 PM [express] Database already seeded, skipping
+0|atg      | 7:13:16 PM [express] Database already seeded, skipping
+0|atg      | 7:13:28 PM [express] Database already seeded, skipping
+0|atg      | 7:13:40 PM [express] Database already seeded, skipping
+0|atg      | 7:13:52 PM [express] Database already seeded, skipping
+0|atg      | 7:14:05 PM [express] Database already seeded, skipping
+0|atg      | 7:14:17 PM [express] Database already seeded, skipping
+0|atg      | 7:14:29 PM [express] Database already seeded, skipping
+0|atg      | 7:14:56 PM [express] Database already seeded, skipping
+0|atg      | 7:14:56 PM [express] serving on port 5000
+
